@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Quản Lý Cửa Hàng</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="bg-primary text-white text-center py-4">
+  <h1>Quản Lý Cửa Hàng</h1>
+  <form id="logoutForm" th:action="@{/home/logout}" method="post" style="display: inline;">
+    <button type="submit" id="logoutButton" class="btn btn-danger" th:style="${success} ? '' : 'display: none;'" >Đăng Xuất</button>
+  </form>
+</header>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar" th:if="${success}">
+  <div class="container">
+    <a class="navbar-brand" href="#">Management</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/customers}">Quản Lý Khách Hàng</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/orders}">Quản Lý Đơn Hàng</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/products}">Quản Lý Sản Phẩm</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/suppliers}">Quản Lý Nhà Cung Cấp</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/categories}">Quản Lý Danh Mục</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <div class="body-section" th:if="${success}">
+    <h2 class="text-center">Chức Năng Quản Lý</h2>
+    <p class="text-center">Chọn một chức năng từ menu trên.</p>
+  </div>
+
+  <div class="login-section mt-5" th:if="${!success}">
+    <h3 class="text-center">Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục.</h3>
+    <a href="/home/login" class="btn btn-primary">Đăng Nhập</a>
+  </div>
+
+  <div class="subbody-section mt-4" style="display: none;">
+    <h3 class="text-center">Danh Sách Tìm Kiếm</h3>
+    <p class="text-center">Kết quả tìm kiếm sẽ hiển thị ở đây.</p>
+  </div>
+</div>
+
+<footer class="text-center mt-5">
+  <p>&copy; 2024 Quản Lý Cửa Hàng. Tất cả quyền được bảo lưu.</p>
+</footer>
+
+<!-- Bootstrap and jQuery JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  function logout() {
+    alert("Đăng xuất thành công!");
+    $('#navbar').hide();
+    $('.body-section').hide();
+    $('.login-section').show();
+    $('#logoutButton').hide();
+  }
+</script>
+
+</body>
+</html>
