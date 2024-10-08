@@ -15,7 +15,7 @@
   <div class="h3" th:if="${error}" th:text="${error}"></div>
 
   <!-- Form đăng nhập -->
-  <form th:action="@{/home/login}" method="post">
+  <form th:action="@{/login}" method="post">
     <div class="form-group">
       <label for="username">Tên Đăng Nhập:</label>
       <input type="text" class="form-control" id="username" name="username" required>

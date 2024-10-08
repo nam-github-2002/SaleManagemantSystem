@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Khách Hàng</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container-fluid mt-5">
+  <h2 class="text-center mb-4">Quản Lý Khách Hàng</h2>
+
+  <div class="row">
+
+    <!-- Form to Add or Edit Customer (Chiếm 3 cột) -->
+    <div class="col-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title">Thêm/Sửa Khách Hàng</h5>
+        </div>
+        <div class="card-body">
+          <form th:action="@{/customers}" th:object="${newCustomer}" method="post">
+            <div class="form-group">
+              <label for="customerID">Mã Khách Hàng:</label>
+              <input type="text" class="form-control" id="customerID" th:field="*{customerID}"
+                     th:value="${newCustomer.customerID != null ? newCustomer.customerID : newId}" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="companyName">Tên Công Ty:</label>
+              <input type="text" class="form-control" id="companyName" th:field="*{companyName}" required>
+              <small id="companyNameError" class="text-danger" style="display:none;">Tên công ty không được để trống.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Điện Thoại:</label>
+              <input type="text" class="form-control" id="phone" th:field="*{phone}" required>
+            </div>
+            <div class="form-group">
+              <label for="address">Địa Chỉ:</label>
+              <input type="text" class="form-control" id="address" th:field="*{address}" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-3" onclick="return validateForm()">Lưu Khách Hàng</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table to List Customers (Chiếm 7 cột) -->
+    <div class="col-7 offset-md-1">
+      <h3 class="mb-3 text-center">Danh Sách Khách Hàng</h3>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+          <tr>
+            <th>Mã Khách Hàng</th>
+            <th>Tên Công Ty</th>
+            <th>Điện Thoại</th>
+            <th>Địa Chỉ</th>
+            <th>Email</th>
+            <th>Thao Tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="customer : ${customers}">
+            <td th:text="${customer.customerID}"></td>
+            <td th:text="${customer.companyName}"></td>
+            <td th:text="${customer.phone}"></td>
+            <td th:text="${customer.address}"></td>
+            <td th:text="${customer.email}"></td>
+            <td>
+              <!-- Xóa khách hàng -->
+              <form th:action="@{/customers/{id}(id=${customer.customerID})}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+              </form>
+              <!-- Chỉnh sửa khách hàng -->
+              <a th:href="@{/customers/edit/{id}(id=${customer.customerID})}" class="btn btn-warning btn-sm mt-2">Sửa</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  function validateForm() {
+    var companyName = document.getElementById("companyName").value;
+    var errorMsg = document.getElementById("companyNameError");
+
+    // Kiểm tra nếu trường 'Tên Công Ty' trống
+    if (companyName.trim() === "") {
+      errorMsg.style.display = "block"; // Hiện thông báo lỗi
+      return false; // Ngăn không cho form được gửi
+    } else {
+      errorMsg.style.display = "none"; // Ẩn thông báo lỗi
+      return true; // Cho phép form được gửi
+    }
+    var newId = document.getElementById("customerID").value;
+
+    if (newId) {
+      alert("Mã khách hàng mới: " + newId);
+    }
+  }
+
+</script>
+
+</body>
+</html>

@@ -11,7 +11,7 @@
 
 <header class="bg-primary text-white text-center py-4">
   <h1>Quản Lý Cửa Hàng</h1>
-  <form id="logoutForm" th:action="@{/home/logout}" method="post" style="display: inline;">
+  <form id="logoutForm" th:action="@{/logout}" method="post" style="display: inline;">
     <button type="submit" id="logoutButton" class="btn btn-danger" th:style="${success} ? '' : 'display: none;'" >Đăng Xuất</button>
   </form>
 </header>
@@ -52,7 +52,7 @@
 
   <div class="login-section mt-5" th:if="${!success}">
     <h3 class="text-center">Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục.</h3>
-    <a href="/home/login" class="btn btn-primary">Đăng Nhập</a>
+    <a href="/login" class="btn btn-primary">Đăng Nhập</a>
   </div>
 
   <div class="subbody-section mt-4" style="display: none;">
