@@ -48,6 +48,31 @@
   <div class="body-section" th:if="${success}">
     <h2 class="text-center">Chức Năng Quản Lý</h2>
     <p class="text-center">Chọn một chức năng từ menu trên.</p>
+
+<!--    them demo add san pham -@lam 07/10/2024-->
+    <div class="add-product-section mt-5" th:if="${success}">
+      <h3 class="text-center">Thêm Sản Phẩm Mới</h3>
+      <form action="/products/add" method="post" class="mt-4">
+        <div class="form-group">
+          <label for="productName">Tên sản phẩm:</label>
+          <input type="text" id="productName" name="productName" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="productPrice">Giá:</label>
+          <input type="number" id="productPrice" name="productPrice" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="productQuantity">Số lượng:</label>
+          <input type="number" id="productQuantity" name="productQuantity" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="productDescription">Mô tả:</label>
+          <textarea id="productDescription" name="productDescription" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Thêm Sản Phẩm</button>
+      </form>
+    </div>
+<!--kết thúc thêm-->
   </div>
 
   <div class="login-section mt-5" th:if="${!success}">
