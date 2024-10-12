@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Bootstrap 4 Layout</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Chiều cao full màn hình */
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+    
+    /* Sidebar cố định bên trái */
+    .sidebar {
+      position: fixed;
+      top: 56px; /* Chiều cao của header */
+      bottom: 0;
+      left: 0;
+      width: 250px;
+      background-color: blue;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+    
+    /* Phần section sẽ cuộn khi nội dung quá dài */
+    .content {
+      margin-left: 250px; /* Bù lại cho sidebar */
+      padding: 20px;
+      overflow-y: auto;
+      height: calc(100% - 56px - 40px); /* Trừ phần header và footer */
+      background-color: yellow;
+    }
+    
+    /* Footer dính dưới cùng */
+    footer {
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      height: 40px;
+      background-color: greenyellow;
+      text-align: center;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-success">
+    <a class="navbar-brand" href="#">Logo</a>
+  </nav>
+
+  <!-- Sidebar Menu -->
+  <div class="sidebar">
+    <h4>Menu</h4>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link 2</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link 3</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link 4</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content">
+    <h1>Section Content</h1>
+    <p>Nội dung dài để thử cuộn...</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget sapien vel turpis gravida cursus...</p>
+    <!-- Thêm nhiều nội dung để thử cuộn -->
+    <p>...</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis dolore pariatur sed corrupti, facilis sequi aspernatur iusto minima repellendus labore possimus. Earum numquam deleniti quaerat eaque sequi odit quasi magnam?</p>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 Your Company</p>
+  </footer>
+
+  <!-- Bootstrap 4 JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

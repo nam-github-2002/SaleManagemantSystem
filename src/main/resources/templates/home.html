@@ -126,7 +126,7 @@
         .stat-card {
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             border-radius: 15px;
-            background-size: 200% 200%;
+            background-size: 100% 100%;
         }
 
         .stat-card:hover {
@@ -149,8 +149,8 @@
 
         /* Căn chỉnh biểu tượng */
         .card-title i {
-            margin-bottom: 15px;
             transition: color 0.3s ease;
+            font-size: 50px;
         }
 
         .card:hover .card-title i {
@@ -160,19 +160,13 @@
 
         /* Căn chỉnh chữ */
         h3 {
-            margin-top: 10px;
             font-size: 2rem;
         }
 
         p.card-text {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1rem;
         }
 
-        small {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
 
         /* Hiệu ứng bóng đổ */
         .shadow {
@@ -272,7 +266,14 @@
                             <div class="nav-link-name">Quản Lý Nhà Cung Cấp</div>
                         </a>
                     </li>
+                    <li class="nav-item mt-auto bg-info">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <div class="nav-link-name">Thoát</div>
+                        </a>
+                    </li>
                 </ul>
+                
             </nav>
 
             <!-- Main Content -->
@@ -286,7 +287,6 @@
                                 <h5 class="card-title"><i class="fas fa-users fa-3x"></i></h5>
                                 <p class="card-text">Số Lượng Khách Hàng</p>
                                 <h3 class="font-weight-bold">500</h3>
-                                <small>Tăng 10% so với tháng trước</small>
                             </div>
                         </div>
                     </div>
@@ -296,7 +296,6 @@
                                 <h5 class="card-title"><i class="fas fa-boxes fa-3x"></i></h5>
                                 <p class="card-text">Số Lượng Tồn Kho</p>
                                 <h3 class="font-weight-bold">1,000</h3>
-                                <small>Ổn định so với tháng trước</small>
                             </div>
                         </div>
                     </div>
@@ -306,7 +305,6 @@
                                 <h5 class="card-title"><i class="fas fa-coins fa-3x"></i></h5>
                                 <p class="card-text">Doanh Thu</p>
                                 <h3 class="font-weight-bold">5,000,000 VNĐ</h3>
-                                <small>Giảm 5% so với tháng trước</small>
                             </div>
                         </div>
                     </div>
