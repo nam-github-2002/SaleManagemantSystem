@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <div th:replace="home :: head"></div>
+
+  <link th:href="@{css/home.css}">
+</head>
+<body>
+<div class="container-fluid">
+  <!-- header -->
+  <div th:replace="home :: header" class="row p-2 bg-dark text-white"></div>
+
+  <!-- section -->
+  <div class="row" id="sectionOfMain">
+    <nav th:replace="home :: sidebar" class="navbar sidebar col-md-2 bg-dark text-white vh-100"></nav>
+
+    <!-- Main Content -->
+    <div class="col-md-10 p-2">
+
+      Đây là trang quản lý nhân viên
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

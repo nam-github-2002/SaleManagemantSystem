@@ -10,11 +10,15 @@ public interface CustomerService {
     List<Customer> getAllCustomers();
 
     // Lấy khách hàng theo ID
-    Optional<Customer> getCustomerById(Integer id);
+    Optional<Customer> getCustomerById(String id);
 
     // Lưu khách hàng mới hoặc cập nhật khách hàng hiện có
-    Customer saveCustomer(Customer customer);
+    void saveCustomer(Customer customer);
 
     // Xóa khách hàng theo ID
-    void deleteCustomer(Integer id);
+    void deleteCustomer(String id);
+
+    String generateCustomerID();
+
+    List<Customer> searchCustomers(String keyword);
 }

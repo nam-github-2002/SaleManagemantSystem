@@ -5,11 +5,15 @@ import jakarta.persistence.*;
 @Table(name = "Customer")
 public class Customer {
     @Id
-    @Column(length = 10)
+    @Column(length = 10, unique = true, nullable = false)
     private String customerID;
 
+    @Column(name="Company_Name", nullable = false)
     private String companyName;
+
+    @Column(length = 12)
     private String phone;
+
     private String address;
 
     @Column(unique = true)
@@ -54,5 +58,5 @@ public class Customer {
     public void setEmail(String email) {
         this.email = email;
     }
-// Getters và Setters
+
 }
