@@ -13,7 +13,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "CategoryID", nullable = false)
-    private Category category;
+    private Category category_id;
 
     @ManyToOne
     @JoinColumn(name = "SupplierID", nullable = false)
@@ -44,11 +44,11 @@ public class Product {
     }
 
     public Category getCategory() {
-        return category;
+        return category_id;
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        this.category_id = category;
     }
 
     public Supplier getSupplier() {

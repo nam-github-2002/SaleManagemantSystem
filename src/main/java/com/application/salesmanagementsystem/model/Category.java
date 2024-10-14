@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer categoryId;
+    private Integer category_Id;
 
     private String categoryName;
 
@@ -15,11 +15,11 @@ public class Category {
     private byte[] image;
 
     public Integer getCategoryId() {
-        return categoryId;
+        return category_Id;
     }
 
     public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
+        this.category_Id = categoryId;
     }
 
     public String getCategoryName() {

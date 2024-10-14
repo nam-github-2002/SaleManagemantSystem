@@ -69,4 +69,9 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return newId;
     }
+
+    @Override
+    public List<Customer> searchCustomers(String keyword) {
+        return customerRepository.findByCompanyNameContainingIgnoreCase(keyword);
+    }
 }

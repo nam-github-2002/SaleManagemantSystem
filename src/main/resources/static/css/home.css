@@ -1,0 +1,175 @@
+/* đặt lại margin và padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f0f4f8c8;
+    color: #333;
+}
+
+.container-fluid {
+    border-radius: 8px;
+    height: 100%;
+}
+
+#sectionOfMain {}
+
+
+/* Phần header start */
+.header {
+    background: linear-gradient(to right, #00c7febc, #4facfe);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header img {
+    height: 50px;
+}
+
+.user-info {
+    color: black;
+}
+
+.user-info p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Header end */
+
+
+/* Sidebar styling -  menu bên trái*/
+.sidebar {
+    border-right: 5px double #00c7febc;
+}
+
+.navbar-nav {
+    width: 100%;
+    height: 100%;
+}
+
+.nav-item {
+    border-radius: 10px;
+}
+
+.nav-link {
+    font-size: 18px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    height: 80px;
+    border-radius: 10px;
+}
+
+.nav-link i {
+    font-size: 32px;
+    color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.nav-link-name {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 16px;
+    color: white;
+    font-weight: 700;
+}
+
+
+.nav-link:hover i, .nav-link:hover .nav-link-name{
+    color: gold;
+}
+
+#sectionOfMain {
+    border: 5px double #00c7febc;
+    height: 100%;
+}
+
+/* main contetn */
+#Main-Content {
+    height: 100%;
+    /* overflow-y: auto; */
+}
+
+/* Điều chỉnh kích thước và căn giữa ảnh */
+.img-fluid {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+/* Hiệu ứng hover */
+.stat-card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    border-radius: 15px;
+    background-size: 200% 200%;
+}
+
+.stat-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Các màu gradient đẹp mắt */
+.bg-gradient-warning {
+    background: linear-gradient(45deg, #FFC107, #FF9800);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(45deg, #4CAF50, #81C784);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(45deg, #2196F3, #03A9F4);
+}
+
+/* Căn chỉnh biểu tượng */
+.card-title i {
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+}
+
+.card:hover .card-title i {
+    color: #FFD700;
+    /* Đổi màu biểu tượng khi hover */
+}
+
+/* Căn chỉnh chữ */
+h3 {
+    margin-top: 10px;
+    font-size: 2rem;
+}
+
+p.card-text {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+small {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Hiệu ứng bóng đổ */
+.shadow {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.text-center h4 {
+    font-weight: 700;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+
+.footer {
+    background: linear-gradient(#00c7febc, #4facfe);
+    text-align: center;
+    padding: 10px 0;
+}

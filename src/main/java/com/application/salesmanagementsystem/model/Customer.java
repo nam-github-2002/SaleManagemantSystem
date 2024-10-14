@@ -8,7 +8,7 @@ public class Customer {
     @Column(length = 10, unique = true, nullable = false)
     private String customerID;
 
-    @Column(name="CompanyName", nullable = false)
+    @Column(name="Company_Name", nullable = false)
     private String companyName;
 
     @Column(length = 12)

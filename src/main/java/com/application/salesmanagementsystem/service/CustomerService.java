@@ -19,4 +19,6 @@ public interface CustomerService {
     void deleteCustomer(String id);
 
     String generateCustomerID();
+
+    List<Customer> searchCustomers(String keyword);
 }

@@ -1,275 +1,95 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ - SmartSales</title>
-    <link rel="shortcut icon" href="../static/image/security-logo.png" type="image/x-icon">
-    <!-- import css bootstrap và fontawesome -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <div th:fragment="head">
+        <title>Trang chủ - SmartSales</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" th:href="@{image/security-logo.png}" type="image/x-icon">
 
-    <!-- import JQuery và thư viện js khác-->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- import css bootstrap và fontawesome -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <style>
-        /* đặt lại margin và padding */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        <!-- import JQuery và thư viện js khác-->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        body {
-            background-color: #f0f4f8c8;
-            color: #333;
-        }
+        <!-- import css, js static-->
+        <link rel="stylesheet" th:href="@{css/home.css}">
+    </div>
 
-        .container-fluid {
-            border-radius: 8px;
-            height: 100%;
-        }
-
-        #sectionOfMain {}
-
-
-        /* Phần header start */
-        .header {
-            background: linear-gradient(to right, #00c7febc, #4facfe);
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header img {
-            height: 50px;
-        }
-
-        .user-info {
-            color: black;
-        }
-
-        .user-info p {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        /* Header end */
-
-
-        /* Sidebar styling -  menu bên trái*/
-        .sidebar {
-            border-right: 5px double #00c7febc;
-        }
-
-        .navbar-nav {
-            width: 100%;
-            height: 100%;
-        }
-
-        .nav-item {
-            border-radius: 10px;
-        }
-
-        .nav-link {
-            font-size: 18px;
-            padding: 15px;
-            transition: all 0.3s ease;
-            position: relative;
-            height: 80px;
-            border-radius: 10px;
-        }
-
-        .nav-link i {
-            font-size: 32px;
-            color: white;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-
-        .nav-link-name {
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            font-size: 16px;
-            color: white;
-            font-weight: 700;
-        }
-
-        
-        .nav-link:hover i, .nav-link:hover .nav-link-name{
-            color: gold;
-        }
-
-        #sectionOfMain {
-            border: 5px double #00c7febc;
-            height: 100%;
-        }
-
-        /* main contetn */
-        #Main-Content {
-            height: 100%;
-            /* overflow-y: auto; */
-        }
-
-        /* Điều chỉnh kích thước và căn giữa ảnh */
-        .img-fluid {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
-
-        /* Hiệu ứng hover */
-        .stat-card {
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            border-radius: 15px;
-            background-size: 200% 200%;
-        }
-
-        .stat-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Các màu gradient đẹp mắt */
-        .bg-gradient-warning {
-            background: linear-gradient(45deg, #FFC107, #FF9800);
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(45deg, #4CAF50, #81C784);
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(45deg, #2196F3, #03A9F4);
-        }
-
-        /* Căn chỉnh biểu tượng */
-        .card-title i {
-            margin-bottom: 15px;
-            transition: color 0.3s ease;
-        }
-
-        .card:hover .card-title i {
-            color: #FFD700;
-            /* Đổi màu biểu tượng khi hover */
-        }
-
-        /* Căn chỉnh chữ */
-        h3 {
-            margin-top: 10px;
-            font-size: 2rem;
-        }
-
-        p.card-text {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        small {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Hiệu ứng bóng đổ */
-        .shadow {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .text-center h4 {
-            font-weight: 700;
-            color: #333;
-            letter-spacing: 1px;
-        }
-
-
-        .footer {
-            background: linear-gradient(#00c7febc, #4facfe);
-            text-align: center;
-            padding: 10px 0;
-        }
-    </style>
-
-    <script>
-        // JavaScript để hiển thị thứ, ngày, và thời gian hiện tại
-        window.onload = function () {
-            const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
-            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-
-            // Hàm cập nhật ngày giờ
-            const updateDateTime = () => {
-                const today = new Date(); // Khởi tạo mới mỗi lần cập nhật
-                const date = today.toLocaleDateString('vi-VN', optionsDate);
-                const time = today.toLocaleTimeString('vi-VN', optionsTime);
-                const dayOfWeek = today.toLocaleDateString('vi-VN', { weekday: 'long' });
-                document.getElementById("current-date").innerText = `${dayOfWeek}, ${date}, ${time}`;
-            };
-
-            updateDateTime(); // Hiển thị ngay khi tải
-            setInterval(updateDateTime, 1000); // Cập nhật mỗi giây
-        };
-    </script>
+    <script th:src="@{js/home.js}"></script>
 
 </head>
-
 <body>
     <div class="container-fluid">
         <!-- header -->
-        <div class="header row p-2">
-            <!-- Logo -->
-            <div class="col">
-                <h3 class="mb-0"><img src="../static/image/security-logo.png" alt="Logo"> SmartSales</h3>
+        <div th:fragment="header" class="row p-2 bg-dark text-white">
+            <div class="col d-flex align-items-center">
+                <img th:src="@{image/security-logo.png}" alt="Logo" style="height: 40px; margin-right: 10px;">
+                <h3 class="mb-0">SmartSales</h3>
             </div>
-            <!-- User Information -->
-            <div class="col text-right user-info">
-                <p id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
-                <p>User: Admin / Employee ID: 12</p>
+            <div class="col text-right d-flex justify-content-end align-items-center">
+                <!-- Biểu tượng thông báo và tin nhắn -->
+                <i class="fas fa-bell fa-2x mr-4"></i>
+                <i class="fas fa-envelope fa-2x mr-4"></i>
+                <!-- Thông tin người dùng -->
+                <div class="user-info d-flex align-items-center">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle mr-2">
+                    <div>
+                        <p class="mb-0">Admin / Employee ID: 12</p>
+                        <p class="mb-0" id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- section -->
         <div class="row" id="sectionOfMain">
             <!-- Menu Sidebar -->
-            <nav class="navbar sidebar col-md-2">
-                <ul class="navbar-nav">
-                    <li class="nav-item my-1" style="background-color:#26A6DD;">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-cogs"></i>
-                            <div class="nav-link-name">Hệ Thống</div>
+            <nav th:fragment="sidebar" class="navbar sidebar col-md-2 bg-dark text-white vh-100">
+                <ul class="navbar-nav w-100">
+                    <!-- Hệ Thống -->
+                    <li class="nav-item my-2">
+                        <a class="nav-link d-flex align-items-center text-white" href="/">
+                            <i class="fas fa-cogs fa-lg mr-2"></i>
+                            <span>Hệ Thống</span>
                         </a>
                     </li>
-                    <li class="nav-item my-1" style="background-color: #02859B;">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-box"></i>
-                            <div class="nav-link-name"> Quản Lý Sản Phẩm</div>
+                    <!-- Quản lý sản phẩm -->
+                    <li class="nav-item my-2">
+                        <a class="nav-link d-flex align-items-center text-white" href="/products">
+                            <i class="fas fa-box fa-lg mr-2"></i>
+                            <span>Quản Lý Sản Phẩm</span>
                         </a>
                     </li>
-                    <li class="nav-item my-1" style="background-color: #49B825;">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-user-tie"></i>
-                            <div class="nav-link-name">Quản Lý Khách Hàng</div>
+                    <!-- Quản lý khách hàng -->
+                    <li class="nav-item my-2">
+                        <a class="nav-link d-flex align-items-center text-white" href="/customers">
+                            <i class="fas fa-user-tie fa-lg mr-2"></i>
+                            <span>Quản Lý Khách Hàng</span>
                         </a>
                     </li>
-                    <li class="nav-item my-1" style="background-color: #2F51A5;">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-shopping-cart"></i>
-                            <div class="nav-link-name">Quản Lý Đơn Hàng</div>
-
+                    <!-- Quản lý đơn hàng -->
+                    <li class="nav-item my-2">
+                        <a class="nav-link d-flex align-items-center text-white" href="/orders">
+                            <i class="fas fa-shopping-cart fa-lg mr-2"></i>
+                            <span>Quản Lý Đơn Hàng</span>
                         </a>
                     </li>
-                    <li class="nav-item my-1" style="background-color: #FF8D0F;">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-users"></i>
-                            <div class="nav-link-name">Quản Lý Nhân Viên</div>
+                    <!-- Quản lý nhân viên -->
+                    <li class="nav-item my-2">
+                        <a class="nav-link d-flex align-items-center text-white" href="/employees">
+                            <i class="fas fa-users fa-lg mr-2"></i>
+                            <span>Quản Lý Nhân Viên</span>
                         </a>
                     </li>
-                    <li class="nav-item my-1" style="background-color: #3B7133;">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-truck"></i>
-                            <div class="nav-link-name">Quản Lý Nhà Cung Cấp</div>
+                    <!-- Quản lý nhà cung cấp -->
+                    <li class="nav-item my-2">
+                        <a class="nav-link d-flex align-items-center text-white" href="/suppliers">
+                            <i class="fas fa-truck fa-lg mr-2"></i>
+                            <span>Quản Lý Nhà Cung Cấp</span>
                         </a>
                     </li>
                 </ul>
@@ -388,7 +208,6 @@
     <footer class="footer bg-info text-center p-4">
         <p>&copy; 2024 SmartSales. Mọi quyền được bảo lưu.</p>
     </footer>
-    </div>
 
 </body>
 
