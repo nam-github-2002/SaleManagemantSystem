@@ -2,115 +2,122 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <div th:replace="home :: head"></div>
-
-  <link th:href="@{css/home.css}">
 </head>
 <body>
-  <div class="container-fluid">
-    <!-- header -->
-    <div th:replace="home :: header" class="row p-2 bg-dark text-white"></div>
+<div class="container-fluid">
+  <!-- header -->
+  <div th:replace="home :: header" class="row p-2 bg-dark text-white"></div>
 
-    <!-- section -->
-    <div class="row" id="sectionOfMain">
-      <nav th:replace="home :: sidebar" class="navbar sidebar col-md-2 bg-dark text-white vh-100"></nav>
+  <!-- section -->
+  <div class="row" id="sectionOfMain">
+    <nav th:replace="home :: sidebar" class="navbar sidebar col-md-2 bg-dark text-white vh-100"></nav>
 
-      <!-- Main Content -->
-      <div class="col-md-10 p-2">
-        <h2 class="text-center mb-4">Quản Lý Khách Hàng</h2>
+    <!-- Main Content -->
+    <div class="col-md-10 p-2">
+      <h2 class="text-center mb-5">QUẢN LÝ KHÁCH HÀNG</h2>
 
-        <!-- Search bar with Add New button -->
-        <div class="mb-4 d-flex justify-content-between">
-          <form th:action="@{/customers/search}" method="post" class="flex-grow-1 mr-2">
-            <div class="input-group">
+      <!-- Search bar with Add New button -->
+      <div class="mb-4 mt-3 d-flex justify-content-end">
+        <form th:action="@{/customers/search}" method="post" class="d-flex ms-auto">
+          <div class="input-group" >
+            <label>
               <input type="text" class="form-control" th:name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên công ty...">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Tìm Kiếm</button>
-              </div>
-            </div>
-            <div th:if="${error}" class="text-danger mt-2">
-              <p th:text="${error}"></p>
-            </div>
-          </form>
-          <button class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">Thêm Mới</button>
-        </div>
+            </label>
+            <button class="btn btn-outline-secondary" type="submit">Tìm Kiếm</button>
+          </div>
+          <div th:if="${error}" class="text-danger mt-2">
+            <p th:text="${error}"></p>
+          </div>
+        </form>
+        <a href="/customers/new" id="addNewCusButton" class="btn btn-primary ms-2">Thêm Mới</a>
+      </div>
 
-        <!-- Modal for Add Customer -->
-        <div th:if="${newCustomer}" class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="addCustomerModalLabel">Thêm Khách Hàng</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form th:action="@{/customers}" th:object="${newCustomer}" method="post">
-                  <div class="form-group">
-                    <label for="customerId">ID:</label>
-                    <input type="text" class="form-control" id="customerId" th:field="*{customerID}" required readonly>
-                  </div>
-                  <div class="form-group">
-                    <label for="companyName">Tên Công Ty:</label>
-                    <input type="text" class="form-control" id="companyName" th:field="*{companyName}" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="phone">Điện Thoại:</label>
-                    <input type="text" class="form-control" id="phone" th:field="*{phone}" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="address">Địa Chỉ:</label>
-                    <input type="text" class="form-control" id="address" th:field="*{address}" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Lưu Khách Hàng</button>
-                </form>
-              </div>
+      <!-- Modal thêm/chỉnh sửa khách hàng -->
+      <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addCustomerModalLabel" th:text="${newCustomer.companyName != null ? 'Sửa Khách Hàng' : 'Thêm Khách Hàng'}"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/customers" th:object="${newCustomer}" method="post">
+                <div class="mb-3">
+                  <label for="customerId" class="form-label">ID:</label>
+                  <input type="text" class="form-control" id="customerId" th:field="*{customerID}" required readonly>
+                </div>
+                <div class="mb-3">
+                  <label for="companyName" class="form-label">Tên Công Ty:</label>
+                  <input type="text" class="form-control" id="companyName" th:field="*{companyName}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Điện Thoại:</label>
+                  <input type="text" class="form-control" id="phone" th:field="*{phone}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="address" class="form-label">Địa Chỉ:</label>
+                  <input type="text" class="form-control" id="address" th:field="*{address}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email:</label>
+                  <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                </div>
+                <button type="submit" class="btn btn-primary" th:text="${newCustomer.companyName != null ? 'Cập Nhật' : 'Lưu'}"></button>
+              </form>
             </div>
           </div>
         </div>
-
-
-        <h3 class="mb-3 text-center">Danh Sách Khách Hàng</h3>
-        <div class="table-responsive">
-          <table class="table table-striped table-hover">
-            <thead class="thead-dark">
-            <tr>
-              <th>Mã Khách Hàng</th>
-              <th>Tên Công Ty</th>
-              <th>Điện Thoại</th>
-              <th>Địa Chỉ</th>
-              <th>Email</th>
-              <th>Thao Tác</th>
-            </tr>
-            </thead>
-            <tbody>
-              <tr th:each="customer : ${customers}">
-                <td th:text="${customer.customerID}"></td>
-                <td th:text="${customer.companyName}"></td>
-                <td th:text="${customer.phone}"></td>
-                <td th:text="${customer.address}"></td>
-                <td th:text="${customer.email}"></td>
-                <td>
-                  <!-- Form xóa khách hàng -->
-                  <form th:action="@{/customers/{id}(id=${customer.customerID})}" method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                  </form>
-                  <!-- Liên kết sửa khách hàng -->
-                  <a th:href="@{/customers/edit/{id}(id=${customer.customerID})}" class="btn btn-warning btn-sm mt-2">Sửa</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-light">
+          <tr>
+            <th>Mã Khách Hàng</th>
+            <th>Tên Công Ty</th>
+            <th>Điện Thoại</th>
+            <th>Địa Chỉ</th>
+            <th>Email</th>
+            <th>Thao Tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="customer : ${customers}">
+            <td th:text="${customer.customerID}"></td>
+            <td th:text="${customer.companyName}"></td>
+            <td th:text="${customer.phone}"></td>
+            <td th:text="${customer.address}"></td>
+            <td th:text="${customer.email}"></td>
+            <td>
+              <!-- Form xóa khách hàng -->
+              <form th:action="@{/customers/{id}(id=${customer.customerID})}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+              </form>
+              <!-- Liên kết sửa khách hàng -->
+              <form th:action="@{/customers/edit/{id}(id=${customer.customerID})}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="EDIT" />
+                <button type="submit" class="btn btn-warning btn-sm">Sửa</button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
+</div>
 
-  <script th:src="@{/js/customer.js}" th:inline="javascript"></script>
+<script th:inline="javascript">
+  let modal = /*[[${modal}]]*/ false; // Gán đúng giá trị từ Thymeleaf
+  if (modal) {
+    $('#addCustomerModal').modal('show'); // Hiển thị modal nếu true
+  }
+
+  $('.close, .submit').click(function () {
+    $('#addCustomerModal').modal('hide');
+  });
+</script>
 </body>
 </html>
