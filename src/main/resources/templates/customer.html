@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <div th:replace="home :: head"></div>
+<head th:replace="home :: head">
 </head>
 <body>
 <div class="container-fluid">
@@ -33,7 +32,7 @@
       </div>
 
       <!-- Modal thêm/chỉnh sửa khách hàng -->
-      <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+      <div class="modal" id="addCustomerModal" tabindex="-1" role="modal" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -112,12 +111,15 @@
 <script th:inline="javascript">
   let modal = /*[[${modal}]]*/ false; // Gán đúng giá trị từ Thymeleaf
   if (modal) {
-    $('#addCustomerModal').modal('show'); // Hiển thị modal nếu true
+    $('#addCustomerModal').show(); // Hiển thị modal nếu true
+
   }
 
-  $('.close, .submit').click(function () {
-    $('#addCustomerModal').modal('hide');
+  $('.btn-close, .submit').click(function () {
+    $('#addCustomerModal').hide();
   });
+
 </script>
+
 </body>
 </html>
