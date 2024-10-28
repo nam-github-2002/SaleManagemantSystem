@@ -15,3 +15,4 @@ window.onload = function () {
     updateDateTime(); // Hiển thị ngay khi tải
     setInterval(updateDateTime, 1000); // Cập nhật mỗi giây
 };
+

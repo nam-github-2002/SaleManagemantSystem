@@ -38,5 +38,9 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-    // Các phương thức khác có thể thêm ở đây
+    @Override
+    public List<Product> searchProducts(String keyword) {
+        return productRepository.findByProductNameContaining(keyword);
+    }
+
 }

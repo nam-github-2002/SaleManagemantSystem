@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head th:fragment="head">
-    <title>Trang chủ - SmartSales</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" th:href="@{image/security-logo.png}" type="image/x-icon">
+<head>
+    <div th:fragment="head">
+        <title>Trang chủ - SmartSales</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" th:href="@{/image/security-logo.png}" type="image/x-icon">
 
-    <!-- import css bootstrap và fontawesome -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
+        <!-- import css bootstrap và fontawesome -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              crossorigin="anonymous">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer" />
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+              integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer" />
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                crossorigin="anonymous"></script>
 
-    <!-- import JQuery-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
+        <!-- import JQuery-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+                integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"></script>
 
-    <!-- import css, js static-->
-    <link rel="stylesheet" th:href="@{css/home.css}">
+        <!-- import css, js static-->
+        <link rel="stylesheet" th:href="@{/css/home.css}">
 
-
-    <script th:src="@{js/home.js}"></script>
-
+        <script th:src="@{/js/home.js}"></script>
+    </div>
 </head>
 <body>
 <div class="container-fluid">
     <!-- header -->
     <div th:fragment="header" class="row p-2">
         <div class="col d-flex align-items-center">
-            <img th:src="@{image/security-logo.png}" alt="Logo" style="height: 40px; margin-right: 10px;">
+            <img th:src="@{/image/security-logo.png}" alt="Logo" style="height: 40px; margin-right: 10px;">
             <h3 class="mb-0">SmartSales</h3>
         </div>
         <div class="col text-end d-flex justify-content-end align-items-center">
@@ -61,52 +61,48 @@
     <!-- section -->
     <div class="row" id="sectionOfMain">
         <!-- Menu Sidebar -->
-        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 bg-dark text-white vh-100">
-            <ul class="navbar-nav w-100">
-                <!-- Hệ Thống -->
-                <li class="nav-item my-2">
-                    <a class="nav-link d-flex align-items-center text-white" href="/">
-                        <i class="fas fa-cogs fa-lg me-2"></i>
-                        <span>Hệ Thống</span>
+        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 vh-100">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        <i class="fas fa-cogs"></i>
+                        <span class="item-text">Hệ Thống</span>
                     </a>
                 </li>
-                <!-- Quản lý sản phẩm -->
-                <li class="nav-item my-2">
-                    <a class="nav-link d-flex align-items-center text-white" href="/products">
-                        <i class="fas fa-box fa-lg me-2"></i>
-                        <span>Quản Lý Sản Phẩm</span>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">
+                        <i class="fas fa-box"></i>
+                        <span class="item-text">Quản Lý Sản Phẩm</span>
                     </a>
                 </li>
-                <!-- Quản lý khách hàng -->
-                <li class="nav-item my-2">
-                    <a class="nav-link d-flex align-items-center text-white" href="/customers">
-                        <i class="fas fa-user-tie fa-lg me-2"></i>
-                        <span>Quản Lý Khách Hàng</span>
+                <li class="nav-item">
+                    <a class="nav-link" href="/customers">
+                        <i class="fas fa-user-tie"></i>
+                        <span class="item-text">Quản Lý Khách Hàng</span>
                     </a>
                 </li>
-                <!-- Quản lý đơn hàng -->
-                <li class="nav-item my-2">
-                    <a class="nav-link d-flex align-items-center text-white" href="/orders">
-                        <i class="fas fa-shopping-cart fa-lg me-2"></i>
-                        <span>Quản Lý Đơn Hàng</span>
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="item-text">Quản Lý Đơn Hàng</span>
                     </a>
                 </li>
-                <!-- Quản lý nhân viên -->
-                <li class="nav-item my-2">
-                    <a class="nav-link d-flex align-items-center text-white" href="/employees">
-                        <i class="fas fa-users fa-lg me-2"></i>
-                        <span>Quản Lý Nhân Viên</span>
+                <li class="nav-item">
+                    <a class="nav-link" href="/employees">
+                        <i class="fas fa-users"></i>
+                        <span class="item-text">Quản Lý Nhân Viên</span>
                     </a>
                 </li>
-                <!-- Quản lý nhà cung cấp -->
-                <li class="nav-item my-2">
-                    <a class="nav-link d-flex align-items-center text-white" href="/suppliers">
-                        <i class="fas fa-truck fa-lg me-2"></i>
-                        <span>Quản Lý Nhà Cung Cấp</span>
+                <li class="nav-item">
+                    <a class="nav-link" href="/suppliers">
+                        <i class="fas fa-truck"></i>
+                        <span class="item-text">Quản Lý Nhà Cung Cấp</span>
                     </a>
                 </li>
             </ul>
         </nav>
+
+
 
         <!-- Main Content -->
         <!-- Bảng phân tích -->
@@ -149,25 +145,25 @@
             <h4>Sản phẩm bán chạy</h4>
             <div class="row m-2 text-center">
                 <div class="col-md-3">
-                    <img src="../static/image/security-logo.png" alt="Sản phẩm 1"
+                    <img th:src="@{/image/security-logo.png}" alt="Sản phẩm 1"
                          class="img-fluid rounded-circle mb-2">
                     <h5>Sản phẩm 1</h5>
                     <p>200,000 VNĐ</p>
                 </div>
                 <div class="col-md-3">
-                    <img src="../static/image/security-logo.png" alt="Sản phẩm 2"
+                    <img th:src="@{/image/security-logo.png}" alt="Sản phẩm 2"
                          class="img-fluid rounded-circle mb-2">
                     <h5>Sản phẩm 2</h5>
                     <p>300,000 VNĐ</p>
                 </div>
                 <div class="col-md-3">
-                    <img src="../static/image/security-logo.png" alt="Sản phẩm 3"
+                    <img th:src="@{/image/security-logo.png}" alt="Sản phẩm 3"
                          class="img-fluid rounded-circle mb-2">
                     <h5>Sản phẩm 3</h5>
                     <p>150,000 VNĐ</p>
                 </div>
                 <div class="col-md-3">
-                    <img src="../static/image/security-logo.png" alt="Xem thêm"
+                    <img th:src="@{/image/security-logo.png}" alt="Xem thêm"
                          class="img-fluid rounded-circle mb-2">
                     <h5><a href="#">Xem thêm</a></h5>
                 </div>

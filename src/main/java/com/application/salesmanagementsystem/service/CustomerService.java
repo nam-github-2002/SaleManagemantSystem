@@ -1,13 +1,14 @@
 package com.application.salesmanagementsystem.service;
 
 import com.application.salesmanagementsystem.model.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
     // Lấy tất cả khách hàng
-    List<Customer> getAllCustomers();
+    public Page<Customer> getAllCustomers(Pageable pageable);
 
     // Lấy khách hàng theo ID
     Optional<Customer> getCustomerById(String id);
@@ -20,5 +21,7 @@ public interface CustomerService {
 
     String generateCustomerID();
 
-    List<Customer> searchCustomers(String keyword);
+    public Page<Customer> searchCustomers(String keyword,  Pageable pageable);
+
+    public Optional<Customer> findByEmail(String email);
 }

@@ -3,10 +3,15 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -14,10 +19,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    // Lấy tất cả khách hàng
     @Override
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public Page<Customer> getAllCustomers(org.springframework.data.domain.Pageable pageable) {
+        return customerRepository.findAll(pageable);
     }
 
     // Lấy khách hàng theo ID
@@ -28,23 +32,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveCustomer(Customer customer) {
-        // Tạo ID mới nếu chưa có
-        if (customer.getCustomerID() == null) {
-            customer.setCustomerID(generateCustomerID());
-        }
-
-        // In ra tất cả các trường của khách hàng trước khi lưu
-        System.out.println("Customer Data:");
-        System.out.println("Mã Khách Hàng: " + customer.getCustomerID());
-        System.out.println("Tên Công Ty: " + customer.getCompanyName());
-        System.out.println("Điện Thoại: " + customer.getPhone());
-        System.out.println("Địa Chỉ: " + customer.getAddress());
-        System.out.println("Email: " + customer.getEmail());
-
-        // Lưu khách hàng vào cơ sở dữ liệu
+            // Lưu khách hàng vào cơ sở dữ liệu
         customerRepository.save(customer);
     }
-
 
     // Xóa khách hàng theo ID
     @Override
@@ -54,24 +44,32 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String generateCustomerID() {
-        String newId = "CUST000000"; // Mặc định
-
-        // Tìm CustomerID lớn nhất
+        // Tạo danh sách các ID hợp lệ
+        Set<String> existingIds = new HashSet<>();
         List<Customer> customers = customerRepository.findAll();
-        if (!customers.isEmpty()) {
-            String maxId = customers.stream()
-                    .map(Customer::getCustomerID)
-                    .max(String::compareTo)
-                    .orElse(newId);
-            // Tạo ID mới
-            newId = "CUST" + String.format("%06d", Integer.parseInt(maxId.substring(4)) + 1);
 
+        for (Customer customer : customers) {
+            existingIds.add(customer.getCustomerID());
         }
-        return newId;
+
+        // Tìm ID nhỏ nhất chưa được sử dụng
+        for (int i = 1; i <= 99999; i++) {
+            String newId = "CUST" + String.format("%05d", i);
+            if (!existingIds.contains(newId)) {
+                return newId; // Trả về ID đầu tiên chưa tồn tại
+            }
+        }
+
+        throw new RuntimeException("Không còn ID nào khả dụng.");
     }
 
     @Override
-    public List<Customer> searchCustomers(String keyword) {
-        return customerRepository.findByCompanyNameContainingIgnoreCase(keyword);
+    public Page<Customer> searchCustomers(String keyword, Pageable pageable) {
+        return customerRepository.findByCompanyNameContainingIgnoreCase(keyword, pageable);
     }
+
+    public Optional<Customer> findByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
 }
