@@ -1,99 +1,151 @@
 package com.application.salesmanagementsystem.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.service.CustomerService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/customers")
 public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping("/customers")
-    public String showCustomer(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
-        model.addAttribute("customers", customers);
-        model.addAttribute("error", false);
+    // Hiển thị danh sách khách hàng, và xử lý logic tạo mới/chỉnh sửa
+    @GetMapping
+    public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 8;
 
-        // Tạo mã khách hàng mới
-        String newId = customerService.generateCustomerID();
-        model.addAttribute("newId", newId);
+        // Kiểm tra xem có thuộc tính customers trong model không
+        Page<Customer> customers;
+        if (model.containsAttribute("customers")) {
+            // Nếu có, sử dụng danh sách khách hàng tìm kiếm
+            customers = (Page<Customer>) model.getAttribute("customers");
 
-        // Nếu chưa có đối tượng newCustomer trong model thì tạo mới
-        if (!model.containsAttribute("newCustomer")) {
-            Customer newCustomer = new Customer();
-            newCustomer.setCustomerID(newId);
-            model.addAttribute("newCustomer", newCustomer);
+        } else {
+
+            // Nếu không, lấy tất cả khách hàng
+            customers = customerService.getAllCustomers(PageRequest.of(page, pageSize));
+
+        }
+        model.addAttribute("customers", customers.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", customers.getTotalPages());
+
+        // Kiểm tra có lỗi hay không (khi không tìm thấy khách hàng)
+        if (model.containsAttribute("error")) {
+            model.addAttribute("error", model.getAttribute("error"));
+        } else {
+            model.addAttribute("error", false);
         }
 
-        return "customer";
+
+        if (!model.containsAttribute("keyword")) {
+            model.addAttribute("keyword", null);
+        }
+
+        return "customer/customer";
     }
 
-    @GetMapping("/customers/edit/{id}")
-    public String editCustomer(@PathVariable String id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/detail/{id}")
+    public String showDetailForm(@PathVariable String id, Model model) {
         Optional<Customer> customer = customerService.getCustomerById(id);
         if (customer.isPresent()) {
-            redirectAttributes.addFlashAttribute("newCustomer", customer.get());
-            redirectAttributes.addFlashAttribute("modal", true);
+            model.addAttribute("viewMode", true);
+            model.addAttribute("editMode", false);// Flag to check if it's view mode
+            model.addAttribute("newCustomer", customer.get());
         } else {
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng.");
-            redirectAttributes.addFlashAttribute("newCustomer", new Customer());
+            model.addAttribute("error", "Không tìm thấy khách hàng.");
         }
-        return "redirect:/customers"; // Chuyển hướng về trang danh sách khách hàng
+        return "customer/customer-form";
     }
 
-    @PostMapping("/customers")
-    public String saveCustomer(@ModelAttribute("newCustomer") Customer customer, RedirectAttributes redirectAttributes) {
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("viewMode", false);
+        model.addAttribute("editMode", true);  // Flag to indicate create mode
+        model.addAttribute("exist", false);
+        String newId = customerService.generateCustomerID();
+        Customer newCustomer = new Customer();
+        newCustomer.setCustomerID(newId);
+        model.addAttribute("newCustomer", newCustomer);
+
+        return "customer/customer-form";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable String id, Model model) {
+        Optional<Customer> opCustomer = customerService.getCustomerById(id);
+
+        if (opCustomer.isPresent()) {
+            Customer customer = opCustomer.get();
+            customer.setCustomerID(id);
+            model.addAttribute("viewMode", false);
+            model.addAttribute("editMode", true);
+            model.addAttribute("exist", true);
+            model.addAttribute("newCustomer", customer);
+        } else {
+            model.addAttribute("error", "Không tìm thấy khách hàng.");
+        }
+        return "customer/customer-form";
+    }
+
+
+
+    @PostMapping("/new")
+    public String createCustomer(@ModelAttribute("newCustomer") Customer customer, RedirectAttributes redirectAttributes) {
+        String newId = customerService.generateCustomerID();
+        customer.setCustomerID(newId);
         customerService.saveCustomer(customer);
         return "redirect:/customers";
     }
 
-    @PostMapping("/customers/{id}")
+    @PostMapping("/edit/{id}")
+    public String updateCustomer(@ModelAttribute("newCustomer") Customer customer,@PathVariable String id, RedirectAttributes redirectAttributes) {
+        customer.setCustomerID(id);
+        customerService.saveCustomer(customer);
+        return "redirect:/customers";
+    }
+
+    @PostMapping("/{id}")
     public String deleteCustomer(@PathVariable String id) {
         customerService.deleteCustomer(id);
         return "redirect:/customers";
     }
 
-    // Tìm kiếm khách hàng
-    @PostMapping("/customers/search")
-    public String searchCustomers(@RequestParam("keyword") String keyword, RedirectAttributes redirectAttributes) {
+    @PostMapping("/search")
+    public String searchCustomers(@RequestParam("keyword") String keyword,  @RequestParam(defaultValue = "0") int page, RedirectAttributes redirectAttributes) {
+        int pageSize = 8;
+
         // Gọi phương thức tìm kiếm trong service
-        List<Customer> searchResults = customerService.searchCustomers(keyword);
+        Page<Customer> searchResults = customerService.searchCustomers(keyword, PageRequest.of(page, pageSize));
 
         // Kiểm tra kết quả tìm kiếm
         if (searchResults.isEmpty()) {
+
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng nào với từ khóa '" + keyword + "'.");
         } else {
+
             redirectAttributes.addFlashAttribute("customers", searchResults);
-            for (Customer customer : searchResults) {
-                System.out.println(customer);
-            }
         }
 
         // Thêm thuộc tính keyword vào model để hiển thị trong form tìm kiếm
-        redirectAttributes.addFlashAttribute("keyword", keyword);
-
-        // Tạo mã khách hàng mới
-        String newId = customerService.generateCustomerID();
-        redirectAttributes.addFlashAttribute("newId", newId);
-
-        //Kiểm tra nếu không có đối tượng newCustomer trong model thì tạo mới và gán customerID
-        if (!redirectAttributes.containsAttribute("newCustomer")) {
-            Customer newCustomer = new Customer();
-            newCustomer.setCustomerID(newId); // Gán mã khách hàng cho đối tượng mới
-            redirectAttributes.addAttribute("newCustomer", newCustomer);
-        }
+        redirectAttributes.addAttribute("keyword", keyword);
 
         // Trả về trang danh sách khách hàng với kết quả tìm kiếm
-        return "redirect:/customer"; // Đảm bảo tên view này khớp với template bạn đang sử dụng
+        return "redirect:/customers"; // Đảm bảo tên view này khớp với template bạn đang sử dụng
     }
 
 }

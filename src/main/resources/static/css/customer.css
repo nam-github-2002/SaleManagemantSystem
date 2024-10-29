@@ -1,0 +1,124 @@
+/* ADD BUTTON */
+#addNewCusButton {
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    max-width: 150px;
+    color: rgb(255,255,255);
+    background-color: var(--text-color);
+    border-radius: 10px;
+    transition: color 300ms linear 0s, background-color 300ms linear 0s ;
+    box-shadow: 4px 4px 0px 0px var(--text-color);
+}
+
+#addNewCusButton:hover {
+    color: var(--text-color);
+    background-color: rgb(255,255,255);
+    box-shadow: none;
+}
+
+#addNewCusButton i {
+    padding: 6px 10px;
+    font-size: 1.5rem;
+    border-right: 2px solid black;
+}
+
+#addNewCusButton span {
+    padding: 6px 10px;
+}
+
+/* SEARCH FORM */
+
+#search-form {
+    display: flex;
+    align-items: center;
+    max-width: 300px; /* Đặt chiều rộng tuỳ ý */
+    background-color: var(--text-color);
+    border-radius: 10px;
+    box-shadow: 4px 4px 0px 0px var(--text-color);
+    transition: color 300ms linear, background-color 300ms linear;
+    padding: 2px;
+}
+
+#search-form .form-control {
+    border: none;
+    border-radius: 10px 0 0 10px; /* Góc tròn cho phần input */
+    padding: 8px;
+    transition: background-color 300ms linear;
+}
+
+#search-form .btn {
+    border-radius: 0 10px 10px 0; /* Góc tròn cho nút */
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 16px;
+    transition: color 300ms linear, background-color 300ms linear;
+}
+
+#search-form:hover {
+    background-color: rgb(255, 255, 255);
+    box-shadow: none;
+}
+
+#search-form:hover .form-control {
+    background-color: rgba(245, 245, 245, 1); /* Màu nền nhạt hơn khi hover */
+}
+
+#search-form:hover .btn {
+    color: rgb(255, 255, 255);
+    background-color: var(--text-color);
+}
+
+
+
+/* Định dạng bảng */
+.table-responsive {
+    margin-top: 20px;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--main-component-color);
+    color: var(--text-color);
+}
+
+.table th {
+    font-weight: bold;
+    padding: 12px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--sub-component-color);
+}
+
+/* Định dạng các nút hành động */
+.btn-outline-primary, .btn-outline-warning, .btn-outline-danger {
+    transition: background-color 300ms linear, color 300ms linear;
+    border: none;
+    box-shadow: 4px 4px 0px 0px var(--sub-component-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--sub-component-color);
+    color: var(--text-color);
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--sub-component-color);
+    color: rgb(255, 255, 255);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--sub-component-color);
+    color: rgb(255, 255, 255);
+}

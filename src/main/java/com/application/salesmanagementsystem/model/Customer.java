@@ -11,13 +11,16 @@ public class Customer {
     @Column(name="Company_Name", nullable = false)
     private String companyName;
 
-    @Column(length = 12)
+    @Column(length = 10)
     private String phone;
 
     private String address;
 
     @Column(unique = true)
     private String email;
+
+    private String type;
+
 
     public String getCustomerID() {
         return customerID;
@@ -57,6 +60,14 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 }
