@@ -6,7 +6,9 @@
 <body>
     <div class="container-fluid">
         <!-- header -->
-        <div th:replace="home :: header" class="row p-2 bg-dark text-white"></div>
+        <div th:include="home :: header(employee)" th:width="employee=${employee}" class="row p-2 bg-dark text-white">
+
+        </div>
 
         <!-- section -->
         <div class="row" id="sectionOfMain">

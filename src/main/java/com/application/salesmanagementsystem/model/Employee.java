@@ -13,7 +13,7 @@ public class Employee {
     private String phone;
     private String username;
     private String password;
-    private Boolean role;
+    private String role;
 
     @Lob
     private byte[] image;
@@ -58,11 +58,11 @@ public class Employee {
         this.password = password;
     }
 
-    public Boolean getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Boolean role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

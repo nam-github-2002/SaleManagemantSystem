@@ -38,30 +38,44 @@
 <body>
 <div class="container-fluid">
     <!-- header -->
-    <div th:fragment="header" class="row p-2">
+    <div th:fragment="header(employee)" class="row p-2">
         <div class="col d-flex align-items-center">
             <img th:src="@{/image/security-logo.png}" alt="Logo" style="height: 40px; margin-right: 10px;">
             <h3 class="mb-0">SmartSales</h3>
         </div>
         <div class="col text-end d-flex justify-content-end align-items-center">
-            <!-- Biểu tượng thông báo và tin nhắn -->
-            <i class="fas fa-bell fa-2x me-4"></i>
-            <i class="fas fa-envelope fa-2x me-4"></i>
-            <!-- Thông tin người dùng -->
-            <div class="user-info d-flex align-items-center">
-                <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2">
-                <div>
-                    <p class="mb-0">Admin / Employee ID: 12</p>
-                    <p class="mb-0" id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                <i class="fas fa-bell fa-2x me-4"></i>
+                <i class="fas fa-envelope fa-2x me-4"></i>
+                <div class="user-info d-flex align-items-center">
+                    <div class="dropdown">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2" id="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                        <ul class="dropdown-menu" aria-labelledby="user-avatar">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> View Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Account Setting</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-friends"></i> Switch Account</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Notification</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="border-0 dropdown-item" type="submit">
+                                        <i class="fas fa-sign-out-alt fs-6"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="mb-0" th:text="'Role: ' + ${employee.role} + ', Employee ID: ' + ${employee.employeeId}"></p>
+                        <p class="mb-0" id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 
     <!-- section -->
     <div class="row" id="sectionOfMain">
         <!-- Menu Sidebar -->
-        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 vh-100">
+        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 vh-100" style=" z-index: 1">
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="/">
