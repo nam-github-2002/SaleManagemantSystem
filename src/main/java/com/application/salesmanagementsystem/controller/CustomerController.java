@@ -1,5 +1,6 @@
 package com.application.salesmanagementsystem.controller;
 
+import com.application.salesmanagementsystem.model.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -10,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Optional;
 
@@ -25,13 +27,17 @@ public class CustomerController {
 
     // Hiển thị danh sách khách hàng, và xử lý logic tạo mới/chỉnh sửa
     @GetMapping
-    public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page, HttpSession session) {
         int pageSize = 8;
 
-        // Kiểm tra xem có thuộc tính customers trong model không
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("employee", loggedInUser);
+
         Page<Customer> customers;
         if (model.containsAttribute("customers")) {
-            // Nếu có, sử dụng danh sách khách hàng tìm kiếm
             customers = (Page<Customer>) model.getAttribute("customers");
 
         } else {

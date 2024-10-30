@@ -1,9 +1,9 @@
 package com.application.salesmanagementsystem.controller;
 
-import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.service.CustomerService;
 import com.application.salesmanagementsystem.service.EmployeeService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping
 public class HomeController {
 
     @Autowired
@@ -26,17 +26,20 @@ public class HomeController {
     private CustomerService customerService;
 
     @GetMapping
-    public String home(Model model) {
-        Boolean success = (Boolean) model.asMap().get("success");
-
-        if (success != null) {
-            model.addAttribute("success", success);
-        } else {
-            model.addAttribute("success", false);
+    public String home(Model model, HttpSession session) {
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
         }
 
-        return "home"; // Trả về tệp home.html
+        // Thêm thông tin nhân viên vào model
+        model.addAttribute("employee", loggedInUser);
+
+        Boolean success = (Boolean) model.asMap().get("success");
+        model.addAttribute("success", success != null ? success : false);
+        return "home";
     }
+
 
 
     @GetMapping("/login")
@@ -46,10 +49,10 @@ public class HomeController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes) {
+    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session) {
         Employee employee = employeeService.findByUsername(username);
-
         if (employee != null && employeeService.checkPassword(employee, password)) {
+            session.setAttribute("loggedInUser", employee);
             redirectAttributes.addFlashAttribute("success", true);
             return "redirect:/";
         } else {
@@ -58,11 +61,14 @@ public class HomeController {
         }
     }
 
+
     @PostMapping("/logout")
-    public String logout(RedirectAttributes redirectAttributes) {
+    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+        session.invalidate(); // Xóa toàn bộ thông tin trong session
         redirectAttributes.addFlashAttribute("success", false);
         redirectAttributes.addFlashAttribute("message", "Bạn đã đăng xuất thành công!");
-        return "redirect:/"; // Điều hướng đến trang đăng nhập
+        return "redirect:/";
     }
+
 
 }

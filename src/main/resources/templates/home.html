@@ -39,75 +39,85 @@
 <body>
 <div class="container-fluid">
     <!-- header -->
-    <div th:fragment="header" class="row p-2">
+    <div th:fragment="header(employee)" class="row p-2">
         <div class="col d-flex align-items-center">
             <img th:src="@{/image/security-logo.png}" alt="Logo" style="height: 40px; margin-right: 10px;">
             <h3 class="mb-0">SmartSales</h3>
         </div>
         <div class="col text-end d-flex justify-content-end align-items-center">
-            <!-- Biểu tượng thông báo và tin nhắn -->
-            <i class="fas fa-bell fa-2x me-4"></i>
-            <i class="fas fa-envelope fa-2x me-4"></i>
-            <!-- Thông tin người dùng -->
-            <div class="user-info d-flex align-items-center">
-                <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2">
-                <div>
-                    <p class="mb-0">Admin / Employee ID: 12</p>
-                    <p class="mb-0" id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                <i class="fas fa-bell fa-2x me-4"></i>
+                <i class="fas fa-envelope fa-2x me-4"></i>
+                <div class="user-info d-flex align-items-center">
+                    <div class="dropdown">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2" id="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+                        <ul class="dropdown-menu" aria-labelledby="user-avatar">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> View Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Account Setting</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-friends"></i> Switch Account</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Notification</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="border-0 dropdown-item" type="submit">
+                                        <i class="fas fa-sign-out-alt fs-6"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="mb-0" th:text="'Role: ' + ${employee.role} + ', Employee ID: ' + ${employee.employeeId}"></p>
+                        <p class="mb-0" id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 
-        <!-- section -->
-        <div class="row" id="sectionOfMain">
-            <!-- Menu Sidebar -->
-            <nav th:fragment="sidebar" class="navbar sidebar col-md-2 bg-dark text-white vh-100">
-                <ul class="navbar-nav w-100">
-                    <!-- Hệ Thống -->
-                    <li class="nav-item my-2">
-                        <a class="nav-link d-flex align-items-center text-white" href="/">
-                            <i class="fas fa-cogs fa-lg mr-2"></i>
-                            <span>Hệ Thống</span>
-                        </a>
-                    </li>
-                    <!-- Quản lý sản phẩm -->
-                    <li class="nav-item my-2">
-                        <a class="nav-link d-flex align-items-center text-white" href="/products">
-                            <i class="fas fa-box fa-lg mr-2"></i>
-                            <span>Quản Lý Sản Phẩm</span>
-                        </a>
-                    </li>
-                    <!-- Quản lý khách hàng -->
-                    <li class="nav-item my-2">
-                        <a class="nav-link d-flex align-items-center text-white" href="/customers">
-                            <i class="fas fa-user-tie fa-lg mr-2"></i>
-                            <span>Quản Lý Khách Hàng</span>
-                        </a>
-                    </li>
-                    <!-- Quản lý đơn hàng -->
-                    <li class="nav-item my-2">
-                        <a class="nav-link d-flex align-items-center text-white" href="/orders">
-                            <i class="fas fa-shopping-cart fa-lg mr-2"></i>
-                            <span>Quản Lý Đơn Hàng</span>
-                        </a>
-                    </li>
-                    <!-- Quản lý nhân viên -->
-                    <li class="nav-item my-2">
-                        <a class="nav-link d-flex align-items-center text-white" href="/employees">
-                            <i class="fas fa-users fa-lg mr-2"></i>
-                            <span>Quản Lý Nhân Viên</span>
-                        </a>
-                    </li>
-                    <!-- Quản lý nhà cung cấp -->
-                    <li class="nav-item my-2">
-                        <a class="nav-link d-flex align-items-center text-white" href="/suppliers">
-                            <i class="fas fa-truck fa-lg mr-2"></i>
-                            <span>Quản Lý Nhà Cung Cấp</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+    <!-- section -->
+    <div class="row" id="sectionOfMain">
+        <!-- Menu Sidebar -->
+        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 vh-100">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        <i class="fas fa-cogs"></i>
+                        <span class="item-text">Hệ Thống</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">
+                        <i class="fas fa-box"></i>
+                        <span class="item-text">Quản Lý Sản Phẩm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/customers">
+                        <i class="fas fa-user-tie"></i>
+                        <span class="item-text">Quản Lý Khách Hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="item-text">Quản Lý Đơn Hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/employees">
+                        <i class="fas fa-users"></i>
+                        <span class="item-text">Quản Lý Nhân Viên</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/suppliers">
+                        <i class="fas fa-truck"></i>
+                        <span class="item-text">Quản Lý Nhà Cung Cấp</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+
 
             <!-- Main Content -->
             <!-- Bảng phân tích -->
