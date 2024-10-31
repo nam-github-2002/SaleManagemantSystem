@@ -30,6 +30,6 @@ public class EmployeeController {
 
         List<Employee> employees = employeeService.getAllEmployees();
         model.addAttribute("employees", employees);
-        return "employee";
+        return "employee :: employeePage";
     }
 }

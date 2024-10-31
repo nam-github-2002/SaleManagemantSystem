@@ -53,7 +53,7 @@ public class ProductController {
             model.addAttribute("modal", false);
         }
 
-        return "product";
+        return "product :: productPage";
     }
 
     //Mở form thêm khách hàng

@@ -31,6 +31,6 @@ public class OrderController {
         model.addAttribute("currentUser", loggedInUser);
         List<Orders> orders = ordersService.getAllOrders();
         model.addAttribute("orders", orders);
-        return "order";
+        return "order :: orderPage";
     }
 }

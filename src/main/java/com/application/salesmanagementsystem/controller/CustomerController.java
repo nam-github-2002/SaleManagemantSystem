@@ -38,19 +38,16 @@ public class CustomerController {
 
         Page<Customer> customers;
         if (model.containsAttribute("customers")) {
-            customers = (Page<Customer>) model.getAttribute("customers");
 
+            customers = (Page<Customer>) model.getAttribute("customers");
         } else {
 
-            // Nếu không, lấy tất cả khách hàng
             customers = customerService.getAllCustomers(PageRequest.of(page, pageSize));
-
         }
         model.addAttribute("customers", customers.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", customers.getTotalPages());
 
-        // Kiểm tra có lỗi hay không (khi không tìm thấy khách hàng)
         if (model.containsAttribute("error")) {
             model.addAttribute("error", model.getAttribute("error"));
         } else {
@@ -62,7 +59,7 @@ public class CustomerController {
             model.addAttribute("keyword", null);
         }
 
-        return "customer/customer";
+        return "customer/customer :: customerPage";
     }
 
     @GetMapping("/detail/{id}")
