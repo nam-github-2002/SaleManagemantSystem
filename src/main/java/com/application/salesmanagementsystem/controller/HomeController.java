@@ -31,9 +31,7 @@ public class HomeController {
         if (loggedInUser == null) {
             return "redirect:/login";
         }
-
-        // Thêm thông tin nhân viên vào model
-        model.addAttribute("employee", loggedInUser);
+        model.addAttribute("currentUser", loggedInUser);
 
         Boolean success = (Boolean) model.asMap().get("success");
         model.addAttribute("success", success != null ? success : false);

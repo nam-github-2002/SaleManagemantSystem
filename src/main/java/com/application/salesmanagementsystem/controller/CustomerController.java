@@ -34,7 +34,7 @@ public class CustomerController {
         if (loggedInUser == null) {
             return "redirect:/login";
         }
-        model.addAttribute("employee", loggedInUser);
+        model.addAttribute("currentUser", loggedInUser);
 
         Page<Customer> customers;
         if (model.containsAttribute("customers")) {
@@ -66,7 +66,13 @@ public class CustomerController {
     }
 
     @GetMapping("/detail/{id}")
-    public String showDetailForm(@PathVariable String id, Model model) {
+    public String showDetailForm(@PathVariable String id, Model model, HttpSession session) {
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("currentUser", loggedInUser);
+
         Optional<Customer> customer = customerService.getCustomerById(id);
         if (customer.isPresent()) {
             model.addAttribute("viewMode", true);
@@ -79,7 +85,13 @@ public class CustomerController {
     }
 
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model, HttpSession session) {
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("currentUser", loggedInUser);
+
         model.addAttribute("viewMode", false);
         model.addAttribute("editMode", true);  // Flag to indicate create mode
         model.addAttribute("exist", false);
@@ -92,9 +104,14 @@ public class CustomerController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable String id, Model model) {
-        Optional<Customer> opCustomer = customerService.getCustomerById(id);
+    public String showEditForm(@PathVariable String id, Model model, HttpSession session) {
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("currentUser", loggedInUser);
 
+        Optional<Customer> opCustomer = customerService.getCustomerById(id);
         if (opCustomer.isPresent()) {
             Customer customer = opCustomer.get();
             customer.setCustomerID(id);

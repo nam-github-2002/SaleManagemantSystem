@@ -6,7 +6,7 @@
 <body>
 <div class="container-fluid">
   <!-- header -->
-  <div th:replace="home :: header" class="row p-2 bg-dark text-white"></div>
+  <div th:include="~{/home :: header(${currentUser})}" class="row p-2"></div></div>
 
   <!-- section -->
   <div class="row" id="sectionOfMain">

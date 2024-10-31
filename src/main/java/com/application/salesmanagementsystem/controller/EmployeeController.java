@@ -4,6 +4,7 @@ import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Product;
 import com.application.salesmanagementsystem.service.EmployeeService;
 import com.application.salesmanagementsystem.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,13 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public String listEmployees(Model model) {
+    public String listEmployees(Model model, HttpSession session) {
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("currentUser", loggedInUser);
+
         List<Employee> employees = employeeService.getAllEmployees();
         model.addAttribute("employees", employees);
         return "employee";
