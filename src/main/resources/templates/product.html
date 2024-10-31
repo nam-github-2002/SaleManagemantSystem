@@ -6,7 +6,7 @@
 <body>
     <div class="container-fluid">
         <!-- header -->
-        <div th:include="home :: header(employee)" th:width="employee=${employee}" class="row p-2 bg-dark text-white">
+        <div th:include="~{/home :: header(${currentUser})}" class="row p-2"></div></div>
 
         </div>
 

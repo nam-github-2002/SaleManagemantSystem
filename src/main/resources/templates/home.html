@@ -39,7 +39,7 @@
 <body>
 <div class="container-fluid">
     <!-- header -->
-    <div th:fragment="header(employee)" class="row p-2">
+    <div th:fragment="header(currentUser)" class="row p-2">
         <div class="col d-flex align-items-center">
             <img th:src="@{/image/smartseller.png}" alt="Logo" style="height: 40px; margin-right: 10px;">
             
@@ -66,7 +66,7 @@
                         </ul>
                     </div>
                     <div>
-                        <p class="mb-0" th:text="'Role: ' + ${employee.role} + ', Employee ID: ' + ${employee.employeeId}"></p>
+                        <p class="mb-0" th:text="'Role: ' + ${currentUser.role} + ', Employee ID: ' + ${currentUser.employeeId}"></p>
                         <p class="mb-0" id="current-date">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
                     </div>
                 </div>
