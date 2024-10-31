@@ -12,6 +12,28 @@ window.onload = function () {
         document.getElementById("current-date").innerText = `${dayOfWeek}, ${date}, ${time}`;
     };
 
-    updateDateTime(); // Hiển thị ngay khi tải
-    setInterval(updateDateTime, 1000); // Cập nhật mỗi giây
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
 };
+$('#sidebar .nav-item').click(function () {
+    $('.nav-item').removeClass('active');
+    $(this).addClass('active');
+});
+
+function loadContent(event, url) {
+    event.preventDefault();
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(response) {
+            console.log(response)
+            $('#mainArea').html(response);
+            $('.nav-item').removeClass('active');
+            $(event.target).closest('.nav-item').addClass('active');
+        },
+        error: function() {
+            $('#mainArea').html('<p>Error loading content</p>');
+        }
+    });
+}

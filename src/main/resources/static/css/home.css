@@ -185,6 +185,9 @@ body {
     /* Đổi màu biểu tượng khi hover */
 }
 
+#sidebar .nav-item.active {
+    border-left: 10px solid var(--text-color) !important;
+}
 /* Căn chỉnh chữ */
 h3 {
     margin-top: 10px;

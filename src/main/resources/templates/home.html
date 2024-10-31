@@ -76,7 +76,7 @@
     <!-- section -->
     <div class="row" id="sectionOfMain">
         <!-- Menu Sidebar -->
-        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 vh-100">
+        <nav th:fragment="sidebar" class="navbar sidebar col-md-2 vh-100" style=" z-index: 1">
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="/">
@@ -85,76 +85,75 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/products">
+                    <a class="nav-link" href="/products" onclick="loadContent(event, '/products')">
                         <i class="fas fa-box"></i>
-                        <span class="item-text">Quản Lý Sản Phẩm</span>
+                        <span class="item-text">Sản Phẩm</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/customers">
+                    <a class="nav-link" href="/customers" onclick="loadContent(event, '/customers')">
                         <i class="fas fa-user-tie"></i>
-                        <span class="item-text">Quản Lý Khách Hàng</span>
+                        <span class="item-text">Khách Hàng</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/orders">
+                    <a class="nav-link" href="/orders"  onclick="loadContent(event, '/orders')">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="item-text">Quản Lý Đơn Hàng</span>
+                        <span class="item-text">Đơn Hàng</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/employees">
+                    <a class="nav-link" href="/employees"  onclick="loadContent(event, '/employees')">
                         <i class="fas fa-users"></i>
-                        <span class="item-text">Quản Lý Nhân Viên</span>
+                        <span class="item-text">Nhân Viên</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/suppliers">
+                    <a class="nav-link" href="/suppliers" onclick="loadContent(event, '/suppliers')">
                         <i class="fas fa-truck"></i>
-                        <span class="item-text">Quản Lý Nhà Cung Cấp</span>
+                        <span class="item-text">Nhà Cung Cấp</span>
                     </a>
                 </li>
             </ul>
         </nav>
+        <!-- Sidebar -->
 
-
-
-            <!-- Main Content -->
-            <!-- Bảng phân tích -->
-            <div class="col-md-10 p-2">
-                <h4>Thống kê Hệ Thống</h4>
-                <div class="row m-2 text-center">
-                    <div class="col-md-4">
-                        <div class="card stat-card bg-gradient-warning text-white shadow mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-users fa-3x"></i></h5>
-                                <p class="card-text">Số Lượng Khách Hàng</p>
-                                <h3 class="font-weight-bold">500</h3>
-                                <small>Tăng 10% so với tháng trước</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card stat-card bg-gradient-success text-white shadow mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-boxes fa-3x"></i></h5>
-                                <p class="card-text">Số Lượng Tồn Kho</p>
-                                <h3 class="font-weight-bold">1,000</h3>
-                                <small>Ổn định so với tháng trước</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card stat-card bg-gradient-info text-white shadow mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-coins fa-3x"></i></h5>
-                                <p class="card-text">Doanh Thu</p>
-                                <h3 class="font-weight-bold">5,000,000 VNĐ</h3>
-                                <small>Giảm 5% so với tháng trước</small>
-                            </div>
+        <!-- Main Content -->
+        <!-- Bảng phân tích -->
+        <div class="col-md-10 p-2">
+            <h4>Thống kê Hệ Thống</h4>
+            <div class="row m-2 text-center">
+                <div class="col-md-4">
+                    <div class="card stat-card bg-warning text-white shadow mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-users fa-3x"></i></h5>
+                            <p class="card-text">Số Lượng Khách Hàng</p>
+                            <h3 class="font-weight-bold">500</h3>
+                            <small>Tăng 10% so với tháng trước</small>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="card stat-card bg-success text-white shadow mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-boxes fa-3x"></i></h5>
+                            <p class="card-text">Số Lượng Tồn Kho</p>
+                            <h3 class="font-weight-bold">1,000</h3>
+                            <small>Ổn định so với tháng trước</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card bg-info text-white shadow mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-coins fa-3x"></i></h5>
+                            <p class="card-text">Doanh Thu</p>
+                            <h3 class="font-weight-bold">5,000,000 VNĐ</h3>
+                            <small>Giảm 5% so với tháng trước</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 
@@ -226,7 +225,11 @@
                 </div>
             </div>
         </div>
+        <!-- Main Content -->
+
     </div>
+    <!-- section -->
+
 </div>
 <!-- Footer -->
 <footer class="footer bg-info text-center p-4">

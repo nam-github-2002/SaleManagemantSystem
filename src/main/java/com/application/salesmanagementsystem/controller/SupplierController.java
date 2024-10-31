@@ -31,6 +31,6 @@ public class SupplierController {
 
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         model.addAttribute("suppliers", suppliers);
-        return "supplier";
+        return "supplier :: supplierPage";
     }
 }
