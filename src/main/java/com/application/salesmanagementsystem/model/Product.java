@@ -1,29 +1,39 @@
 package com.application.salesmanagementsystem.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "Product")
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_id")
     private Integer productID;
 
+    @Column(name="product_name")
     private String productName;
 
-    @ManyToOne
-    @JoinColumn(name = "CategoryID", nullable = false)
-    private Category category_id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", referencedColumnName = "Category_id")
+    private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "SupplierID", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id", nullable = false)
     private Supplier supplier;
 
+    @Column(name="price")
     private Double price;
+
+    @Column(name="quantity")
     private Integer quantity;
 
-    @Lob
-    private byte[] image;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
     // Getters và Setters
 
@@ -44,11 +54,11 @@ public class Product {
     }
 
     public Category getCategory() {
-        return category_id;
+        return category;
     }
 
     public void setCategory(Category category) {
-        this.category_id = category;
+        this.category = category;
     }
 
     public Supplier getSupplier() {
@@ -75,11 +85,13 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public byte[] getImage() {
-        return image;
+    public List<Image> getImages() {
+        return images;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
+
+
 }

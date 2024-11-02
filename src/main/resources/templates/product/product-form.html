@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <div th:replace="~{/home :: head}"></div>
+</head>
+<body>
+<div class="col-md-10 p-2" th:fragment="productDetailPage">
+
+  <div class="app-page-title">
+    <div class="page-title-wrapper">
+      <div class="page-title-heading">
+        <div class="page-title-icon">
+          <i class="pe-7s-box2 icon-gradient bg-mean-fruit"></i>
+        </div>
+        <div>Product
+          <div class="page-title-subheading">View, create, update, delete, and manage products.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="main-card mb-3 card">
+        <div class="card-body">
+
+          <form th:if="${exist}" th:action="@{/products/edit/{id}(id=${newProduct.productID})}"
+                th:object="${newProduct}"
+                method="post"
+                enctype="multipart/form-data"
+                onsubmit="postContent(event, this)">
+            <!-- ID -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Mã sản phẩm</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required readonly name="productID" type="text"
+                       class="form-control" th:value="${newProduct.productID}">
+                <p th:if="${viewMode}" th:text="${newProduct.productID}"></p>
+              </div>
+            </div>
+
+            <!-- Name -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Tên sản phẩm</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="productName" type="text"
+                       class="form-control"  th:value="${newProduct.productName}">
+                <p th:if="${viewMode}" th:text="${newProduct.productName}"></p>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Đơn giá</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="price" type="number" step="0.01" class="form-control" th:value="${newProduct.price}">
+                <p th:if="${viewMode}" th:text="${newProduct.price}"></p>
+              </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Tồn kho</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="quantity" type="number" step="1" class="form-control" th:value="${newProduct.quantity}">
+                <p th:if="${viewMode}" th:text="${newProduct.quantity}"></p>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Loại sản phẩm</label>
+              <div class="col-md-9 col-xl-8">
+                <select th:if="${editMode}" required name="category" class="form-control">
+                  <option value="">-- Select Category --</option>
+                  <option th:value="1" th:selected="${newProduct.category.categoryID == 1}">Laptops</option>
+                  <option th:value="2" th:selected="${newProduct.category.categoryID == 2}">Smartphones</option>
+                  <option th:value="3" th:selected="${newProduct.category.categoryID == 3}">Tablets</option>
+                  <option th:value="4" th:selected="${newProduct.category.categoryID == 4}">Desktops</option>
+                  <option th:value="5" th:selected="${newProduct.category.categoryID == 5}">Accessories</option>
+                </select>
+                <p th:if="${viewMode}" th:text="${newProduct.category.categoryName}"></p>
+              </div>
+            </div>
+
+            <!-- Supplier -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Nhà cung cấp</label>
+              <div class="col-md-9 col-xl-8">
+                <select th:if="${editMode}" required name="supplier" class="form-control">
+                  <option value="">-- Chọn Nhà Cung Cấp --</option>
+                  <option th:each="supplier : ${suppliers}"
+                          th:value="${supplier.supplierID}"
+                          th:text="${supplier.supplierName}"
+                          th:selected="${newProduct.supplier != null && supplier.supplierID == newProduct.supplier.supplierID}"></option>
+                </select>
+                <p th:if="${viewMode}" th:text="${newProduct.supplier != null ? newProduct.supplier.supplierName : ''}"></p>
+              </div>
+            </div>
+
+            <!-- Image Upload-->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Hình ảnh</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="image" type="file" class="form-control-file" accept="image/*" multiple>
+                <div th:if="${!editMode}">
+                  <div th:each="image : ${images}">
+                      <img height="250px"  th:src="@{${'/products/display?id=' + image.id}}" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Action Buttons -->
+            <div th:if="${editMode}" class="position-relative row form-group mb-1">
+              <div class="col-md-9 col-xl-8 offset-md-2">
+                <a href="#" class="border-0 btn btn-outline-danger mr-1" onclick="cancelEdit(event)">
+                  <i class="fa fa-times fa-w-20"></i> Cancel
+                </a>
+                <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
+                  <i class="fa fa-download fa-w-20"></i> Save
+                </button>
+              </div>
+            </div>
+
+          </form>
+
+          <form th:unless="${exist}" th:action="@{/products/edit/{id}(id=${newProduct.productID})}"
+                th:object="${newProduct}"
+                method="post"
+                enctype="multipart/form-data"
+                onsubmit="postContent(event, this)">
+
+            <!--ID-->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Mã sản phẩm</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required readonly name="productID" type="text"
+                       class="form-control"  th:value="${newProduct.productID}">
+                <p th:if="${viewMode}" th:text="${newProduct.productID}"></p>
+              </div>
+            </div>
+
+            <!-- Name -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Tên sản phẩm</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="productName" type="text"
+                       class="form-control">
+                <p th:if="${viewMode}" th:text="${newProduct.productName}"></p>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Đơn giá</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="price" type="number" step="0.01"
+                       class="form-control">
+                <p th:if="${viewMode}" th:text="${newProduct.price}"></p>
+              </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Tồn kho</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="quantity" type="number" step="1"
+                       class="form-control">
+                <p th:if="${viewMode}" th:text="${newProduct.quantity}"></p>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Loại sản phẩm</label>
+              <div class="col-md-9 col-xl-8">
+                <select th:if="${editMode}" required name="category" class="form-control">
+                  <option value="">-- Select Category --</option>
+                  <option th:value="1">Laptops</option>
+                  <option th:value="2">Smartphones</option>
+                  <option th:value="3">Tablets</option>
+                  <option th:value="4">Desktops</option>
+                  <option th:value="5">Accessories</option>
+                </select>
+                <p th:if="${viewMode}" th:text="${newProduct.category.categoryName}"></p>
+              </div>
+            </div>
+
+            <!-- Supplier -->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Nhà cung cấp</label>
+              <div class="col-md-9 col-xl-8">
+                <select th:if="${editMode}" required name="supplier" class="form-control">
+                  <option value="">-- Chọn Nhà Cung Cấp --</option>
+                  <option th:each="supplier : ${suppliers}"
+                          th:value="${supplier.supplierID}"
+                          th:text="${supplier.supplierName}"
+                          th:selected="${newProduct.supplier != null && supplier.supplierID == newProduct.supplier.supplierID}"></option>
+                </select>
+                <p th:if="${viewMode}" th:text="${newProduct.supplier != null ? newProduct.supplier.supplierName : ''}"></p>
+              </div>
+            </div>
+
+            <!-- Image Upload-->
+            <div class="position-relative mb-3 row form-group">
+              <label class="col-md-3 text-md-right col-form-label">Hình ảnh</label>
+              <div class="col-md-9 col-xl-8">
+                <input th:if="${editMode}" required name="images" type="file" class="form-control-file" accept="image/*" multiple>
+                <div th:if="${!editMode}">
+                  <div th:if="${#lists.isEmpty(images)}">
+                    <p>Không có ảnh</p>
+                  </div>
+                  <div th:if="${!#lists.isEmpty(images)}" th:each="image : ${images}">
+                    <img height="250px" th:src="@{${'/products/display?id=' + image.id}}" alt="">
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div th:if="${editMode}" class="position-relative row form-group mb-1">
+              <div class="col-md-9 col-xl-8 offset-md-2">
+                <a href="#" class="border-0 btn btn-outline-danger mr-1" onclick="cancelEdit(event)">
+                  <i class="fa fa-times fa-w-20"></i> Cancel
+                </a>
+                <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
+                  <i class="fa fa-download fa-w-20"></i> Save
+                </button>
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

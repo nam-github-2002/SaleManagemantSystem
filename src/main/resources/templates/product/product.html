@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{/home :: head}"></div>
+</head>
+<body>
+
+    <!-- Main Content -->
+    <!-- Main Content -->
+    <div class="col-md-10 p-2" th:fragment="productPage">
+        <h2>Trang quản lý sản phẩm</h2>
+
+        <!-- Thanh công cụ thêm sản phẩm và tìm kiếm -->
+        <a onclick="getContent(event, this.href)" th:href="@{/products/new}" class="btn btn-primary mb-2">Thêm sản phẩm mới</a>
+
+        <div class="d-flex justify-content-between mb-3">
+            <form th:action="@{/products/search}" method="post"
+                  onsubmit="postContent(event, this)"
+                  class="ms-auto" id="search-form">
+
+                <div class="input-group d-flex align-items-center" style="height: 36px;">
+                    <input type="text" required class="form-control" name="keyword"
+                           th:value="${keyword}" placeholder="Tìm kiếm theo tên sản phẩm..." style="flex: 1; height: 100%;">
+                    <button class="btn btn-outline-secondary ms-2" type="submit" style="height: 100%;">Tìm Kiếm</button>
+                </div>
+
+                <div th:if="${error != false}" class="text-danger mt-2 ">
+                    <p th:text="${error}"></p>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Bảng hiển thị danh sách sản phẩm -->
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Loại sản phẩm</th>
+                <th>Giá</th>
+                <th>Nhà cung cấp</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.productID}"></td>
+                <td th:text="${product.productName}"></td>
+                <td th:if="${product.category != null}" th:text="${product.category.categoryName}"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.supplier.supplierName}"></td>
+                <td>
+                    <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                       th:href="@{/products/detail/{id}(id=${product.productID})}"
+                       onclick="getContent(event, this.href)">
+                        Detail
+                    </a>
+                    <a style="text-decoration: none"
+                       th:href="@{/products/edit/{id}(id=${product.productID})}"
+                       onclick="getContent(event, this.href)">
+                        <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
+                    </a>
+
+                    <form th:action="@{/products/{id}(id=${product.productID})}"
+                          method="post" style="display:inline;"
+                          onsubmit="postContent(event, this)">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Phân trang -->
+        <nav class="d-flex justify-content-end">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/products(page=${currentPage - 1})}">Previous</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/products(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/products(page=${currentPage + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+
+
+</body>
+</html>

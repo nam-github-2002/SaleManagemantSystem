@@ -2,40 +2,39 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <div th:replace="~{/home :: head}"></div>
-  <link rel="stylesheet" th:href="@{/css/customer.css}">
 </head>
 <body>
 <div class="container-fluid">
   <!-- header -->
-  <div th:include="~{/home :: header(${currentUser})}" class="row p-2"></div>
 
   <!-- section -->
   <div class="row" id="sectionOfMain">
-    <nav th:replace="~{home :: sidebar}" class="navbar sidebar col-md-2"></nav>
 
-    <!-- Main Content -->
     <div th:fragment="customerPage" class="col-md-10 p-2">
       <h2 class="text-center mb-5">QUẢN LÝ KHÁCH HÀNG</h2>
 
-      <a href="/customers/new" id="addNewCusButton" class="btn btn-primary ms-2">
+      <a href="/customers/new" onclick="getContent(event,'/customers/new')" id="addNewCusButton" class="btn btn-primary ms-2">
         <i class="fa-solid fa-square-plus"></i>
         <span>Thêm Mới</span>
       </a>
 
       <!-- Search bar -->
-      <div class="mb-4 mt-2 d-flex justify-content-end">
-        <form th:action="@{/customers/search}" method="post" class="d-flex ms-auto" ID="search-form">
-          <div class="input-group" >
-            <label>
-              <input type="text" class="form-control" th:name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên công ty...">
-            </label>
-            <button class="btn btn-outline-secondary" type="submit">Tìm Kiếm</button>
-          </div>
-          <div th:if="${error != false}" class="text-danger mt-2">
-              <p th:text="${error}"></p>
-          </div>
-        </form>
-      </div>
+    <div class="mb-4 mt-2 d-flex justify-content-end">
+      <form th:action="@{/customers/search}" method="post"
+            onsubmit="postContent(event, this)"
+            class="d-flex ms-auto" id="search-form">
+
+        <div class="input-group">
+          <input type="text" required class="form-control" name="keyword"
+                 th:value="${keyword}" placeholder="Tìm kiếm theo tên công ty...">
+        </div>
+        <button class="btn btn-outline-secondary ms-2 form-control" type="submit" style="width: 50%">Tìm Kiếm</button>
+        <div th:if="${error != false}" class="text-danger mt-2">
+          <p th:text="${error}"></p>
+        </div>
+      </form>
+    </div>
+
       <!-- Search bar -->
 
 
@@ -58,16 +57,27 @@
             <td th:text="${customer.email}"></td>
             <td th:text="${customer.type}"></td>
             <td>
-              <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm" th:href="@{/customers/detail/{id}(id=${customer.customerID})}">Detail</a>
-              <a style="text-decoration: none" th:href="@{/customers/edit/{id}(id=${customer.customerID})}">
+              <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                 th:href="@{/customers/detail/{id}(id=${customer.customerID})}"
+                 onclick="getContent(event, this.href)">
+                Detail
+              </a>
+              <a style="text-decoration: none"
+                 th:href="@{/customers/edit/{id}(id=${customer.customerID})}"
+                 onclick="getContent(event, this.href)">
                 <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
               </a>
 
-              <form th:action="@{/customers/{id}(id=${customer.customerID})}" method="post" style="display:inline;">
+              <form th:action="@{/customers/{id}(id=${customer.customerID})}"
+                    method="post" style="display:inline;"
+                    onsubmit="postContent(event, this)">
                 <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" class="btn btn-outline-danger border-0 btn-sm"><i class="fa-solid fa-trash"></i></button>
+                <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </form>
             </td>
+
           </tr>
           </tbody>
         </table>
@@ -79,24 +89,27 @@
       <nav class="d-flex justify-content-end">
         <ul class="pagination">
           <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-            <a class="page-link" th:href="@{/customers(page=${currentPage - 1})}">Previous</a>
+            <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/customers(page=${currentPage - 1})}">Previous</a>
           </li>
-          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-            <a class="page-link" th:href="@{/customers(page=${i})}" th:text="${i + 1}"></a>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+              th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/customers(page=${i})}" th:text="${i + 1}"></a>
           </li>
-          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-            <a class="page-link" th:href="@{/customers(page=${currentPage + 1})}">Next</a>
+          <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+            <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/customers(page=${currentPage + 1})}">Next</a>
           </li>
         </ul>
       </nav>
       <!-- Phân trang -->
 
     </div>
-    <!-- Main Content -->
-
-
   </div>
-</div>
+  <!-- section -->
 
+</div>
+<!-- Footer -->
+<footer class="footer bg-info text-center p-4">
+  <p>&copy; 2024 SmartSales. Mọi quyền được bảo lưu.</p>
+</footer>
 </body>
 </html>

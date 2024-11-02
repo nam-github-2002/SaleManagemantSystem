@@ -3,10 +3,10 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 
     @Override
-    public Page<Customer> getAllCustomers(org.springframework.data.domain.Pageable pageable) {
+    public Page<Customer> getAllCustomers(Pageable pageable) {
         return customerRepository.findAll(pageable);
     }
 

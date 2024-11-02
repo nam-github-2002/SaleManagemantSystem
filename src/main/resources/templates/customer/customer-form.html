@@ -5,16 +5,12 @@
 </head>
 <body>
 <div class="container-fluid">
-  <!-- header -->
-  <div th:replace="~{/home :: header(${currentUser})}" class="row p-2 bg-dark text-white"></div>
 
   <!-- section -->
   <div class="row" id="sectionOfMain">
-    <nav th:replace="~{/home :: sidebar}" class="navbar sidebar col-md-2 bg-dark text-white vh-100"></nav>
-
 
     <!-- Main Content -->
-    <div class="col-md-10 p-2" th:fragment="customer-detail-page">
+    <div class="col-md-10 p-2" th:fragment="customerDetailPage">
       <div class="app-page-title">
         <div class="page-title-wrapper">
           <div class="page-title-heading">
@@ -27,13 +23,17 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-12">
           <div class="main-card mb-3 card">
             <div class="card-body">
-              <form th:if="${exist}" th:action="@{/customers/edit/{id}(id=${newCustomer.customerID})}"
-                    method="post"
-                    enctype="multipart/form-data">
+
+              <form th:if="${exist}"  th:action="@{/customers/edit/{id}(id=${newCustomer.customerID})}"
+                                      th:object="${newCustomer}"
+                                      method="post"
+                                      enctype="multipart/form-data"
+                                      onsubmit="postContent(event, this)">
                 <!-- id -->
                 <div class="position-relative row form-group">
                   <label for="customerID" class="col-md-3 text-md-right col-form-label">ID</label>
@@ -50,7 +50,7 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="companyName" id="companyName" type="text"
                            class="form-control" th:placeholder="Name" th:value="${newCustomer.companyName}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}">${newCustomer.companyName}</p>
+                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}"></p>
                   </div>
                 </div>
 
@@ -108,14 +108,17 @@
                 </div>
 
               </form>
-              <form th:unless="${exist}" th:action="@{/customers/new}"
-                    method="post"
-                    enctype="multipart/form-data">
+
+              <form th:unless="${exist}"  th:action="@{/customers/new}"
+                                          th:object="${newCustomer}"
+                                          method="post"
+                                          enctype="multipart/form-data"
+                                          onsubmit="postContent(event, this)">
                 <!-- id -->
                 <div class="position-relative row form-group">
                   <label for="customerID" class="col-md-3 text-md-right col-form-label">ID</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required disabled name="customerID" type="text"
+                    <input th:if="${editMode}" required readonly name="customerID" type="text"
                            class="form-control" th:placeholder="customerID" th:value="${newCustomer.customerID}">
                     <p th:if="${viewMode}" th:text="${newCustomer.customerID}"></p>
                   </div>
@@ -127,13 +130,13 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="companyName" type="text"
                            class="form-control" th:placeholder="Name" th:value="${newCustomer.companyName}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}">${newCustomer.companyName}</p>
+                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}"></p>
                   </div>
                 </div>
 
                 <!-- Email -->
                 <div class="position-relative row form-group">
-                  <label for="email" class="col-md-3 text-md-right col-form-label">Email</label>
+                  <label for="email" class="col-md-3 text-md-right col-form-label">Đơn giá</label>
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="email" type="email" class="form-control" th:placeholder="Email" th:value="${newCustomer.email}">
                     <p th:if="${viewMode}" th:text="${newCustomer.email}"></p>
@@ -175,7 +178,7 @@
                 <!-- Action Buttons -->
                 <div th:if="${editMode}" class="position-relative row form-group mb-1">
                   <div class="col-md-9 col-xl-8 offset-md-2">
-                    <a href="#" class="border-0 btn btn-outline-danger mr-1">
+                    <a href="#" class="border-0 btn btn-outline-danger mr-1" onclick="cancelEdit(event)">
                       <i class="fa fa-times fa-w-20"></i> Cancel
                     </a>
                     <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
@@ -183,6 +186,7 @@
                     </button>
                   </div>
                 </div>
+
 
               </form>
             </div>

@@ -1,25 +1,30 @@
 package com.application.salesmanagementsystem.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
-@Table(name = "Category")
+@Table(name = "category")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer category_Id;
+    @Column(name="Category_id")
+    private int categoryID;
 
+    @Column(nullable = false, name="Category_Name")
     private String categoryName;
 
     @Lob
+    @Column(name="image")
     private byte[] image;
 
-    public Integer getCategoryId() {
-        return category_Id;
+    public int getCategoryID() {
+        return categoryID;
     }
 
-    public void setCategoryId(Integer categoryId) {
-        this.category_Id = categoryId;
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
     }
 
     public String getCategoryName() {
