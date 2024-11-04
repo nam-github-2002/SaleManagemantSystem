@@ -89,9 +89,12 @@ public class Product {
         return images;
     }
 
+    public void addImages(Image image) {
+        this.images.add(image);
+    }
+
     public void setImages(List<Image> images) {
         this.images = images;
     }
-
 
 }

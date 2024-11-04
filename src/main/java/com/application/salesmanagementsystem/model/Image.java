@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Blob;
 
 @Entity
-@Table(name="Image")
+@Table(name="image")
 public class Image {
 
     @Id

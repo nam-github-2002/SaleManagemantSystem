@@ -1,103 +1,106 @@
-function getContent(event, url) {
+
+
+$(document).ready(function() {
+    let activeMenu = localStorage.getItem('activeMenu');
+    if (activeMenu) {
+        $(`a.nav-link[href="${activeMenu}"]`).closest('.nav-item').addClass('active');
+    } else {
+        $(`a.nav-link[href="/dashboard"]`).closest('.nav-item').addClass('active');
+    }
+
+    // Sự kiện khi sử dụng nút quay lại
+    $(window).on('popstate', function(event) {
+        const url = window.location.pathname;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $('#mainArea').html(response);
+            },
+            error: function(xhr, status, error) {
+                let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
+                $('#mainArea').html(`
+                    <h3 class="text-center">Có lỗi xảy ra khi tải nội dung</h3>
+                    <p class="fs-4">${errorMessage}</p>
+                `);
+            }
+        });
+    });
+
+    // Hiển thị thứ, ngày, và thời gian hiện tại
+    const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
+    const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+
+    const updateDateTime = () => {
+        const today = new Date();
+        const date = today.toLocaleDateString('vi-VN', optionsDate);
+        const time = today.toLocaleTimeString('vi-VN', optionsTime);
+        const dayOfWeek = today.toLocaleDateString('vi-VN', { weekday: 'long' });
+        $("#current-date").text(`${dayOfWeek}, ${date}, ${time}`);
+    };
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // $('#sidebar .nav-item').click(function() {
+    //     $('.nav-item').removeClass('active');
+    //     $(this).addClass('active');
+    // });
+});
+
+
+// Hàm get
+window.getContent = function(event, url) {
     event.preventDefault();
 
     $.ajax({
         url: url,
         type: 'GET',
         success: function(response) {
-            // Cập nhật nội dung
-            $('#mainArea').html(response);
+            if ($('#mainArea').length) {
+                $('#mainArea').html(response);
+            } else {
+                console.log('#mainArea does not exist.');
+            }
 
-            // Cập nhật URL mà không tải lại trang
             history.pushState(null, '', url);
 
-            // Quản lý trạng thái "active" cho các mục trong menu
-            if ($(event.target).closest('.nav-item').length) {
-                $('.nav-item').removeClass('active');
-                $(event.target).closest('.nav-item').addClass('active');
-            }
-        },
-        error: function(xhr, status, error) {
-            let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
-
-            $('#mainArea').html(`
-                <h3 class="text-center">Có lỗi xảy ra khi gửi dữ liệu</h3>
-                <p class="fs-4">${errorMessage}</p>
-            `);
-        }
-    });
-}
-
-// Xử lý khi người dùng nhấn nút Back hoặc Forward
-window.onpopstate = function(event) {
-    // Tải lại nội dung từ URL hiện tại
-    const url = window.location.pathname;
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(response) {
-            $('#mainArea').html(response);
+            $('.nav-item').removeClass('active');
+            $(event.target).closest('.nav-item').addClass('active');
+            localStorage.setItem('activeMenu', url);
         },
         error: function(xhr, status, error) {
             let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
             $('#mainArea').html(`
-                <h3 class="text-center">Có lỗi xảy ra khi tải nội dung</h3>
-                <p class="fs-4">${errorMessage}</p>
-            `);
+                    <h3 class="text-center">Có lỗi xảy ra khi gửi dữ liệu</h3>
+                    <p class="fs-4">${errorMessage}</p>
+                `);
         }
     });
 };
 
-function cancelEdit(event) {
-    event.preventDefault();
-    getContent(event, '/customers');
-}
-
-function postContent(event, form) {
+// Hàm post
+window.postContent = function(event, form) {
     event.preventDefault();
     const url = form.action;
-    const formData = new FormData(form); // Sử dụng FormData để gửi đúng định dạng multipart
+    const formData = new FormData(form);
 
     $.ajax({
         url: url,
         type: 'POST',
         data: formData,
-        contentType: false,       // Không tự động thiết lập `Content-Type`
-        processData: false,       // Không xử lý dữ liệu (FormData sẽ làm điều đó)
+        contentType: false,
+        processData: false,
         success: function(response) {
             $('#mainArea').html(response);
+            history.pushState(null, '', url);
         },
         error: function(xhr, status, error) {
             let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
-
             $('#mainArea').html(`
-                <h3 class="text-center">Có lỗi xảy ra khi gửi dữ liệu</h3>
-                <p class="fs-4">${errorMessage}</p>
-            `);
+                    <h3 class="text-center">Có lỗi xảy ra khi gửi dữ liệu</h3>
+                    <p class="fs-4">${errorMessage}</p>
+                `);
         }
     });
-}
-
-
-
-// JavaScript để hiển thị thứ, ngày, và thời gian hiện tại
-window.onload = function () {
-    const optionsDate = {year: 'numeric', month: 'long', day: 'numeric'};
-    const optionsTime = {hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false};
-
-    // Hàm cập nhật ngày giờ
-    const updateDateTime = () => {
-        const today = new Date(); // Khởi tạo mới mỗi lần cập nhật
-        const date = today.toLocaleDateString('vi-VN', optionsDate);
-        const time = today.toLocaleTimeString('vi-VN', optionsTime);
-        const dayOfWeek = today.toLocaleDateString('vi-VN', {weekday: 'long'});
-        document.getElementById("current-date").innerText = `${dayOfWeek}, ${date}, ${time}`;
-    };
-
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
 };
-$('#sidebar .nav-item').click(function () {
-    $('.nav-item').removeClass('active');
-    $(this).addClass('active');
-});
