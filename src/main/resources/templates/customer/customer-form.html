@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <div th:replace="~{/home :: head}"></div>
+  <div th:replace="~{fragments/fragment :: head}"></div>
 </head>
 <body>
 <div class="container-fluid">
-  <!-- header -->
-  <div th:replace="~{/home :: header(${currentUser})}" class="row p-2 bg-dark text-white"></div>
 
-  <!-- section -->
-  <div class="row" id="sectionOfMain">
-    <nav th:replace="~{/home :: sidebar}" class="navbar sidebar col-md-2 bg-dark text-white vh-100"></nav>
+<!-- header -->
+<div th:replace="~{fragments/fragment :: header}"></div>
 
+<!-- section -->
+<div class="row" id="sectionOfMain">
 
-    <!-- Main Content -->
-    <div class="col-md-10 p-2" th:fragment="customer-detail-page">
+  <!-- Sidebar-->
+  <nav th:replace="~{fragments/fragment :: sidebar}" class="navbar sidebar col-md-2 vh-100" style=" z-index: 1"></nav>
+  <!-- Sidebar -->
+
+  <!-- Main Content -->
+  <div class="col-md-10 p-2" id="mainArea">
+    <div th:fragment="customerDetailPage">
+
       <div class="app-page-title">
         <div class="page-title-wrapper">
           <div class="page-title-heading">
@@ -27,15 +32,19 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-12">
           <div class="main-card mb-3 card">
             <div class="card-body">
-              <form th:if="${exist}" th:action="@{/customers/edit/{id}(id=${newCustomer.customerID})}"
+
+              <form th:action="${exist ? '/customers/edit/' + newCustomer.customerID : '/customers/new'}"
+                    th:object="${newCustomer}"
                     method="post"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data"
+                    onsubmit="postContent(event, this)">
                 <!-- id -->
-                <div class="position-relative row form-group">
+                <div class="position-relative row form-group mb-3">
                   <label for="customerID" class="col-md-3 text-md-right col-form-label">ID</label>
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required disabled name="customerID" id="customerID" type="text"
@@ -45,51 +54,54 @@
                 </div>
 
                 <!-- Name -->
-                <div class="position-relative row form-group">
+                <div class="position-relative row form-group mb-3">
                   <label for="companyName" class="col-md-3 text-md-right col-form-label">Name</label>
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="companyName" id="companyName" type="text"
-                           class="form-control" th:placeholder="Name" th:value="${newCustomer.companyName}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}">${newCustomer.companyName}</p>
+                           class="form-control" th:placeholder="Name" th:value="${exist ? newCustomer.companyName : ''}">
+                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}"></p>
                   </div>
                 </div>
 
                 <!-- Email -->
-                <div class="position-relative row form-group">
+                <div class="position-relative row form-group mb-3">
                   <label for="email" class="col-md-3 text-md-right col-form-label">Email</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required name="email" id="email" type="email" class="form-control" th:placeholder="Email" th:value="${newCustomer.email}">
+                    <input th:if="${editMode}" required name="email" id="email" type="email"
+                           class="form-control" th:placeholder="Email" th:value="${exist ? newCustomer.email : ''}">
                     <p th:if="${viewMode}" th:text="${newCustomer.email}"></p>
                   </div>
                 </div>
 
                 <!-- Address -->
-                <div class="position-relative row form-group">
+                <div class="position-relative row form-group mb-3">
                   <label for="address" class="col-md-3 text-md-right col-form-label">Address</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" name="address" id="address" type="text" class="form-control" th:placeholder="Address" th:value="${newCustomer.address}">
+                    <input th:if="${editMode}" name="address" id="address" type="text"
+                           class="form-control" th:placeholder="Address" th:value="${exist ? newCustomer.address : ''}">
                     <p th:if="${viewMode}" th:text="${newCustomer.address}"></p>
                   </div>
                 </div>
 
                 <!-- Phone -->
-                <div class="position-relative row form-group">
+                <div class="position-relative row form-group mb-3">
                   <label for="phone" class="col-md-3 text-md-right col-form-label">Phone</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required name="phone" id="phone" type="tel" class="form-control" th:placeholder="Phone" th:value="${newCustomer.phone}">
+                    <input th:if="${editMode}" required name="phone" id="phone" type="tel"
+                           class="form-control" th:placeholder="Phone" th:value="${exist ? newCustomer.phone : ''}">
                     <p th:if="${viewMode}" th:text="${newCustomer.phone}"></p>
                   </div>
                 </div>
 
                 <!-- Type -->
-                <div class="position-relative row form-group">
+                <div class="position-relative row form-group mb-3">
                   <label for="type" class="col-md-3 text-md-right col-form-label">Type</label>
                   <div class="col-md-9 col-xl-8">
                     <select th:if="${editMode}" required name="type" id="type" class="form-control">
                       <option value="">-- Select Type --</option>
-                      <option value="Individual" th:selected="${newCustomer.type == 'Individual'}">Individual</option>
-                      <option value="Corporate" th:selected="${newCustomer.type == 'Corporate'}">Corporate</option>
-                      <option value="VIP" th:selected="${newCustomer.type == 'VIP'}">VIP</option>
+                      <option value="Individual" th:selected="${exist && newCustomer.type == 'Individual'}">Individual</option>
+                      <option value="Corporate" th:selected="${exist && newCustomer.type == 'Corporate'}">Corporate</option>
+                      <option value="VIP" th:selected="${exist && newCustomer.type == 'VIP'}">VIP</option>
                     </select>
                     <p th:if="${viewMode}" th:text="${newCustomer.type}"></p>
                   </div>
@@ -108,91 +120,22 @@
                 </div>
 
               </form>
-              <form th:unless="${exist}" th:action="@{/customers/new}"
-                    method="post"
-                    enctype="multipart/form-data">
-                <!-- id -->
-                <div class="position-relative row form-group">
-                  <label for="customerID" class="col-md-3 text-md-right col-form-label">ID</label>
-                  <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required disabled name="customerID" type="text"
-                           class="form-control" th:placeholder="customerID" th:value="${newCustomer.customerID}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.customerID}"></p>
-                  </div>
-                </div>
 
-                <!-- Name -->
-                <div class="position-relative row form-group">
-                  <label for="companyName" class="col-md-3 text-md-right col-form-label">Name</label>
-                  <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required name="companyName" type="text"
-                           class="form-control" th:placeholder="Name" th:value="${newCustomer.companyName}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}">${newCustomer.companyName}</p>
-                  </div>
-                </div>
-
-                <!-- Email -->
-                <div class="position-relative row form-group">
-                  <label for="email" class="col-md-3 text-md-right col-form-label">Email</label>
-                  <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required name="email" type="email" class="form-control" th:placeholder="Email" th:value="${newCustomer.email}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.email}"></p>
-                  </div>
-                </div>
-
-                <!-- Address -->
-                <div class="position-relative row form-group">
-                  <label for="address" class="col-md-3 text-md-right col-form-label">Address</label>
-                  <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" name="address" type="text" class="form-control" th:placeholder="Address" th:value="${newCustomer.address}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.address}"></p>
-                  </div>
-                </div>
-
-                <!-- Phone -->
-                <div class="position-relative row form-group">
-                  <label for="phone" class="col-md-3 text-md-right col-form-label">Phone</label>
-                  <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required name="phone"type="tel" class="form-control" th:placeholder="Phone" th:value="${newCustomer.phone}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.phone}"></p>
-                  </div>
-                </div>
-
-                <!-- Type -->
-                <div class="position-relative row form-group">
-                  <label for="type" class="col-md-3 text-md-right col-form-label">Type</label>
-                  <div class="col-md-9 col-xl-8">
-                    <select th:if="${editMode}" required name="type" class="form-control">
-                      <option value="">-- Select Type --</option>
-                      <option value="Individual" th:selected="${newCustomer.type == 'Individual'}">Individual</option>
-                      <option value="Corporate" th:selected="${newCustomer.type == 'Corporate'}">Corporate</option>
-                      <option value="VIP" th:selected="${newCustomer.type == 'VIP'}">VIP</option>
-                    </select>
-                    <p th:if="${viewMode}" th:text="${newCustomer.type}"></p>
-                  </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div th:if="${editMode}" class="position-relative row form-group mb-1">
-                  <div class="col-md-9 col-xl-8 offset-md-2">
-                    <a href="#" class="border-0 btn btn-outline-danger mr-1">
-                      <i class="fa fa-times fa-w-20"></i> Cancel
-                    </a>
-                    <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
-                      <i class="fa fa-download fa-w-20"></i> Save
-                    </button>
-                  </div>
-                </div>
-
-              </form>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Main Content -->
-
   </div>
+  <!-- Main Content -->
+
+</div>
+
+<!-- Footer -->
+<footer class="footer bg-info text-center p-4">
+  <p>&copy; 2024 SmartSales. Mọi quyền được bảo lưu.</p>
+</footer>
+
 </div>
 </body>
 </html>

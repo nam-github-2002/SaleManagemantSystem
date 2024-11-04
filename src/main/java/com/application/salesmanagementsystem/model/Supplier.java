@@ -3,15 +3,23 @@ package com.application.salesmanagementsystem.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Supplier")
+@Table(name = "supplier")
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="Supplier_ID")
     private Integer supplierID;
 
+    @Column(name="Supplier_Name")
     private String supplierName;
+
+    @Column(name="phone")
     private String phone;
+
+    @Column(name="address")
     private String address;
+
+    @Column(name="email")
     private String email;
 
     public Integer getSupplierID() {

@@ -14,6 +14,11 @@ public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
 
+    @Override
+    public void createSupplier(Supplier supplier) {
+        supplierRepository.save(supplier);
+    }
+
     // Lấy tất cả nhà cung cấp
     @Override
     public List<Supplier> getAllSuppliers() {
@@ -38,5 +43,13 @@ public class SupplierServiceImpl implements SupplierService {
         supplierRepository.deleteById(id);
     }
 
-    // Các phương thức khác có thể thêm ở đây
+    public Supplier findByName(String supplierName) {
+        return supplierRepository.findBySupplierName(supplierName);
+    }
+
+    @Override
+    public Optional<Supplier> findById(int id) {
+        return supplierRepository.findById(id);
+    }
+
 }

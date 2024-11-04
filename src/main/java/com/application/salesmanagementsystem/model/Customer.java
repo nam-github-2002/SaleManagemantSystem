@@ -5,20 +5,22 @@ import jakarta.persistence.*;
 @Table(name = "Customer")
 public class Customer {
     @Id
-    @Column(length = 10, unique = true, nullable = false)
+    @Column(name="customer_id",length = 10, unique = true, nullable = false)
     private String customerID;
 
     @Column(name="Company_Name", nullable = false)
     private String companyName;
 
-    @Column(length = 10)
+    @Column(name="phone", length = 10)
     private String phone;
 
+    @Column(name="address")
     private String address;
 
-    @Column(unique = true)
+    @Column(name="email",unique = true)
     private String email;
 
+    @Column(name="type")
     private String type;
 
 
