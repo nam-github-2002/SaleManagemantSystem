@@ -38,7 +38,6 @@ import java.util.*;
 @RequestMapping("/products")
 @SuppressWarnings("unchecked")
 public class ProductController {
-    public static final String UPLOAD_DIR = "/image/";
 
     @Autowired
     private ProductService productService;
@@ -98,9 +97,7 @@ public class ProductController {
 
         Optional<Product> product = productService.getProductById(id);
         List<Image> images = productService.getProductImages(id);
-        for (Image image : images) {
-            System.out.println("id: " +image.getId());
-        }
+
         if (product.isPresent()) {
             model.addAttribute("viewMode", true);
             model.addAttribute("editMode", false);
@@ -117,7 +114,7 @@ public class ProductController {
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "redirect:/product";
+        return "product/product-form";
     }
 
     @GetMapping("/new")
@@ -144,7 +141,7 @@ public class ProductController {
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "redirect:/product";
+        return "product/product-form";
     }
 
     @GetMapping("/edit/{id}")
@@ -174,7 +171,7 @@ public class ProductController {
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "redirect:/product";
+        return "product/product-form";
     }
 
     @GetMapping("/display")

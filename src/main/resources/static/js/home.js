@@ -1,12 +1,14 @@
 
-
 $(document).ready(function() {
     let activeMenu = localStorage.getItem('activeMenu');
-    if (activeMenu) {
-        $(`a.nav-link[href="${activeMenu}"]`).closest('.nav-item').addClass('active');
-    } else {
-        $(`a.nav-link[href="/dashboard"]`).closest('.nav-item').addClass('active');
-    }
+    console.log('dddddddddd')
+    $('.nav-item').removeClass('active');
+    $('a.nav-link').each(function() {
+        if (activeMenu === $(this).attr('href')) {
+            $(this).closest('.nav-item').addClass('active');
+        }
+    });
+
 
     // Sự kiện khi sử dụng nút quay lại
     $(window).on('popstate', function(event) {
@@ -42,10 +44,6 @@ $(document).ready(function() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    // $('#sidebar .nav-item').click(function() {
-    //     $('.nav-item').removeClass('active');
-    //     $(this).addClass('active');
-    // });
 });
 
 
@@ -58,16 +56,26 @@ window.getContent = function(event, url) {
         type: 'GET',
         success: function(response) {
             if ($('#mainArea').length) {
+
                 $('#mainArea').html(response);
             } else {
+
                 console.log('#mainArea does not exist.');
             }
 
             history.pushState(null, '', url);
+            url = '/' + url.split("/")[3];
 
             $('.nav-item').removeClass('active');
-            $(event.target).closest('.nav-item').addClass('active');
+            $('a.nav-link').each(function() {
+                console.log(url)
+                if (url === $(this).attr('href')) {
+                    $(this).closest('.nav-item').addClass('active');
+                }
+            });
+
             localStorage.setItem('activeMenu', url);
+
         },
         error: function(xhr, status, error) {
             let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;

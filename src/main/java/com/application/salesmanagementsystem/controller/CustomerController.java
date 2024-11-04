@@ -1,5 +1,8 @@
 package com.application.salesmanagementsystem.controller;
 
+import com.application.salesmanagementsystem.model.Employee;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -27,7 +30,13 @@ public class CustomerController {
 
     // Hiển thị danh sách khách hàng
     @GetMapping
-    public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page,
+                               HttpSession session, HttpServletRequest request)
+    {
+        if (!LoginController.isAuthenticated(session, model)) {
+            return "redirect:/login";
+        }
+
         int pageSize = 8;
         Page<Customer> customers;
 
@@ -53,40 +62,81 @@ public class CustomerController {
             model.addAttribute("keyword", null);
         }
 
-        return "customer/customer :: customerPage";
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "customer/customer :: customerPage";
+        }
+
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        model.addAttribute("currentUser", loggedInUser);
+
+        return "customer/customer";
     }
 
 
     // Hiển thị chi tiết khách hàng
     @GetMapping("/detail/{id}")
-    public String showDetailForm(@PathVariable String id, Model model) {
+    public String showDetailForm(@PathVariable String id, Model model,
+                                HttpSession session, HttpServletRequest request)
+    {
+        if (!LoginController.isAuthenticated(session, model)) {
+            return "redirect:/login";
+        }
+
         Optional<Customer> customer = customerService.getCustomerById(id);
         if (customer.isPresent()) {
             model.addAttribute("viewMode", true);
             model.addAttribute("editMode", false);
+            model.addAttribute("exist", true);
             model.addAttribute("newCustomer", customer.get());
         } else {
             model.addAttribute("error", "Không tìm thấy khách hàng.");
         }
-        return "customer/customer-form :: customerDetailPage";
+
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "customer/customer-form :: customerDetailPage";
+        }
+
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        model.addAttribute("currentUser", loggedInUser);
+        return "customer/customer-form";
     }
 
     // Hiển thị form tạo mới khách hàng
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model,
+                                 HttpSession session, HttpServletRequest request)
+    {
+        if (!LoginController.isAuthenticated(session, model)) {
+            return "redirect:/login";
+        }
+
         model.addAttribute("viewMode", false);
         model.addAttribute("editMode", true);
         model.addAttribute("exist", false);
+
         String newId = customerService.generateCustomerID();
         Customer newCustomer = new Customer();
         newCustomer.setCustomerID(newId);
         model.addAttribute("newCustomer", newCustomer);
-        return "customer/customer-form :: customerDetailPage";
+
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "customer/customer-form :: customerDetailPage";
+        }
+
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        model.addAttribute("currentUser", loggedInUser);
+        return "customer/customer-form";
     }
 
     // Hiển thị form chỉnh sửa khách hàng
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable String id, Model model) {
+    public String showEditForm(@PathVariable String id, Model model,
+                               HttpSession session, HttpServletRequest request)
+    {
+        if (!LoginController.isAuthenticated(session, model)) {
+            return "redirect:/login";
+        }
+
         Optional<Customer> opCustomer = customerService.getCustomerById(id);
         if (opCustomer.isPresent()) {
             Customer customer = opCustomer.get();
@@ -97,8 +147,16 @@ public class CustomerController {
         } else {
             model.addAttribute("error", "Không tìm thấy khách hàng.");
         }
-        return "customer/customer-form :: customerDetailPage";
+
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "customer/customer-form :: customerDetailPage";
+        }
+
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        model.addAttribute("currentUser", loggedInUser);
+        return "customer/customer-form";
     }
+
 
 
     // Tạo mới khách hàng
