@@ -1,41 +1,48 @@
-<!-- resources/templates/fragments/sidebar.html -->
-<nav id="sidebar">
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link active" href="/">
-                <i class="fas fa-cogs"></i>
-                <span class="item-text">Hệ Thống</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/products" onclick="loadContent(event, '/products')">
-                <i class="fas fa-box"></i>
-                <span class="item-text">Quản lý Sản Phẩm</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/customers" onclick="loadContent(event, '/customers')">
-                <i class="fas fa-user-tie"></i>
-                <span class="item-text">Quản lý Khách Hàng</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/orders" onclick="loadContent(event, '/orders')">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="item-text">Quản lý Đơn Hàng</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/employees" onclick="loadContent(event, '/employees')">
-                <i class="fas fa-users"></i>
-                <span class="item-text">Quản lý Nhân Viên</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/suppliers" onclick="loadContent(event, '/suppliers')">
-                <i class="fas fa-truck"></i>
-                <span class="item-text">Quản lý Nhà Cung Cấp</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SmartSales - Sidebar</title>
+</head>
+<body>
+    <nav id="sidebar" th:fragment="sidebar">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="/">
+                    <i class="fas fa-cogs"></i>
+                    <span class="item-text">Hệ Thống</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/products" onclick="loadContent(event, '/products')">
+                    <i class="fas fa-box"></i>
+                    <span class="item-text">Quản lý Sản Phẩm</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/customers" onclick="loadContent(event, '/customers')">
+                    <i class="fas fa-user-tie"></i>
+                    <span class="item-text">Quản lý Khách Hàng</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/orders" onclick="loadContent(event, '/orders')">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="item-text">Quản lý Đơn Hàng</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/employees" onclick="loadContent(event, '/employees')">
+                    <i class="fas fa-users"></i>
+                    <span class="item-text">Quản lý Nhân Viên</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/suppliers" onclick="loadContent(event, '/suppliers')">
+                    <i class="fas fa-truck"></i>
+                    <span class="item-text">Quản lý Nhà Cung Cấp</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

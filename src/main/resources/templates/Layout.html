@@ -1,51 +1,795 @@
-<!-- resources/templates/home.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMART SELLER</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Reset box-sizing */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Cài đặt cho body */
+        body {
+            background: #fafafa;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container chính */
+        .container-fluid {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===================================== */
+        /*              HEADER                   */
+        /* ===================================== */
+        header {
+            height: 60px;
+            /* background-color: #872992; */
+            background-color: #3c8dbc;
+            /* Màu nền của header */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar {
+            transition: all 0.3s;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar-dark {
+            /* chỉnh màu cho logo và nút toggle */
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Style cho nút toggle */
+        #sidebarCollapse {
+            border: none;
+            color: white;
+            margin: 0;
+            padding: 0;
+            padding: 17px 18px;
+            font-weight: bold;
+            transition: background 0.1s;
+        }
+
+        /* Hiệu ứng hover cho nút toggle */
+        #sidebarCollapse:hover {
+            background-color: #357abd
+        }
+
+
+        .navbar.active {
+            transform: translateX(-190px);
+            transition: all 0.3s;
+        }
+
+        .navbar-brand {
+            margin: 0;
+            display: block;
+            transition: all 0.3s;
+            transition: background 0.1s;
+            padding: 15px;
+            padding-right: 35px;
+        }
+
+        .navbar-brand:hover {
+            background-color: #357abd
+        }
+
+        /* ===================================== */
+        /*          USER AVATAR                 */
+        /* ===================================== */
+        .user-info p {
+            font-size: 14px;
+            color: white;
+            /* Màu chữ cho user-info */
+        }
+
+        #user-avatar {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease;
+            margin-right: 10px;
+        }
+
+        #user-avatar:hover {
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+            /* Hiệu ứng shadow khi hover */
+        }
+
+        /* ===================================== */
+        /*              SIDEBAR                  */
+        /* ===================================== */
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background-color: #222d32;
+            /* Màu nền của sidebar */
+            color: #ffffff;
+            transition: all 0.3s;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #sidebar.active {
+            margin-left: -190px;
+            /* Ẩn sidebar khi không hoạt động */
+        }
+
+        #sidebar.active .nav-link {
+            justify-content: flex-end;
+            /* Căn icon sang phải khi sidebar thu nhỏ */
+        }
+
+        #sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            color: #b8c7ce;
+            padding: 15px 20px;
+            transition: background 0.1s;
+        }
+
+        #sidebar .nav-link:hover {
+            background-color: #357abd;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .item-text {
+            color: #b8c7ce;
+            margin-left: 3px;
+        }
+
+        #sidebar .nav-link:hover .item-text {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #sidebar .nav-link.active {
+            background-color: #444;
+            /* Màu nền khi nav-link hoạt động */
+        }
+
+        #sidebar .nav-link i {
+            transition: all 0.3s;
+            padding: 3px;
+        }
+
+        #sidebar .nav-link:hover i {
+            font-size: 17px;
+            color: #fff;
+        }
+
+
+        #sidebar.active .nav-link .item-text {
+            display: none;
+            /* Ẩn text khi sidebar thu nhỏ */
+        }
+
+        /* Media query cho sidebar */
+        @media (min-width: 768px) {
+            #sidebar.active {
+                display: none;
+                /* Ẩn sidebar khi ở chế độ active */
+                transition: all 0.3s;
+            }
+
+            #sidebar.active {
+                display: block;
+                /* Hiển thị sidebar khi không active */
+                transition: all 0.3s;
+            }
+        }
+
+
+
+        /* ===================================== */
+        /*              CONTENT                  */
+        /* ===================================== */
+        #content {
+            width: 100%;
+            transition: all 0.3s;
+            /* Đồng bộ thời gian transition */
+            overflow-y: auto;
+            height: calc(100vh - 50px);
+            background: #ecf0f5;
+
+
+        }
+
+        .content-main {
+            min-height: calc(100vh - 50px - 50px);
+            /* Chiều cao tối thiểu cho content main */
+            padding: 0px;
+        }
+
+        .content-header>.breadcrumb {
+            float: right;
+            background: transparent;
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            padding: 7px 5px;
+            position: absolute;
+            top: 15px;
+            right: 10px;
+            border-radius: 2px;
+        }
+
+        .content-header {
+            position: relative;
+            padding: 12.6px 15px;
+        }
+
+        .content-header>h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content-header>.breadcrumb>li>a {
+            color: #444;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .content-header>.breadcrumb>li+li:before {
+            content: '>\00a0';
+        }
+
+        .breadcrumb>li+li:before {
+            padding: 0 5px;
+            color: #ccc;
+            content: "/\00a0";
+        }
+
+        .breadcrumb>.active {
+            color: #777;
+        }
+
+        /* ===================================== */
+        /*              FOOTER                   */
+        /* ===================================== */
+        .footer {
+            background: #fff;
+            /* Màu nền của footer */
+            color: #444;
+            border-top: 1px solid #d2d6de;
+            align-items: center;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 50px;
+            /* Chiều cao của footer */
+        }
+
+        /* hết layout */
+
+
+        /* =========================================== */
+        /*                                             */
+        /* =========================================== */
+        /* Css cho content của trang home */
+
+        .info-box {
+            display: flex;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-box-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            color: #fff;
+        }
+
+        .info-box-content {
+            height: 90px;
+            flex-grow: 1;
+            padding-left: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #fff;
+            color: #333333;
+        }
+
+        .info-box-text {
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .info-box-number {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        h3 {
+            font-size: 18px;
+        }
+
+        h4 {
+            font-size: 14px;
+        }
+
+        p {
+            font-size: 12px;
+        }
+
+        .top-products {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-products-items {
+            padding-top: 15px;
+        }
+
+        .top-products-items img {
+            border-radius: 5px;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 3px solid #007bff;
+            margin-bottom: 10px;
+        }
+
+
+        .top-products-items:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid orange;
+        }
+
+
+        .top-products .btn-primary {
+            color: #fff;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+
+
+
+        /* ================================ */
+        /* khách hàng mới nhất moi nhat */
+
+        .new-customers {
+            background-color: #fff;
+            margin-top: 10px;
+        }
+
+        .new-customers-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            text-align: center;
+            border-top: 1px solid #b8c7ce;
+            border-bottom: 1px solid #b8c7ce;
+        }
+
+        .new-customers-list>li {
+            padding: 15px;
+        }
+
+        .new-customers-list>li img {
+            border-radius: 50%;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .new-customers-list-name {
+            font-weight: 600;
+            color: #444;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .footer-list-box {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+            border-top: 1px solid #f4f4f4;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        /* Sản phẩm mới nhất */
+        .new-products{
+            background-color: #fff;
+            margin-top: 10px;
+        }
+        .new-products-list{
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid #b8c7ce;
+        }
+        .new-products-list>li{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 0px;
+            border-bottom: 1px solid #b8c7ce;
+        }
+        .new-products-list-info>img{
+            height: 50px;
+        }
+        .new-products-list-name{
+            font-size: 14px;
+            color: #3c8dbc;;
+            margin-left: 20px;
+        }
+        .new-products-list-price{
+            justify-content: flex-end;
+            margin-right: 10px;
+            padding: 0px 5px;
+            border-radius: 5px;
+        }
+    </style>
+
 </head>
+
 <body>
-    <div class="container-fluid">
-        <!-- Header -->
-        <div th:replace="fragments/header :: header"></div>
-
-        <!-- Main Content -->
-        <div class="d-flex" style="height: calc(100vh - 60px);">
-            <!-- Sidebar -->
-            <div th:replace="fragments/sidebar :: sidebar"></div>
-
-            <!-- Content -->
-            <div id="content">
-                <!-- Nội dung sẽ được chèn tại đây -->
-                <section class="content-header">
-                    <h1>Dashboard</h1>
-                    <ol class="breadcrumb">
-                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                        <li class="active">Dashboard</li>
-                    </ol>
-                </section>
-
-                <!-- Main Content -->
-                <section class="content-main px-3">
-                    <!-- Nội dung dashboard -->
-                    <!-- Các khối thông tin -->
-                    <!-- ... -->
-                </section>
-
-                <!-- Footer -->
-                <div th:replace="fragments/footer :: footer"></div>
+<div class="container-fluid">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark ">
+            <a class="navbar-brand" href="#">SMART SELLER</a> <!-- Logo Brand -->
+            <button type="button" id="sidebarCollapse" class="btn mr-auto">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+        <div class="col text-end d-flex justify-content-end align-items-center">
+            <div class="user-info d-flex align-items-center">
+                <div class="dropdown">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2"
+                         id="user-avatar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <ul class="dropdown-menu" aria-labelledby="user-avatar">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> View Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Account Setting</a>
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-friends"></i> Switch Account</a>
+                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Notification</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="border-0 dropdown-item" type="submit">
+                                    <i class="fas fa-sign-out-alt fs-6"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="m-0" align="right">Name: Hồ Phúc Lâm, ID: 0401</p>
+                    <p class="m-0" id="current-date" align="right">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script th:src="@{/js/script.js}"></script>
+    <div class="d-flex" style="height: calc(100vh - 60px);">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">
+                        <i class="fas fa-cogs"></i>
+                        <span class="item-text">Hệ Thống</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products" onclick="loadContent(event, '/products')">
+                        <i class="fas fa-box"></i>
+                        <span class="item-text">Quản lý Sản Phẩm</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/customers" onclick="loadContent(event, '/customers')">
+                        <i class="fas fa-user-tie"></i>
+                        <span class="item-text">Quản lý Khách Hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/orders" onclick="loadContent(event, '/orders')">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="item-text">Quản lý Đơn Hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/employees" onclick="loadContent(event, '/employees')">
+                        <i class="fas fa-users"></i>
+                        <span class="item-text">Quản lý Nhân Viên</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/suppliers" onclick="loadContent(event, '/suppliers')">
+                        <i class="fas fa-truck"></i>
+                        <span class="item-text">Quản lý Nhà Cung Cấp</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- main content nội dụng sẽ được chèn ở dưới đây -->
+            <section class="content-header">
+                <h1>
+                    Dashboard
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li class="active">Dashboard</li>
+                </ol>
+            </section>
+
+            <!-- Main Content -->
+            <section class="content-main px-3">
+                <!-- dashbord -->
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box ">
+                                <span class="info-box-icon fa-2x bg-primary"><i
+                                        class="fas fa-file-invoice-dollar "></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Đơn hàng</span>
+                                <span class="info-box-number">760</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon fa-2x bg-danger"><i class="fas fa-boxes"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Tồn kho</span>
+                                <span class="info-box-number">60<small>%</small></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box ">
+                            <span class="info-box-icon fa-2x bg-success"><i class="fas fa-chart-line "></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Doanh thu</span>
+                                <span class="info-box-number">41,410,312 <small>VND</small></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+
+
+
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box ">
+                            <span class="info-box-icon fa-2x bg-warning"><i class="fas fa-users "></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Khách hàng</span>
+                                <span class="info-box-number">2,000</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <div class="row m-0 p-0">
+                    <div class="col-md-6 col-sm-12 new-customers my-2">
+                        <h3 class="mt-2">Khách hàng mới nhất</h3>
+                        <ul class="new-customers-list">
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 1</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 2</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 3</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 4</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 5</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 6</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 7</a>
+                            </li>
+                            <li>
+                                <img src="https://via.placeholder.com/100" alt="User Image">
+                                <a class="new-customers-list-name" href="#">User 8</a>
+                            </li>
+                        </ul>
+                        <div class="footer-list-box text-center">
+                            <a href="#">Xem tất cả khách hàng</a>
+                        </div>
+                    </div>
+
+                    <!-- Mục sản phẩm mới nhất -->
+                    <div class="col-md-6 col-sm-12 new-products my-2">
+                        <h3 class="mt-2">Sản phẩm mới nhất</h3>
+                        <ul class="new-products-list">
+                            <li>
+                                <div class="new-products-list-info">
+                                    <img src="https://via.placeholder.com/100" alt="">
+                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                </div>
+                                <span class="new-products-list-price bg-warning">$1800</span>
+                            </li>
+                            <li>
+                                <div class="new-products-list-info">
+                                    <img src="https://via.placeholder.com/100" alt="">
+                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                </div>
+                                <span class="new-products-list-price bg-primary">$1800</span>
+                            </li>
+                            <li>
+                                <div class="new-products-list-info">
+                                    <img src="https://via.placeholder.com/100" alt="">
+                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                </div>
+                                <span class="new-products-list-price bg-info">$1800</span>
+                            </li>
+                            <li>
+                                <div class="new-products-list-info">
+                                    <img src="https://via.placeholder.com/100" alt="">
+                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                </div>
+                                <span class="new-products-list-price bg-success">$1800</span>
+                            </li>
+                        </ul>
+                        <div class="footer-list-box text-center">
+                            <a href="#">Xem tất cả sản phẩm</a>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mt-2">Đơn hàng mới nhất</h3>
+                <!-- Đơn hàng gần đây -->
+                <div class="row m-0 p-0 top-orders">
+                    <div class="col p-0 m-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-light">
+                                <thead>
+                                <tr>
+                                    <th>Mã Đơn Hàng</th>
+                                    <th>Tên Sản Phẩm</th>
+                                    <th>Số Lượng</th>
+                                    <th>Ngày Đặt Hàng</th>
+                                    <th>Tình Trạng</th>
+                                    <th>Tổng Giá</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>#1004</td>
+                                    <td>Sản phẩm A</td>
+                                    <td>2</td>
+                                    <td>12/10/2024</td>
+                                    <td><span class="btn btn-sm btn-outline-warning">Chưa xử lý</span></td>
+                                    <td>200,000 VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <td>#1005</td>
+                                    <td>Sản phẩm B</td>
+                                    <td>1</td>
+                                    <td>12/10/2024</td>
+                                    <td><span class="btn btn-sm btn-outline-info">Đang xử lý</span></td>
+                                    <td>150,000 VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <td>#1006</td>
+                                    <td>Sản phẩm C</td>
+                                    <td>3</td>
+                                    <td>12/10/2024</td>
+                                    <td><span class="btn btn-sm btn-outline-success">Đã giao</span></td>
+                                    <td>450,000 VNĐ</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <!-- Main Content -->
+            <!-- end main content -->
+            <!-- footer -->
+            <footer class="footer">
+                <p class="mt-2">&copy; 2024 SMART SELLER. All Rights Reserved.</p>
+            </footer>
+            <!-- footer end -->
+        </div>
+        <!-- page content end -->
+    </div>
+</div>
+<!-- container end -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            $('.navbar').toggleClass('active'); // Thêm lớp hide-logo
+        });
+    });
+
+    // JavaScript để hiển thị thứ, ngày, và thời gian hiện tại
+    window.onload = function () {
+        const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
+        const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+
+        const updateDateTime = () => {
+            const today = new Date();
+            const date = today.toLocaleDateString('vi-VN', optionsDate);
+            const time = today.toLocaleTimeString('vi-VN', optionsTime);
+            const dayOfWeek = today.toLocaleDateString('vi-VN', { weekday: 'long' });
+            document.getElementById("current-date").innerText = `${dayOfWeek}, ${date}, ${time}`;
+        };
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    };
+</script>
 </body>
+
 </html>
