@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+        /* ===================================== */
+        /*              LAYOUT                   */
+        /* ===================================== */
+
         /* Reset box-sizing */
         * {
             box-sizing: border-box;
@@ -88,9 +92,7 @@
             background-color: #357abd
         }
 
-        /* ===================================== */
-        /*          USER AVATAR                 */
-        /* ===================================== */
+        /*User avatat*/
         .user-info p {
             font-size: 14px;
             color: white;
@@ -275,15 +277,20 @@
             height: 50px;
             /* Chiều cao của footer */
         }
-
         /* hết layout */
+        /* =========================================== */
+        /*                   END LAYOUT                */
+        /*                   END LAYOUT                */
+        /*                   END LAYOUT                */
+        /* =========================================== */
 
 
-        /* =========================================== */
-        /*                                             */
-        /* =========================================== */
+
+
+        /* ===================================== */
+        /*              HOME.HTML                */
+        /* ===================================== */
         /* Css cho content của trang home */
-
         .info-box {
             display: flex;
             margin-bottom: 15px;
@@ -342,47 +349,14 @@
             font-size: 12px;
         }
 
-        .top-products {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .top-products-items {
-            padding-top: 15px;
-        }
-
-        .top-products-items img {
-            border-radius: 5px;
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border: 3px solid #007bff;
-            margin-bottom: 10px;
-        }
-
-
-        .top-products-items:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-            border: 1px solid orange;
-        }
-
-
-        .top-products .btn-primary {
-            color: #fff;
-            border-radius: 20px;
-            transition: background-color 0.3s;
-        }
-
-
 
         /* ================================ */
         /* khách hàng mới nhất moi nhat */
-
         .new-customers {
             background-color: #fff;
             margin-top: 10px;
+            border-top: 3px solid #FFC107;
+            border-radius: 3px;
         }
 
         .new-customers-list {
@@ -417,19 +391,17 @@
         }
 
         .footer-list-box {
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 3px;
-            border-bottom-left-radius: 3px;
             border-top: 1px solid #f4f4f4;
             padding: 10px;
             background-color: #fff;
         }
-
+        /* ================================ */
         /* Sản phẩm mới nhất */
         .new-products{
             background-color: #fff;
             margin-top: 10px;
+            border-top: 3px solid #DC3545;
+            border-radius: 3px;
         }
         .new-products-list{
             list-style-type: none;
@@ -458,6 +430,28 @@
             padding: 0px 5px;
             border-radius: 5px;
         }
+        /* ================================ */
+        /*Don hang moi nhat*/
+        .new-orders{
+            margin-top: 10px;
+            background-color: #fff;
+            border-top: 3px solid #007BFF;
+            border-radius: 3px;
+        }
+        .new-orders-list{
+            border-top: 1px solid #b8c7ce;
+            border-bottom: 1px solid #b8c7ce;
+        }
+        /*Het trang home end*/
+        /*====================*/
+
+
+
+        /* ===================================== */
+        /*              PRODUCTS.HTML            */
+        /*   css cho trang sản phẩm products     */
+        /* ===================================== */
+
     </style>
 
 </head>
@@ -549,17 +543,15 @@
         <div id="content">
             <!-- main content nội dụng sẽ được chèn ở dưới đây -->
             <section class="content-header">
-                <h1>
-                    Dashboard
-                </h1>
+                <h1>Dashboard</h1>
                 <ol class="breadcrumb">
                     <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
                     <li class="active">Dashboard</li>
                 </ol>
             </section>
 
-            <!-- Main Content -->
             <section class="content-main px-3">
+                <!-- Nội dung dashboard -->
                 <!-- dashbord -->
                 <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
@@ -622,39 +614,39 @@
 
                 <div class="row m-0 p-0">
                     <div class="col-md-6 col-sm-12 new-customers my-2">
-                        <h3 class="mt-2">Khách hàng mới nhất</h3>
+                        <h3 class="mt-2 ">Khách hàng mới nhất</h3>
                         <ul class="new-customers-list">
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 1</a>
+                                <a class="new-customers-list-name" href="#">User 99</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 2</a>
+                                <a class="new-customers-list-name" href="#">User 98</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 3</a>
+                                <a class="new-customers-list-name" href="#">User 97</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 4</a>
+                                <a class="new-customers-list-name" href="#">User 96</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 5</a>
+                                <a class="new-customers-list-name" href="#">User 95</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 6</a>
+                                <a class="new-customers-list-name" href="#">User 94</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 7</a>
+                                <a class="new-customers-list-name" href="#">User 93</a>
                             </li>
                             <li>
                                 <img src="https://via.placeholder.com/100" alt="User Image">
-                                <a class="new-customers-list-name" href="#">User 8</a>
+                                <a class="new-customers-list-name" href="#">User 92</a>
                             </li>
                         </ul>
                         <div class="footer-list-box text-center">
@@ -669,73 +661,72 @@
                             <li>
                                 <div class="new-products-list-info">
                                     <img src="https://via.placeholder.com/100" alt="">
-                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                    <a class="new-products-list-name" href="#">Samsung Galaxy note 2024</a>
                                 </div>
-                                <span class="new-products-list-price bg-warning">$1800</span>
+                                <span class="new-products-list-price bg-warning">$2800</span>
                             </li>
                             <li>
                                 <div class="new-products-list-info">
                                     <img src="https://via.placeholder.com/100" alt="">
-                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                    <a class="new-products-list-name" href="#">Iphone 16</a>
                                 </div>
-                                <span class="new-products-list-price bg-primary">$1800</span>
+                                <span class="new-products-list-price bg-primary">$3500</span>
                             </li>
                             <li>
                                 <div class="new-products-list-info">
                                     <img src="https://via.placeholder.com/100" alt="">
-                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                    <a class="new-products-list-name" href="#">Xiaomi X2024</a>
                                 </div>
-                                <span class="new-products-list-price bg-info">$1800</span>
+                                <span class="new-products-list-price bg-info">$2100</span>
                             </li>
                             <li>
                                 <div class="new-products-list-info">
                                     <img src="https://via.placeholder.com/100" alt="">
-                                    <a class="new-products-list-name" href="#">Samsung.</a>
+                                    <a class="new-products-list-name" href="#">Laptop ASUS VivoBook 15 XP</a>
                                 </div>
-                                <span class="new-products-list-price bg-success">$1800</span>
+                                <span class="new-products-list-price bg-success">$7800</span>
                             </li>
                         </ul>
                         <div class="footer-list-box text-center">
                             <a href="#">Xem tất cả sản phẩm</a>
                         </div>
                     </div>
-                </div>
+                    <!--./new-product-list-->
 
-                <h3 class="mt-2">Đơn hàng mới nhất</h3>
-                <!-- Đơn hàng gần đây -->
-                <div class="row m-0 p-0 top-orders">
-                    <div class="col p-0 m-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-light">
+                    <!-- Đơn hàng gần đây -->
+                    <div class="col-md-12 col-sm-12 my-2 new-orders">
+                        <h3 class="mt-2">Đơn hàng mới nhất</h3>
+                        <div class="table-responsive new-orders-list">
+                            <table class="table table-hover ">
                                 <thead>
                                 <tr>
-                                    <th>Mã Đơn Hàng</th>
-                                    <th>Tên Sản Phẩm</th>
-                                    <th>Số Lượng</th>
-                                    <th>Ngày Đặt Hàng</th>
-                                    <th>Tình Trạng</th>
-                                    <th>Tổng Giá</th>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Ngày đặt hàng</th>
+                                    <th>Tình trạng</th>
+                                    <th>Tổng giá</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>#1004</td>
+                                    <td>#1009</td>
                                     <td>Sản phẩm A</td>
                                     <td>2</td>
-                                    <td>12/10/2024</td>
-                                    <td><span class="btn btn-sm btn-outline-warning">Chưa xử lý</span></td>
+                                    <td>11/11/2024</td>
+                                    <td><span class="btn btn-sm btn-outline-danger">Chưa xử lý</span></td>
                                     <td>200,000 VNĐ</td>
                                 </tr>
                                 <tr>
-                                    <td>#1005</td>
+                                    <td>#1008</td>
                                     <td>Sản phẩm B</td>
                                     <td>1</td>
-                                    <td>12/10/2024</td>
-                                    <td><span class="btn btn-sm btn-outline-info">Đang xử lý</span></td>
+                                    <td>06/11/2024</td>
+                                    <td><span class="btn btn-sm btn-outline-warning">Đang xử lý</span></td>
                                     <td>150,000 VNĐ</td>
                                 </tr>
                                 <tr>
-                                    <td>#1006</td>
+                                    <td>#1007</td>
                                     <td>Sản phẩm C</td>
                                     <td>3</td>
                                     <td>12/10/2024</td>
@@ -745,8 +736,12 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="footer-list-box text-center">
+                            <a href="#">Xem tất cả đơn hàng</a>
+                        </div>
                     </div>
                 </div>
+
 
             </section>
             <!-- Main Content -->
