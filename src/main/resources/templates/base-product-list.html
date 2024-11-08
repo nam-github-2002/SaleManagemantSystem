@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART SELLER</title>
+    <!-- logo -->
+    <link rel="shortcut icon" href="../static/image/logoSmartSeller.png" type="image/x-icon">
+    <!-- Boostrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark ">
+                <a class="navbar-brand" href="#">SMART SELLER</a> <!-- Logo Brand -->
+                <button type="button" id="sidebarCollapse" class="btn mr-auto">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Logo -->
+                <a class="logo-container" href="#">
+                    <img class="logo-brand" src="../static/image/logoSmartSeller.png" alt="Logo Smart Seller">
+                </a>
+            </nav>
+            <div class="col text-end d-flex justify-content-end align-items-center">
+                <div class="user-info d-flex align-items-center">
+                    <div class="dropdown">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2"
+                            id="user-avatar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <ul class="dropdown-menu" aria-labelledby="user-avatar">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> View Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Account Setting</a>
+                            </li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-friends"></i> Switch Account</a>
+                            </li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Notification</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+                            </li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="border-0 dropdown-item" type="submit">
+                                        <i class="fas fa-sign-out-alt fs-6"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="m-0" align="right">Name: Hồ Phúc Lâm, ID: 0401</p>
+                        <p class="m-0" id="current-date" align="right">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="d-flex" style="height: calc(100vh - 60px);">
+            <!-- Sidebar -->
+            <nav id="sidebar">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i>
+                            <span class="item-text">Trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/products" onclick="loadContent(event, '/products')">
+                            <i class="fas fa-box"></i>
+                            <span class="item-text">Quản lý Sản Phẩm</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers" onclick="loadContent(event, '/customers')">
+                            <i class="fas fa-user-tie"></i>
+                            <span class="item-text">Quản lý Khách Hàng</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orders" onclick="loadContent(event, '/orders')">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="item-text">Quản lý Đơn Hàng</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/employees" onclick="loadContent(event, '/employees')">
+                            <i class="fas fa-users"></i>
+                            <span class="item-text">Quản lý Nhân Viên</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/suppliers" onclick="loadContent(event, '/suppliers')">
+                            <i class="fas fa-truck"></i>
+                            <span class="item-text">Quản lý Nhà Cung Cấp</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Page Content -->
+            <div id="content">
+                <!-- Main content header -->
+                <section class="content-header">
+                    <h1>Quản lý sản phẩm</h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fas fa-home"></i> Trang chủ</a></li>
+                        <li class="active">Sản phẩm</li>
+                    </ol>
+                </section>
+
+                <!-- Main content body -->
+                <section class="content-main px-3">
+                    <div class="productMan">
+                        <!-- Action buttons and summary -->
+                        <div class="row mb-3">
+                            <!-- Cột nút hành động -->
+                            <div class="col-md-6">
+                                <button class="btn btn-primary btn-sm">+ Thêm sản phẩm mới</button>
+                                <button class="btn btn-success btn-sm">Xuất ra Excel</button>
+                            </div>
+                            <!-- Cột lọc theo danh mục -->
+                            <div class="col-md-6 d-flex justify-content-end">
+                                <div class="form-inline">
+                                    <label for="categoryFilter" class="mr-2">Lọc theo danh mục:</label>
+                                    <select id="categoryFilter" class="form-control form-control-sm">
+                                        <option value="">Tất cả</option>
+                                        <option value="Điện tử">Điện tử</option>
+                                        <option value="Thời trang nam">Thời trang nam</option>
+                                        <option value="Thời trang nữ">Thời trang nữ</option>
+                                        <option value="Thời trang trẻ em">Thời trang trẻ em</option>
+                                        <option value="Giày dép">Giày dép</option>
+                                        <option value="Mỹ phẩm">Mỹ phẩm</option>
+                                        <option value="Sức khỏe">Sức khỏe</option>
+                                        <option value="Gia dụng">Gia dụng</option>
+                                        <option value="Nhà cửa">Nhà cửa</option>
+                                        <option value="Oto xe máy">Oto xe máy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Bảng danh sách sản phẩm -->
+                        <table id="productTable" class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Nhà cung cấp</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <img src="../static/image/1DienTuCongNghe/DienTuCongNghe (1).jpg" alt="">
+                                    </td>
+                                    <td>Loa Bluetooth 5.0 Bass mạnh</td>
+                                    <td>Sonny</td>
+                                    <td>Điện tử</td>
+                                    <td>200,000 VND</td>
+                                    <td>10</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>
+                                        <img src="../static/image/2ThoiTrangNam/ThoiTrangNam (1).jpg" alt="">
+                                    </td>
+                                    <td>Quần Jogger nam màu đen</td>
+                                    <td>Korea Fashion</td>
+                                    <td>Thời trang nam</td>
+                                    <td>500,000 VND</td>
+                                    <td>18</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>
+                                        <img src="../static/image/3MyPham/mypham (1).jpg" alt="">
+                                    </td>
+                                    <td>Sửa tắm nữ QLAY</td>
+                                    <td>Korean Beauty</td>
+                                    <td>Mỹ phẩm</td>
+                                    <td>670,000 VND</td>
+                                    <td>5</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="footer text-center mt-3">
+                    <p class="mb-0">&copy; 2024 SMART SELLER. All Rights Reserved.</p>
+                </footer>
+            </div>
+
+            <!-- page content end -->
+        </div>
+    </div>
+    <!-- container end -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../static/js/script.js"></script>
+</body>
+
+</html>

@@ -81,7 +81,23 @@ header {
 .navbar-brand:hover {
     background-color: #357abd
 }
-
+/* Ẩn logo khi sidebar mở */
+.navbar .logo-brand {
+    display: none;
+}
+/* Khi sidebar đóng, hiển thị logo */
+.navbar.active .logo-brand {
+    display: block;
+}
+.logo-container{
+    justify-content: center;
+    align-items: center;
+}
+.logo-brand{
+    height: 50px;
+    width: 120px;
+    object-fit: contain;
+}
 /*User avatat*/
 .user-info p {
     font-size: 14px;
@@ -441,3 +457,20 @@ p {
 /*              PRODUCTS.HTML            */
 /*   css cho trang sản phẩm products     */
 /* ===================================== */
+.productMan{
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+    border-top: 3px solid #b8c7ce;
+}
+
+#productTable img{
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+}
+#productTable th{
+    text-align: center;
+    align-items: flex-start;
+    vertical-align: text-top;
+}

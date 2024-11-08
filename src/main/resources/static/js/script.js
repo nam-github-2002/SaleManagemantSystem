@@ -3,6 +3,23 @@ $(document).ready(function () {
         $('#sidebar').toggleClass('active');
         $('.navbar').toggleClass('active'); // Thêm lớp hide-logo
     });
+
+
+    // product.html.js
+    // Khởi tạo DataTable
+    var table = $('#productTable').DataTable();
+    // Lọc theo danh mục
+    $('#categoryFilter').on('change', function () {
+        var category = $(this).val();
+        if (category) {
+            // Lọc theo cột "Danh mục" (cột thứ 3, bắt đầu từ 0)
+            table.column(4).search(category).draw();
+        } else {
+            // Hiển thị tất cả nếu chọn "Tất cả"
+            table.column(4).search('').draw();
+        }
+    });
+
 });
 
 // JavaScript để hiển thị thứ, ngày, và thời gian hiện tại
@@ -21,38 +38,5 @@ window.onload = function () {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 };
-
-
-// =========================================
-//thử xử lý thêm class active khi nhấn ở sidebar
-    // Hàm để xử lý thay đổi trạng thái active khi người dùng nhấn vào menu
-    function setActiveMenuItem(event) {
-    // Ngăn chặn hành động mặc định nếu dùng loadContent (AJAX)
-    event.preventDefault();
-
-    // Xóa class 'active' khỏi tất cả các liên kết
-    document.querySelectorAll('#sidebar .nav-link').forEach(link => {
-    link.classList.remove('active');
-});
-
-    // Thêm class 'active' cho liên kết được nhấn
-    event.currentTarget.classList.add('active');
-
-    // Gọi hàm loadContent nếu cần thiết (nếu bạn muốn tải nội dung qua AJAX)
-    const url = event.currentTarget.getAttribute('href');
-    loadContent(event, url);
-}
-
-    // Gắn sự kiện cho tất cả các liên kết trong sidebar
-    document.querySelectorAll('#sidebar .nav-link').forEach(link => {
-    link.addEventListener('click', setActiveMenuItem);
-});
-
-    // Hàm loadContent để load nội dung qua AJAX nếu cần
-    function loadContent(event, url) {
-    // Xử lý AJAX ở đây nếu muốn cập nhật phần nội dung mà không tải lại trang
-    console.log(`Đang tải nội dung từ: ${url}`);
-}
-// ==================================
 
 

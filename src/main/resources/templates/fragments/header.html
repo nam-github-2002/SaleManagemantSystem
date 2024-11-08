@@ -11,6 +11,10 @@
             <button type="button" id="sidebarCollapse" class="btn mr-auto">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <!-- Logo -->
+            <a class="logo-container" href="#">
+                <img class="logo-brand" th:src="@{/image/logoSmartSeller.png}" alt="Logo Smart Seller">
+            </a>
         </nav>
         <div class="col text-end d-flex justify-content-end align-items-center">
             <div class="user-info d-flex align-items-center">
@@ -34,6 +38,10 @@
                 </div>
                 <div>
                     <p class="m-0" align="right">Name: Hồ Phúc Lâm, ID: 0401</p>
+                    <!-- Hiển thị tên và ID người dùng từ Model -->
+<!--                    <p class="m-0" align="right">-->
+<!--                        Name: <span th:text="${username}"></span>, ID: <span th:text="${userId}"></span>-->
+<!--                    </p>-->
                     <p class="m-0" id="current-date" align="right">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
                 </div>
             </div>
