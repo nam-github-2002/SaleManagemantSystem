@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
@@ -24,13 +23,20 @@ public class OrderController {
 
     @GetMapping
     public String listOrder(Model model, HttpSession session) {
+        // Kiểm tra xem người dùng đã đăng nhập chưa
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return "redirect:/login";
+            return "redirect:/login"; // Nếu chưa đăng nhập, chuyển hướng tới trang login
         }
+
+        // Thêm thông tin người dùng vào model
         model.addAttribute("currentUser", loggedInUser);
+
+        // Lấy danh sách đơn hàng và thêm vào model
         List<Orders> orders = ordersService.getAllOrders();
         model.addAttribute("orders", orders);
-        return "order :: orderPage";
+
+        // Trả về trang "orders/order-list" (file order-list.html)
+        return "order/order-list"; // Trả về trang order-list.html
     }
 }

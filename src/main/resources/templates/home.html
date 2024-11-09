@@ -9,14 +9,14 @@
     <div class="d-flex" style="height: calc(100vh - 60px);">
         <!-- Sidebar -->
         <!--<div th:replace="~{fragments/sidebar :: sidebar}"></div>-->
-        <div th:replace="fragments/sidebar :: sidebar('products')"></div>
+        <div th:replace="fragments/sidebar :: sidebar('home')"></div>
         <!-- Page Content -->
         <div id="content">
             <section class="content-header">
                 <h1>Trang chủ</h1>
                 <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li class="active">Dashboard</li>
+                    <li><a th:href="@{/}"><i class="fa fa-home"></i> Trang chủ</a></li>
+                    <li class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
                 </ol>
             </section>
 
@@ -26,9 +26,9 @@
                 <div class="row">
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box ">
-                                <span class="info-box-icon fa-2x bg-primary"><i
-                                        class="fas fa-file-invoice-dollar "></i></span>
-
+                                <span class="info-box-icon fa-2x bg-primary">
+                                    <i class="fas fa-file-invoice-dollar "></i>
+                                </span>
                             <div class="info-box-content">
                                 <span class="info-box-text">Đơn hàng</span>
                                 <span class="info-box-number">760</span>
@@ -64,8 +64,6 @@
                         <!-- /.info-box -->
                     </div>
                     <!-- /.col -->
-
-
 
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box ">
@@ -211,8 +209,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </section>
 
             <!-- Footer -->

@@ -79,7 +79,7 @@ public class ProductController {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
 
-        return "product/product";
+        return "product/product-list";
     }
 
     @GetMapping("/detail/{id}")

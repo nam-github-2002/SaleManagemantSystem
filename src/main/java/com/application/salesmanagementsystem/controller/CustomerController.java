@@ -26,12 +26,10 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-
     // Hiển thị danh sách khách hàng
     @GetMapping
     public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page,
-                               HttpSession session, HttpServletRequest request)
-    {
+                               HttpSession session, HttpServletRequest request) {
         if (!LoginController.isAuthenticated(session, model)) {
             return "redirect:/login";
         }
@@ -40,10 +38,8 @@ public class CustomerController {
         Page<Customer> customers;
 
         if (model.containsAttribute("customers")) {
-
-            customers = (Page<Customer>) model.getAttribute("customers");;
+            customers = (Page<Customer>) model.getAttribute("customers");
         } else {
-
             customers = customerService.getAllCustomers(PageRequest.of(page, pageSize));
         }
 
@@ -62,13 +58,13 @@ public class CustomerController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer :: customerPage";
+            return "customer/customer :: customerPage"; // Giữ nguyên nếu là Ajax
         }
 
+        // Trả về view 'customer-list' (tức là trang customer-list.html)
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-
-        return "customer/customer";
+        return "customer/customer-list"; // Đây là nơi thay đổi chính, trả về trang customer-list.html
     }
 
 
@@ -92,12 +88,12 @@ public class CustomerController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer-form :: customerDetailPage";
+            return "customer/customer :: customerDetailPage";
         }
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer/customer-form";
+        return "customer/customer-detail";
     }
 
     // Hiển thị form tạo mới khách hàng
@@ -119,12 +115,12 @@ public class CustomerController {
         model.addAttribute("newCustomer", newCustomer);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer-form :: customerDetailPage";
+            return "customer/customer-add :: customerDetailPage";
         }
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer/customer-form";
+        return "customer-add";
     }
 
     // Hiển thị form chỉnh sửa khách hàng
@@ -148,18 +144,18 @@ public class CustomerController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer-form :: customerDetailPage";
+            return "customer/customer-edit :: customerDetailPage";
         }
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer/customer-form";
+        return "customer-edit";
     }
 
 
 
     // Tạo mới khách hàng
-    @PostMapping("/new")
+    @PostMapping("/add")
     public String createCustomer(@ModelAttribute("newCustomer") Customer customer) {
         String newId = customerService.generateCustomerID();
         customer.setCustomerID(newId);

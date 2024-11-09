@@ -7,12 +7,12 @@
 <div th:fragment="header">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark ">
-            <a class="navbar-brand" href="#">SMART SELLER</a>
+            <a class="navbar-brand" th:href="@{/}">SMART SELLER</a>
             <button type="button" id="sidebarCollapse" class="btn mr-auto">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <!-- Logo -->
-            <a class="logo-container" href="#">
+            <a class="logo-container" th:href="@{/}">
                 <img class="logo-brand" th:src="@{/image/logoSmartSeller.png}" alt="Logo Smart Seller">
             </a>
         </nav>
@@ -37,11 +37,7 @@
                     </ul>
                 </div>
                 <div>
-                    <p class="m-0" align="right">Name: Hồ Phúc Lâm, ID: 0401</p>
-                    <!-- Hiển thị tên và ID người dùng từ Model -->
-<!--                    <p class="m-0" align="right">-->
-<!--                        Name: <span th:text="${username}"></span>, ID: <span th:text="${userId}"></span>-->
-<!--                    </p>-->
+                    <p class="m-0">Xin chào, ID: <span th:text="${currentUser.employeeId}"></span> || <strong><span th:text="${currentUser.name}"></span></strong></p>
                     <p class="m-0" id="current-date" align="right">Thứ Bảy, 12 tháng 10, 2024, 14:30:44</p>
                 </div>
             </div>

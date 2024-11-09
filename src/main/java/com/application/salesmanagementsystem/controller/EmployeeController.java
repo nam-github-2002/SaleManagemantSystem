@@ -1,9 +1,7 @@
 package com.application.salesmanagementsystem.controller;
 
 import com.application.salesmanagementsystem.model.Employee;
-import com.application.salesmanagementsystem.model.Product;
 import com.application.salesmanagementsystem.service.EmployeeService;
-import com.application.salesmanagementsystem.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,14 +20,20 @@ public class EmployeeController {
 
     @GetMapping
     public String listEmployees(Model model, HttpSession session) {
+        // Kiểm tra người dùng đã đăng nhập chưa
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return "redirect:/login";
+            return "redirect:/login"; // Nếu chưa đăng nhập, chuyển hướng tới trang login
         }
+
+        // Thêm thông tin người dùng vào model
         model.addAttribute("currentUser", loggedInUser);
 
+        // Lấy danh sách nhân viên và thêm vào model
         List<Employee> employees = employeeService.getAllEmployees();
         model.addAttribute("employees", employees);
-        return "employee :: employeePage";
+
+        // Trả về trang "employee/employee-list" (file employee-list.html)
+        return "employee/employee-list"; // Trả về trang employee-list.html
     }
 }

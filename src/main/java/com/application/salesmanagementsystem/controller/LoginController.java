@@ -18,34 +18,44 @@ public class LoginController {
     @Autowired
     private EmployeeService employeeService;
 
+    // Hiển thị form đăng nhập
     @GetMapping("/login")
     public String showLoginForm() {
-        return "login";
+        return "login";  // Trả về trang login.html
     }
 
+    // Xử lý đăng nhập
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session, Model model) {
         Employee employee = employeeService.findByUsername(username);
+
         if (employee != null && employeeService.checkPassword(employee, password)) {
+            // Lưu thông tin người dùng vào session
             session.setAttribute("loggedInUser", employee);
+
+            // Truyền thông tin người dùng vào model
+            model.addAttribute("currentUser", employee);
+
+            // Thêm thông báo thành công vào flash attribute
             redirectAttributes.addFlashAttribute("success", true);
-            return "redirect:/";
+            return "redirect:/";  // Chuyển hướng đến trang chủ
         } else {
             redirectAttributes.addFlashAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
-            return "redirect:/login";
+            return "redirect:/login";  // Nếu thất bại, quay lại trang login
         }
     }
 
 
+    // Xử lý đăng xuất
     @PostMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
-        session.invalidate(); // Xóa toàn bộ thông tin trong session
+        session.invalidate();  // Xóa toàn bộ thông tin trong session
         redirectAttributes.addFlashAttribute("success", false);
         redirectAttributes.addFlashAttribute("message", "Bạn đã đăng xuất thành công!");
-        return "redirect:/login";
+        return "redirect:/login";  // Chuyển hướng đến trang login sau khi đăng xuất
     }
 
-
+    // Kiểm tra người dùng đã đăng nhập chưa
     public static boolean isAuthenticated(HttpSession session, Model model) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
 
@@ -57,7 +67,7 @@ public class LoginController {
         if (success != null && !success) {
             // Nếu success == false, đăng xuất và xóa thông tin đăng nhập
             session.invalidate();
-            return false; // Trả về false để chuyển hướng về trang đăng nhập
+            return false;  // Trả về false để chuyển hướng về trang đăng nhập
         }
 
         return true;

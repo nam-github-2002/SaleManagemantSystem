@@ -23,14 +23,20 @@ public class SupplierController {
 
     @GetMapping
     public String listSupplier(Model model, HttpSession session) {
+        // Kiểm tra người dùng đã đăng nhập chưa
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return "redirect:/login";
+            return "redirect:/login"; // Nếu chưa đăng nhập, chuyển hướng tới trang login
         }
+
+        // Thêm thông tin người dùng vào model
         model.addAttribute("currentUser", loggedInUser);
 
+        // Lấy danh sách nhà cung cấp và thêm vào model
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         model.addAttribute("suppliers", suppliers);
-        return "supplier :: supplierPage";
+
+        // Trả về trang "supplier/supplier-list" (file supplier-list.html)
+        return "supplier/supplier-list"; // Trả về trang supplier-list.html
     }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/head :: head('Smart Seller | Trang ...')}"></head>
+<head th:replace="~{fragments/head :: head('Smart Seller | Chỉnh sửa thông tin sản phẩm')}"></head>
 <body>
 <div class="container-fluid">
     <!-- Header -->
@@ -13,22 +13,18 @@
         <!-- Page Content -->
         <div id="content">
             <section class="content-header">
-                <h1>Dashboard</h1>
+                <h1>Quản lý sản phẩm</h1>
                 <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                    <li class="active">Dashboard</li>
+                    <li><a th:href="@{/}"><i class="fa fa-home"></i> Trang chủ</a></li>
+                    <li><a th:href="@{/products}"><i class="fa fa-box"></i> Sản phẩm</a></li>
+                    <li class="active">Chỉnh sửa thông tin sản phẩm</li>
                 </ol>
             </section>
 
             <section class="content-main px-3">
-                <!-- Nội dung dashboard -->
-                <!-- dashbord -->
                 <div class="row">
                     <div class="col">
-                        chèn các col ở đây
-                        chèn các col ở đây
-                        chèn các col ở đây
-                        chèn nội dungở đay
+                        Đây là trang product-edit.html
                     </div>
                 </div>
             </section>
