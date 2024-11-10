@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByProductNameContaining(String keyword, Pageable pageable);
     Page<Product> findAll(@Nullable Pageable pageable);
-
+    List<Product> findTop10ByOrderByCreateDateDesc();
     Product findTopByOrderByProductIDDesc();
 
 }

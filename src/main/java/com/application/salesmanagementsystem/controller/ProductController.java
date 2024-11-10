@@ -48,6 +48,8 @@ public class ProductController {
     @Autowired
     private ImageService imageService;
 
+    private static final String TEMP_DIR = "src/main/resources/static/images/products";
+
     // Hiển thị danh sách sản phẩm
     @GetMapping
     public String showProductList(Model model, @RequestParam(defaultValue = "0") int page,
@@ -58,13 +60,14 @@ public class ProductController {
         }
         int pageSize = 8;
         Page<Product> products;
-        if (model.containsAttribute("products")) {
+        if (session.getAttribute("products") != null) {
 
-            products = (Page<Product>) model.getAttribute("products");
+            products = (Page<Product>) session.getAttribute("products");
         } else {
 
             products = productService.getAllProducts(PageRequest.of(page, pageSize));
         }
+
         model.addAttribute("products", products.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", products.getTotalPages());
@@ -96,15 +99,17 @@ public class ProductController {
         }
 
         Optional<Product> product = productService.getProductById(id);
-        List<Image> images = productService.getProductImages(id);
+        List<Image> images = product.get().getImages();
 
         if (product.isPresent()) {
+
             model.addAttribute("viewMode", true);
             model.addAttribute("editMode", false);
             model.addAttribute("exist", true);
             model.addAttribute("newProduct", product.get());
             model.addAttribute("images", images);
         } else {
+
             model.addAttribute("error", "Không tìm thấy sản phẩm.");
         }
 
@@ -153,22 +158,24 @@ public class ProductController {
 
         Optional<Product> opProduct = productService.getProductById(id);
         if (opProduct.isPresent()) {
+
             Product product = opProduct.get();
+            List<Image> images = product.getImages();
+            List<Supplier> suppliers = supplierService.getAllSuppliers();
             model.addAttribute("viewMode", false);
             model.addAttribute("editMode", true);
             model.addAttribute("exist", true);
             model.addAttribute("newProduct", product);
+            model.addAttribute("images", images);
+            model.addAttribute("suppliers", suppliers);
         } else {
+
             model.addAttribute("error", "Không tìm thấy sản phẩm.");
         }
-
-        List<Supplier> suppliers = supplierService.getAllSuppliers();
-        model.addAttribute("suppliers", suppliers);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "product/product-form :: productDetailPage";
         }
-
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
         return "product/product-form";
@@ -188,7 +195,7 @@ public class ProductController {
 
     @PostMapping({ "/new"})
     public String saveProduct(@ModelAttribute("newProduct") Product newProduct,
-                                @RequestParam("image") MultipartFile image,
+                                @RequestParam("image") MultipartFile[] images,
                                 BindingResult result,
                                 RedirectAttributes redirectAttributes) throws IOException, SQLException {
         if (result.hasErrors()) {
@@ -198,14 +205,15 @@ public class ProductController {
         productService.saveProduct(newProduct);
 
         if(productService.findById(newProduct.getProductID()).isPresent()) {
-            byte[] bytes = image.getBytes();
-            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+           for(MultipartFile image : images) {
+               byte[] bytes = image.getBytes();
+               Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
 
-            Image newImage = new Image();
-            newImage.setProduct(newProduct);
-            newImage.setImageContent(blob);
-            imageService.create(newImage);
-            newProduct.addImages(newImage);
+               Image newImage = new Image();
+               newImage.setImageContent(blob);
+               imageService.create(newImage);
+               newProduct.addImage(newImage);
+           }
         }
 
         productService.saveProduct(newProduct);
@@ -216,22 +224,25 @@ public class ProductController {
 
     @PostMapping({"/edit/{id}"})
     public String updateProduct(@ModelAttribute("newProduct") Product newProduct,
-                                @RequestParam("image") MultipartFile image,
+                                @RequestParam("image") MultipartFile[] images,
                                 BindingResult result,
                                 RedirectAttributes redirectAttributes,
-                                @PathVariable(value = "id", required = false) Integer id) throws IOException, SQLException {
+                                @PathVariable(value = "id", required = false) Integer id)
+            throws IOException, SQLException
+    {
         if (result.hasErrors()) {
             return "redirect:/products";
         }
 
-        byte[] bytes = image.getBytes();
-        Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+        for(MultipartFile image : images) {
+            byte[] bytes = image.getBytes();
+            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
 
-        Image newImage = new Image();
-        newImage.setProduct(newProduct);
-        newImage.setImageContent(blob);
-        imageService.create(newImage);
-        newProduct.addImages(newImage);
+            Image newImage = new Image();
+            newImage.setImageContent(blob);
+            imageService.create(newImage);
+            newProduct.addImage(newImage);
+        }
 
         productService.saveProduct(newProduct);
         redirectAttributes.addFlashAttribute("viewMode", true);
@@ -247,17 +258,19 @@ public class ProductController {
 
     @PostMapping("/search")
     public String searchProducts(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes, HttpSession session)
+    {
         int pageSize = 8;
         Page<Product> searchResults = productService.searchProducts(keyword, PageRequest.of(page, pageSize));
 
         if (searchResults.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy sản phẩm nào với từ khóa '" + keyword + "'.");
         } else {
-            redirectAttributes.addFlashAttribute("products", searchResults);
+            session.setAttribute("products", searchResults);
         }
 
-        redirectAttributes.addFlashAttribute("keyword", keyword);
+        session.setAttribute("keyword", keyword);
         return "redirect:/products";
     }
+
 }

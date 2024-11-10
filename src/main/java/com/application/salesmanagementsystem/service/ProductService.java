@@ -27,5 +27,5 @@ public interface ProductService {
 
     int generateNewProductId();
 
-    List<Image> getProductImages(int id);
+    List<Product> getTop10NewestProducts();
 }

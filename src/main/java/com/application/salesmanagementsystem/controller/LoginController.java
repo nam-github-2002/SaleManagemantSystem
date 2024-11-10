@@ -24,7 +24,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String login(@RequestParam String username, @RequestParam String password,
+                        RedirectAttributes redirectAttributes, HttpSession session) {
         Employee employee = employeeService.findByUsername(username);
         if (employee != null && employeeService.checkPassword(employee, password)) {
             session.setAttribute("loggedInUser", employee);

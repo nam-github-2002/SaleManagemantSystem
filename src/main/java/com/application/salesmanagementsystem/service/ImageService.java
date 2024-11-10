@@ -3,7 +3,6 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Image;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ImageService {
      Image create(Image image);

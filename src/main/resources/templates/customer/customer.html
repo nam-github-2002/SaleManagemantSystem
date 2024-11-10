@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <div th:replace="~{fragments/fragment :: head}"></div>
+  <div th:replace="~{fragments/fragment :: head}"></div>
 </head>
 <body>
 <div class="container-fluid">
 
-<!-- header -->
-<div th:replace="~{fragments/fragment :: header}"></div>
+  <!-- header -->
+  <div th:replace="~{fragments/fragment :: header}"></div>
 
-<!-- section -->
-<div class="row" id="sectionOfMain">
+  <!-- section -->
+  <div class="d-flex" style="height: calc(100vh - 60px);">
 
-  <!-- Sidebar-->
-  <nav th:replace="~{fragments/fragment :: sidebar}" class="navbar sidebar col-md-2 vh-100" style=" z-index: 1"></nav>
-  <!-- Sidebar -->
+    <!-- Sidebar-->
+    <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+    <!-- Sidebar -->
 
-<div class="col-md-10 p-2" id="mainArea">
-  <div th:fragment="customerPage">
+    <div id="mainArea">
+      <div th:fragment="customerPage">
     <h2 class="text-center mb-5">QUẢN LÝ KHÁCH HÀNG</h2>
 
     <a href="/customers/new" onclick="getContent(event,this.href)" id="addNewCusButton" class="btn btn-primary ms-2">
@@ -108,16 +108,14 @@
     <!-- Phân trang -->
 
   </div>
-</div>
+    </div>
 
 
 </div>
 <!-- section -->
 
-<!-- Footer -->
-<footer class="footer bg-info text-center p-4">
-  <p>&copy; 2024 SmartSales. Mọi quyền được bảo lưu.</p>
-</footer>
+  <!-- footer -->
+  <div th:replace="~{fragments/fragment :: footer}"></div>
 </div>
 
 </body>

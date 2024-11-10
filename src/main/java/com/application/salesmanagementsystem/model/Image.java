@@ -12,13 +12,10 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
     @Lob
-    @Column(name = "image_Data")
+    @Column(name = "image_Data", nullable = false)
     private Blob imageContent;
+
 
     // Getters and setters
     public int getId() {
@@ -27,14 +24,6 @@ public class Image {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public Blob getImageContent() {

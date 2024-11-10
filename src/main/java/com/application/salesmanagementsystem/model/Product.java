@@ -1,10 +1,8 @@
 package com.application.salesmanagementsystem.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,28 +10,43 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="product_id")
+    @Column(name = "product_id")
     private Integer productID;
 
-    @Column(name="product_name")
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id", referencedColumnName = "Category_id")
+    @JoinColumn(name = "category_id", referencedColumnName = "Category_id", nullable = false)
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id", nullable = false)
     private Supplier supplier;
 
-    @Column(name="price")
+    @Column(name = "price")
     private Double price;
 
-    @Column(name="quantity")
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="product_id" )
     private List<Image> images = new ArrayList<>();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date", nullable = false, updatable = false)
+    private Date createDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "update_date", nullable = false)
+    private Date updateDate;
+
+    // Constructor
+    public Product() {
+        this.createDate = new Date();
+        this.updateDate = new Date();
+    }
 
     // Getters và Setters
 
@@ -86,10 +99,10 @@ public class Product {
     }
 
     public List<Image> getImages() {
-        return images;
+        return new ArrayList<>(images);
     }
 
-    public void addImages(Image image) {
+    public void addImage(Image image) {
         this.images.add(image);
     }
 
@@ -97,4 +110,16 @@ public class Product {
         this.images = images;
     }
 
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updateDate = new Date();
+    }
 }

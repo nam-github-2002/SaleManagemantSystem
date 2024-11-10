@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer employeeid;
+    @Column(name="employee_id")
+    private Integer employeeId;
 
     private String name;
     private String phone;
@@ -19,11 +20,11 @@ public class Employee {
     private byte[] image;
 
     public Integer getEmployeeId() {
-        return employeeid;
+        return employeeId;
     }
 
     public void setEmployeeId(Integer employeeId) {
-        this.employeeid = employeeId;
+        this.employeeId = employeeId;
     }
 
     public String getName() {

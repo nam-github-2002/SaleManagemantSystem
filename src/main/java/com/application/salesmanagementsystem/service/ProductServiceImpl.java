@@ -20,9 +20,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private ImageRepository imageRepository;
-
     // Lấy tất cả sản phẩm
     @Override
     public Page<Product> getAllProducts(Pageable pageable) {
@@ -63,7 +60,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Image> getProductImages(int id) {
-        return imageRepository.findByProduct_ProductID(id);
+    public List<Product> getTop10NewestProducts() {
+        // Sử dụng phương thức của ProductRepository để lấy 10 sản phẩm mới nhất
+        return productRepository.findTop10ByOrderByCreateDateDesc();
     }
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/fragment :: head}"></div>
+</head>
+<body>
+<div class="container-fluid">
+
+    <!-- header -->
+    <div th:replace="~{fragments/fragment :: header}"></div>
+
+    <!-- section -->
+    <div class="d-flex" style="height: calc(100vh - 60px);">
+
+        <!-- Sidebar-->
+        <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+        <!-- Sidebar -->
+
+        <div id="mainArea">
+
+            <div th:fragment="supplierPage">
+
+                Đây là trang quản lý nhà cung cấp
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div th:replace="~{fragments/fragment :: footer}"></div>
+</div>
+</body>
+</html>

@@ -5,6 +5,7 @@ import com.application.salesmanagementsystem.model.Product;
 import com.application.salesmanagementsystem.model.Supplier;
 import com.application.salesmanagementsystem.service.ProductService;
 import com.application.salesmanagementsystem.service.SupplierService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,15 +23,19 @@ public class SupplierController {
     private SupplierService supplierService;
 
     @GetMapping
-    public String listSupplier(Model model, HttpSession session) {
+    public String listSupplier(Model model, HttpSession session, HttpServletRequest request) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
             return "redirect:/login";
         }
         model.addAttribute("currentUser", loggedInUser);
 
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return "supplier/supplier :: supplierPage";
+        }
+
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         model.addAttribute("suppliers", suppliers);
-        return "supplier :: supplierPage";
+        return "supplier/supplier";
     }
 }

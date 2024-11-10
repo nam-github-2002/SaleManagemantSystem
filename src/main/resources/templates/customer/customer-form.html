@@ -6,18 +6,17 @@
 <body>
 <div class="container-fluid">
 
-<!-- header -->
-<div th:replace="~{fragments/fragment :: header}"></div>
+  <!-- header -->
+  <div th:replace="~{fragments/fragment :: header}"></div>
 
-<!-- section -->
-<div class="row" id="sectionOfMain">
+  <!-- section -->
+  <div class="d-flex" style="height: calc(100vh - 60px);">
 
-  <!-- Sidebar-->
-  <nav th:replace="~{fragments/fragment :: sidebar}" class="navbar sidebar col-md-2 vh-100" style=" z-index: 1"></nav>
-  <!-- Sidebar -->
+    <!-- Sidebar-->
+    <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+    <!-- Sidebar -->
 
-  <!-- Main Content -->
-  <div class="col-md-10 p-2" id="mainArea">
+    <div id="mainArea">
     <div th:fragment="customerDetailPage">
 
       <div class="app-page-title">
@@ -131,10 +130,8 @@
 
 </div>
 
-<!-- Footer -->
-<footer class="footer bg-info text-center p-4">
-  <p>&copy; 2024 SmartSales. Mọi quyền được bảo lưu.</p>
-</footer>
+  <!-- footer -->
+  <div th:replace="~{fragments/fragment :: footer}"></div>
 
 </div>
 </body>
