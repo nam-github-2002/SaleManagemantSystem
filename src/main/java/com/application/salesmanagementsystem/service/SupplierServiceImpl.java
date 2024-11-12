@@ -3,6 +3,8 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Supplier;
 import com.application.salesmanagementsystem.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +23,14 @@ public class SupplierServiceImpl implements SupplierService {
 
     // Lấy tất cả nhà cung cấp
     @Override
+    public Page<Supplier> getAllSuppliers(Pageable pageable) {
+        return supplierRepository.findAll(pageable);
+    }
+    @Override
     public List<Supplier> getAllSuppliers() {
         return supplierRepository.findAll();
     }
+
 
     // Lấy nhà cung cấp theo ID
     @Override
@@ -33,8 +40,8 @@ public class SupplierServiceImpl implements SupplierService {
 
     // Lưu nhà cung cấp mới hoặc cập nhật nhà cung cấp hiện có
     @Override
-    public Supplier saveSupplier(Supplier supplier) {
-        return supplierRepository.save(supplier);
+    public void saveSupplier(Supplier supplier) {
+         supplierRepository.save(supplier);
     }
 
     // Xóa nhà cung cấp theo ID
@@ -43,8 +50,8 @@ public class SupplierServiceImpl implements SupplierService {
         supplierRepository.deleteById(id);
     }
 
-    public Supplier findByName(String supplierName) {
-        return supplierRepository.findBySupplierName(supplierName);
+    public Page<Supplier> findByName(String supplierName, Pageable pageable) {
+        return supplierRepository.findBySupplierName(supplierName, pageable);
     }
 
     @Override
@@ -52,4 +59,9 @@ public class SupplierServiceImpl implements SupplierService {
         return supplierRepository.findById(id);
     }
 
+    @Override
+    public int generateSupplierID() {
+        Supplier supplier = supplierRepository.findTopByOrderBySupplierIDDesc();
+        return supplier.getSupplierID() + 1;
+    }
 }

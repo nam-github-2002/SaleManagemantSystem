@@ -28,4 +28,6 @@ public interface ProductService {
     int generateNewProductId();
 
     List<Product> getTop10NewestProducts();
+
+    Page<Product> getProductsByCategory(String category, Pageable pageable);
 }

@@ -46,7 +46,7 @@
                 <div class="position-relative row form-group mb-3">
                   <label for="customerID" class="col-md-3 text-md-right col-form-label">ID</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required disabled name="customerID" id="customerID" type="text"
+                    <input th:if="${editMode}" required readonly name="customerID" id="customerID" type="text"
                            class="form-control" th:placeholder="customerID" th:value="${newCustomer.customerID}">
                     <p th:if="${viewMode}" th:text="${newCustomer.customerID}"></p>
                   </div>
@@ -76,7 +76,7 @@
                 <div class="position-relative row form-group mb-3">
                   <label for="address" class="col-md-3 text-md-right col-form-label">Address</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" name="address" id="address" type="text"
+                    <input th:if="${editMode}" required name="address" id="address" type="text"
                            class="form-control" th:placeholder="Address" th:value="${exist ? newCustomer.address : ''}">
                     <p th:if="${viewMode}" th:text="${newCustomer.address}"></p>
                   </div>

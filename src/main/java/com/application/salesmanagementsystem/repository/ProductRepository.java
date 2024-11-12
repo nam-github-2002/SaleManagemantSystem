@@ -16,5 +16,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findAll(@Nullable Pageable pageable);
     List<Product> findTop10ByOrderByCreateDateDesc();
     Product findTopByOrderByProductIDDesc();
-
+    Page<Product> findByCategoryCategoryName(String category, Pageable pageable);
 }

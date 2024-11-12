@@ -64,4 +64,9 @@ public class ProductServiceImpl implements ProductService {
         // Sử dụng phương thức của ProductRepository để lấy 10 sản phẩm mới nhất
         return productRepository.findTop10ByOrderByCreateDateDesc();
     }
+
+    @Override
+    public Page<Product> getProductsByCategory(String category, Pageable pageable) {
+        return productRepository.findByCategoryCategoryName(category, pageable);
+    }
 }

@@ -30,9 +30,9 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="product_id" )
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
+
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", nullable = false, updatable = false)
@@ -103,6 +103,7 @@ public class Product {
     }
 
     public void addImage(Image image) {
+        image.setProduct(this);
         this.images.add(image);
     }
 

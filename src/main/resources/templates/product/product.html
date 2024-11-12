@@ -6,109 +6,158 @@
 <body>
 <div class="container-fluid">
 
-<!-- header -->
-<div th:replace="~{fragments/fragment :: header}"></div>
+    <!-- header -->
+    <div th:replace="~{fragments/fragment :: header}"></div>
 
-<!-- section -->
+    <!-- section -->
     <div class="d-flex">
 
-    <!-- Sidebar-->
-    <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
-    <!-- Sidebar -->
+        <!-- Sidebar-->
+        <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+        <!-- Sidebar -->
 
-    <div id="mainArea">
-        <div th:fragment="productPage">
-            <h2>Trang quản lý sản phẩm</h2>
+        <div id="mainArea">
+            <div th:fragment="productPage">
+                <section class="content-header">
+                    <h1>Quản lý sản phẩm</h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+                        <li class="active"><i class="fas fa-box"></i>Product</li>
+                    </ol>
+                </section>
 
-            <!-- Thanh công cụ thêm sản phẩm và tìm kiếm -->
-            <a onclick="getContent(event, this.href)" href="/products/new" class="btn btn-primary mb-2">Thêm sản phẩm mới</a>
+                <section class="content-main px-3">
+                    <div class="productMan">
+                        <!-- Action buttons and summary -->
+                        <div class="row mb-3">
+                            <!-- Cột nút hành động -->
+                            <div class="col-md-6">
+                                <a  onclick="getContent(event, this.href)" href="/products/new" class="btn btn-primary btn-sm">+ Thêm sản phẩm mới</a>
+                                <button class="btn btn-success btn-sm">Xuất ra Excel</button>
+                            </div>
+                            <!-- Cột lọc theo danh mục -->
+                            <div class="col-md-6 d-flex justify-content-end flex-column">
+                                <div class="form-inline ml-auto">
+                                    <label for="categoryFilter" class="mr-2">Lọc theo danh mục:</label>
+                                    <select id="categoryFilter" class="form-control form-control-sm"
+                                            th:value="${category}" ,
+                                            onchange="filterProductByCategory(event, this.value)">
+                                        <option value="">Tất cả</option>
+                                        <option value="Laptops" th:selected="${category == 'Laptops'}">Laptops</option>
+                                        <option value="Smartphones" th:selected="${category == 'Smartphones'}">Smartphones</option>
+                                        <option value="Tablets" th:selected="${category == 'Tablets'}">Tablets</option>
+                                        <option value="Desktops" th:selected="${category == 'Desktops'}">Desktops</option>
+                                        <option value="Giày dép" th:selected="${category == 'Giày dép'}">Giày dép</option>
+                                        <option value="Mỹ phẩm" th:selected="${category == 'Mỹ phẩm'}">Mỹ phẩm</option>
+                                        <option value="Sức khỏe" th:selected="${category == 'Sức khỏe'}">Sức khỏe</option>
+                                        <option value="Gia dụng" th:selected="${category == 'Gia dụng'}">Gia dụng</option>
+                                        <option value="Nhà cửa" th:selected="${category == 'Nhà cửa'}">Nhà cửa</option>
+                                        <option value="Oto xe máy" th:selected="${category == 'Oto xe máy'}">Oto xe máy</option>
+                                    </select>
 
-            <div class="d-flex justify-content-between mb-3">
-                <form th:action="@{/products/search}" method="post"
-                      onsubmit="postContent(event, this)"
-                      class="ms-auto" id="search-form">
+                                </div>
+                                <div class="form-inline ml-auto mt-4">
+                                    <form action="/products/search " method="POST" class="d-flex search-form">
+                                        <input  type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." name="keyword" aria-label="Search">
+                                        <button type="submit" class="btn btn-primary ml-2">
+                                            Tìm kiếm
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
 
-                    <div class="input-group d-flex align-items-center" style="height: 36px;">
-                        <input type="text" class="form-control" name="keyword"
-                               th:value="${keyword}" placeholder="Tìm kiếm theo tên sản phẩm..." style="flex: 1; height: 100%;">
-                        <button class="btn btn-outline-secondary ms-2" type="submit" style="height: 100%;">Tìm Kiếm</button>
+                        </div>
+
+                        <!-- Bảng danh sách sản phẩm -->
+                        <div class="table-responsive">
+                            <table id="productTable" class="table table-striped table-hover">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th  class="text-start">Mã <br> sản phẩm</th>
+                                    <th  class="text-start">Tên sản phẩm</th>
+                                    <th>Loại sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Nhà cung cấp</th>
+                                    <th>Hành động</th>
+                                </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${products}">
+                                        <td th:text="${product.productID}"></td>
+                                        <td th:text="${product.productName}"></td>
+                                        <td th:if="${product.category != null}" th:text="${product.category.categoryName}"></td>
+                                        <td th:text="${product.price}"></td>
+                                        <td th:text="${product.supplier.supplierName}"></td>
+                                        <td>
+                                            <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                                               th:href="@{/products/detail/{id}(id=${product.productID})}"
+                                               onclick="getContent(event, this.href)">
+                                                Detail
+                                            </a>
+                                            <a style="text-decoration: none"
+                                               th:href="@{/products/edit/{id}(id=${product.productID})}"
+                                               onclick="getContent(event, this.href)">
+                                                <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            </a>
+
+                                            <form th:action="@{/products/{id}(id=${product.productID})}"
+                                                  method="post" style="display:inline;"
+                                                  onsubmit="postContent(event, this)">
+                                                <input type="hidden" name="_method" value="DELETE" />
+                                                <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="pagination">
+
+                            <ul class="pagination justify-content-center">
+                                <li th:class="'page-item ' + ${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/products?page=0&category=' + ${category}}"
+                                       aria-label="Previous" o
+                                       nclick="getContent(event, this.href)">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <!-- Hiển thị các trang giữa -->
+                                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:class="'page-item ' + ${i == currentPage ? 'active' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/products?page=' + ${i} + '&category=' + ${category}}"
+                                        onclick="getContent(event, this.href)">
+                                        <span th:text="${i + 1}"></span>
+                                    </a>
+                                </li>
+
+                                <li th:class="'page-item ' + ${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/products?page=' + ${totalPages - 1} + '&category=' + ${category}}"
+                                       aria-label="Next"
+                                        onclick="getContent(event, this.href)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+                </section>
 
-                    <div th:if="${error != false}" class="text-danger mt-2 ">
-                        <p th:text="${error}"></p>
-                    </div>
-                </form>
             </div>
 
 
-            <!-- Bảng hiển thị danh sách sản phẩm -->
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã sản phẩm</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Loại sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Nhà cung cấp</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="product : ${products}">
-                    <td th:text="${product.productID}"></td>
-                    <td th:text="${product.productName}"></td>
-                    <td th:if="${product.category != null}" th:text="${product.category.categoryName}"></td>
-                    <td th:text="${product.price}"></td>
-                    <td th:text="${product.supplier.supplierName}"></td>
-                    <td>
-                        <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
-                           th:href="@{/products/detail/{id}(id=${product.productID})}"
-                           onclick="getContent(event, this.href)">
-                            Detail
-                        </a>
-                        <a style="text-decoration: none"
-                           th:href="@{/products/edit/{id}(id=${product.productID})}"
-                           onclick="getContent(event, this.href)">
-                            <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                        </a>
-
-                        <form th:action="@{/products/{id}(id=${product.productID})}"
-                              method="post" style="display:inline;"
-                              onsubmit="postContent(event, this)">
-                            <input type="hidden" name="_method" value="DELETE" />
-                            <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <!-- Phân trang -->
-            <nav class="d-flex justify-content-end">
-                <ul class="pagination">
-                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/products(page=${currentPage - 1})}">Previous</a>
-                    </li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                        th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/products(page=${i})}" th:text="${i + 1}"></a>
-                    </li>
-                    <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                        <a class="page-link" onclick="getContent(event, this.href)" th:href="@{/products(page=${currentPage + 1})}">Next</a>
-                    </li>
-                </ul>
-            </nav>
-
         </div>
+
     </div>
-
-</div>
-
-    <!-- footer -->
+    <!-- Footer -->
     <div th:replace="~{fragments/fragment :: footer}"></div>
 </div>
-
 </body>
 </html>

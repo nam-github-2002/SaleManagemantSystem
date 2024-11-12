@@ -3,8 +3,13 @@ package com.application.salesmanagementsystem.controller;
 import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Image;
 import com.application.salesmanagementsystem.model.Supplier;
+import com.application.salesmanagementsystem.repository.ImageRepository;
 import com.application.salesmanagementsystem.service.ImageService;
 import com.application.salesmanagementsystem.service.SupplierService;
+import com.application.salesmanagementsystem.model.Product;
+import com.application.salesmanagementsystem.service.ProductService;
+
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
@@ -17,10 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import com.application.salesmanagementsystem.model.Product;
-import com.application.salesmanagementsystem.service.ProductService;
 
 import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
@@ -49,26 +50,39 @@ public class ProductController {
     private ImageService imageService;
 
     private static final String TEMP_DIR = "src/main/resources/static/images/products";
+    @Autowired
+    private ImageRepository imageRepository;
 
     // Hiển thị danh sách sản phẩm
     @GetMapping
-    public String showProductList(Model model, @RequestParam(defaultValue = "0") int page,
+    public String showProductList(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(required = false) String category,
                                   HttpSession session, HttpServletRequest request)
     {
         if (!LoginController.isAuthenticated(session, model)) {
             return "redirect:/login";
         }
-        int pageSize = 8;
-        Page<Product> products;
-        if (session.getAttribute("products") != null) {
 
-            products = (Page<Product>) session.getAttribute("products");
+        int pageSize = 8;
+        page = Math.max(page, 0);
+
+        Page<Product> products;
+        if (model.getAttribute("products") != null) {
+
+            products = (Page<Product>) model.getAttribute("products");
+
         } else {
 
-            products = productService.getAllProducts(PageRequest.of(page, pageSize));
+            if (category != null && StringUtils.isNotBlank(category) && !category.equals("null")) {
+                products = productService.getProductsByCategory(category, PageRequest.of(page, pageSize));
+            } else {
+                products = productService.getAllProducts(PageRequest.of(page, pageSize));
+            }
         }
 
         model.addAttribute("products", products.getContent());
+        model.addAttribute("category", category);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", products.getTotalPages());
 
@@ -81,19 +95,20 @@ public class ProductController {
             model.addAttribute("keyword", null);
         }
 
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        model.addAttribute("currentUser", loggedInUser);
+
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "product/product :: productPage";
         }
-
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        model.addAttribute("currentUser", loggedInUser);
 
         return "product/product";
     }
 
     @GetMapping("/detail/{id}")
     public String showProductDetail(@PathVariable int id, Model model,
-                                    HttpSession session, HttpServletRequest request) {
+                                    HttpSession session, HttpServletRequest request)
+    {
         if (!LoginController.isAuthenticated(session, model)) {
             return "redirect:/login";
         }
@@ -124,7 +139,8 @@ public class ProductController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model,
-                                 HttpSession session, HttpServletRequest request) {
+                                 HttpSession session, HttpServletRequest request)
+    {
         if (!LoginController.isAuthenticated(session, model)) {
             return "redirect:/login";
         }
@@ -151,7 +167,8 @@ public class ProductController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model,
-                               HttpSession session, HttpServletRequest request) {
+                               HttpSession session, HttpServletRequest request)
+    {
         if (!LoginController.isAuthenticated(session, model)) {
             return "redirect:/login";
         }
@@ -197,7 +214,8 @@ public class ProductController {
     public String saveProduct(@ModelAttribute("newProduct") Product newProduct,
                                 @RequestParam("image") MultipartFile[] images,
                                 BindingResult result,
-                                RedirectAttributes redirectAttributes) throws IOException, SQLException {
+                                RedirectAttributes redirectAttributes) throws IOException, SQLException
+    {
         if (result.hasErrors()) {
             return "redirect:/products";
         }
@@ -226,8 +244,7 @@ public class ProductController {
     public String updateProduct(@ModelAttribute("newProduct") Product newProduct,
                                 @RequestParam("image") MultipartFile[] images,
                                 BindingResult result,
-                                RedirectAttributes redirectAttributes,
-                                @PathVariable(value = "id", required = false) Integer id)
+                                RedirectAttributes redirectAttributes)
             throws IOException, SQLException
     {
         if (result.hasErrors()) {
@@ -235,23 +252,24 @@ public class ProductController {
         }
 
         for(MultipartFile image : images) {
+            Image newImage = new Image();
             byte[] bytes = image.getBytes();
             Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
 
-            Image newImage = new Image();
             newImage.setImageContent(blob);
-            imageService.create(newImage);
             newProduct.addImage(newImage);
         }
 
         productService.saveProduct(newProduct);
+        imageRepository.deleteImagesWithNullProductId();
         redirectAttributes.addFlashAttribute("viewMode", true);
         redirectAttributes.addFlashAttribute("editMode", false);
-        return "redirect:/products/detail/" + id;
+        return "redirect:/products/detail/" + newProduct.getProductID();
     }
 
     @PostMapping("/{id}")
-    public String deleteProduct(@PathVariable int id) {
+    public String deleteProduct(@PathVariable int id)
+    {
         productService.deleteProduct(id);
         return "redirect:/products";
     }

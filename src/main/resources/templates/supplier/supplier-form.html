@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragments/fragment :: head}"></div>
+</head>
+<body>
+<div class="container-fluid">
+
+  <!-- header -->
+  <div th:replace="~{fragments/fragment :: header}"></div>
+
+  <!-- section -->
+  <div class="d-flex" style="height: calc(100vh - 60px);">
+
+    <!-- Sidebar-->
+    <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+    <!-- Sidebar -->
+
+    <div id="mainArea">
+      <div th:fragment="supplierDetailPage">
+
+        <div class="app-page-title">
+          <div class="page-title-wrapper">
+            <div class="page-title-heading">
+              <div class="page-title-icon">
+                <i class="pe-7s-ticket icon-gradient bg-mean-fruit"></i>
+              </div>
+              <div>User
+                <div class="page-title-subheading">View, create, update, delete and manage.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="main-card mb-3 card">
+              <div class="card-body">
+
+                <form th:action="${exist ? '/suppliers/edit/' + newSupplier.supplierID : '/suppliers/new'}"
+                      th:object="${newSupplier}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      onsubmit="postContent(event, this)">
+                  <!-- id -->
+                  <div class="position-relative row form-group mb-3">
+                    <label for="supplierID" class="col-md-3 text-md-right col-form-label">ID</label>
+                    <div class="col-md-9 col-xl-8">
+                      <input th:if="${editMode}" required readonly name="supplierID" id="supplierID" type="text"
+                             class="form-control" th:placeholder="supplierID" th:value="${newSupplier.supplierID}">
+                      <p th:if="${viewMode}" th:text="${newSupplier.supplierID}"></p>
+                    </div>
+                  </div>
+
+                  <!-- Name -->
+                  <div class="position-relative row form-group mb-3">
+                    <label for="supplierName" class="col-md-3 text-md-right col-form-label">Name</label>
+                    <div class="col-md-9 col-xl-8">
+                      <input th:if="${editMode}" required name="supplierName" id="supplierName" type="text"
+                             class="form-control" th:placeholder="Name" th:value="${exist ? newSupplier.supplierName : ''}">
+                      <p th:if="${viewMode}" th:text="${newSupplier.supplierName}"></p>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="position-relative row form-group mb-3">
+                    <label for="email" class="col-md-3 text-md-right col-form-label">Email</label>
+                    <div class="col-md-9 col-xl-8">
+                      <input th:if="${editMode}" required name="email" id="email" type="email"
+                             class="form-control" th:placeholder="Email" th:value="${exist ? newSupplier.email : ''}">
+                      <p th:if="${viewMode}" th:text="${newSupplier.email}"></p>
+                    </div>
+                  </div>
+
+                  <!-- Address -->
+                  <div class="position-relative row form-group mb-3">
+                    <label for="address" class="col-md-3 text-md-right col-form-label">Address</label>
+                    <div class="col-md-9 col-xl-8">
+                      <input th:if="${editMode}" name="address" id="address" type="text"
+                             class="form-control" th:placeholder="Address" th:value="${exist ? newSupplier.address : ''}">
+                      <p th:if="${viewMode}" th:text="${newSupplier.address}"></p>
+                    </div>
+                  </div>
+
+                  <!-- Phone -->
+                  <div class="position-relative row form-group mb-3">
+                    <label for="phone" class="col-md-3 text-md-right col-form-label">Phone</label>
+                    <div class="col-md-9 col-xl-8">
+                      <input th:if="${editMode}" required name="phone" id="phone" type="tel"
+                             class="form-control" th:placeholder="Phone" th:value="${exist ? newSupplier.phone : ''}">
+                      <p th:if="${viewMode}" th:text="${newSupplier.phone}"></p>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div th:if="${editMode}" class="position-relative row form-group mb-1">
+                    <div class="col-md-9 col-xl-8 offset-md-2">
+                      <a href="#" class="border-0 btn btn-outline-danger mr-1">
+                        <i class="fa fa-times fa-w-20"></i> Cancel
+                      </a>
+                      <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
+                        <i class="fa fa-download fa-w-20"></i> Save
+                      </button>
+                    </div>
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Main Content -->
+
+  </div>
+
+  <!-- footer -->
+  <div th:replace="~{fragments/fragment :: footer}"></div>
+
+</div>
+</body>
+</html>
+

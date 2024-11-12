@@ -1,14 +1,18 @@
 
 $(document).ready(function() {
+    //Active nav-item
     let activeMenu = localStorage.getItem('activeMenu');
-    console.log('dddddddddd')
-    $('.nav-item').removeClass('active');
-    $('a.nav-link').each(function() {
-        if (activeMenu === $(this).attr('href')) {
-            $(this).closest('.nav-item').addClass('active');
-        }
-    });
-
+    if (activeMenu) {
+        $('.nav-item').removeClass('active');
+        $('a.nav-link').each(function() {
+            if (activeMenu === $(this).attr('href')) {
+                    $(this).closest('.nav-item').addClass('active');
+            }
+        });
+    } else {
+        $('.nav-item').removeClass('active');
+        $('a.nav-link[href="/"]').closest('.nav-item').addClass('active');
+    }
 
     // Sự kiện khi sử dụng nút quay lại
     $(window).on('popstate', function(event) {
@@ -32,7 +36,6 @@ $(document).ready(function() {
     // Hiển thị thứ, ngày, và thời gian hiện tại
     const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
     const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-
     const updateDateTime = () => {
         const today = new Date();
         const date = today.toLocaleDateString('vi-VN', optionsDate);
@@ -40,9 +43,25 @@ $(document).ready(function() {
         const dayOfWeek = today.toLocaleDateString('vi-VN', { weekday: 'long' });
         $("#current-date").text(`${dayOfWeek}, ${date}, ${time}`);
     };
-
     updateDateTime();
     setInterval(updateDateTime, 1000);
+
+    //Chạy hàm khi tải xong ajax
+    $(document).on('ajaxComplete', function() {
+        if ($.fn.DataTable) {
+            $('table').DataTable({
+                "columnDefs": [
+                    { "type": "num", "targets": 3 }
+                ],
+                "order": [[3, 'asc']],
+                "searching": false,
+                "info": true,
+                "paging": false
+            });
+        } else {
+            console.error("DataTable chưa được import chính xác");
+        }
+    });
 
 });
 
@@ -68,12 +87,10 @@ window.getContent = function(event, url) {
 
             $('.nav-item').removeClass('active');
             $('a.nav-link').each(function() {
-                console.log(url)
                 if (url === $(this).attr('href')) {
                     $(this).closest('.nav-item').addClass('active');
                 }
             });
-
             localStorage.setItem('activeMenu', url);
 
         },
@@ -112,3 +129,45 @@ window.postContent = function(event, form) {
         }
     });
 };
+
+//Lọc sản phẩm
+window.filterProductByCategory = function(event, category) {
+    event.preventDefault();
+
+    // Gửi yêu cầu AJAX đến server
+    $.ajax({
+        url: '/products?page=0&category=' + category,
+        method: 'GET',
+        success: function(response) {
+            $('#mainArea').html(response);
+
+        },
+        error: function(xhr, status, error) {
+            // Xử lý lỗi và thông báo người dùng
+            $('#mainArea').html('<h1>Error: ' + error + '</h1>');  // Lỗi hiển thị chi tiết
+        }
+    });
+}
+
+//Xoá cookie khi đóng trang
+window.onbeforeunload = function() {
+    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+};
+
+function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function() {
+        var output = document.getElementById('image-preview');
+        output.src = reader.result;
+    }
+    // Đọc tệp ảnh đã chọn
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function changeMainImage(thumbnail) {
+    // Lấy nguồn (src) của ảnh thumbnail
+    let newSrc = thumbnail.src;
+
+    // Thay đổi src của ảnh chính
+    document.getElementById('main-image').src = newSrc;
+}

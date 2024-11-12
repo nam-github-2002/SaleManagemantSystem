@@ -482,45 +482,98 @@ p {
 }
 
 #productTable th{
-    text-align: center;
+    text-align: left;
     align-items: flex-start;
     vertical-align: text-top;
 }
 
+#productTable td{
+    text-align: left;
+    align-items: flex-start;
+    vertical-align: text-top;
+}
+
+.hover-effect {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.hover-effect:hover {
+    transform: scale(1.02);  /* Phóng to ảnh khi hover */
+    opacity: 0.9;  /* Làm mờ ảnh khi hover */
+}
+
+
+/* Cấu trúc chính của gallery */
 .product-image-gallery {
-     background-color: var(--primary-color);
-     padding: 10px;
-     border-radius: 8px;
-     max-width: 100%;
-     display: flex;
-     flex-wrap: wrap;
-     overflow-x: auto;
- }
-
-.product-image-gallery img {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
+    background-color: var(--primary-color);
+    padding: 10px;
     border-radius: 8px;
-    margin-right: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;  /* Sắp xếp ảnh chính và ảnh thumbnail theo chiều dọc */
+    align-items: center;    /* Canh giữa nội dung */
 }
 
+/* Hiệu ứng hover cho ảnh */
 .product-image-gallery img:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1); /* Phóng to ảnh khi hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Thêm bóng cho ảnh khi hover */
 }
 
-
+/* Thanh cuộn của gallery */
 .product-image-gallery::-webkit-scrollbar {
-    height: 8px;
+    height: 8px;  /* Chiều cao thanh cuộn */
 }
 
+/* Thanh cuộn khi không di chuột */
 .product-image-gallery::-webkit-scrollbar-thumb {
     background-color: #888;
     border-radius: 4px;
 }
 
+/* Thanh cuộn khi di chuột */
 .product-image-gallery::-webkit-scrollbar-thumb:hover {
     background-color: #555;
+}
+
+/* Cấu trúc của khung thumbnail */
+.thumbnail-gallery {
+    width: 240px;      /* Đảm bảo khung thumbnail dài 240px */
+    height: 70px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap; /* Đảm bảo các ảnh không xuống dòng */
+    margin-top: 10px;  /* Khoảng cách giữa ảnh chính và ảnh thumbnail */
+    padding: 5px 0;    /* Padding cho thanh cuộn */
+}
+
+/* Định dạng ảnh thumbnail */
+.thumbnail-gallery .d-inline-block {
+    height: 100%;
+    margin-right: 10px;
+}
+
+/* Thanh cuộn của thumbnail gallery */
+.thumbnail-gallery::-webkit-scrollbar {
+    height: 8px;  /* Chiều cao thanh cuộn */
+}
+
+/* Thanh cuộn khi không di chuột */
+.thumbnail-gallery::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+/* Thanh cuộn khi di chuột */
+.thumbnail-gallery::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+/* Định dạng ảnh thumbnail */
+.thumbnail-gallery img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+    cursor: pointer;
 }

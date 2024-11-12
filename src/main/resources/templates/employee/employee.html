@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="~{fragments/fragment :: head}"></div>
@@ -17,18 +16,113 @@
         <!-- Sidebar -->
 
         <div id="mainArea">
-
             <div th:fragment="employeePage">
+                <h2 class="text-center mb-5">QUẢN LÝ NHÀ CUNG CẤP</h2>
 
-                Đây là trang quản lý nhân viên
+                <!-- Search bar -->
+                <div class="mb-2 mt-2 d-flex justify-content-center">
+                    <a href="/employees/new" onclick="getContent(event,this.href)"
+                       style="height: 38px"
+                       id="addNewCusButton" class="btn btn-primary mr-auto">
+                        <i class="fa-solid fa-square-plus"></i>
+                        <span>Thêm Mới</span>
+                    </a>
+
+                    <form th:action="@{/employees/search}" method="post"
+                          onsubmit="postContent(event, this)"
+                          class="d-flex ml-auto" id="search-form">
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="keyword"
+                                   th:value="${keyword}" placeholder="Tìm kiếm theo tên công ty...">
+                        </div>
+                        <button class="btn btn-outline-secondary ms-2 form-control" type="submit" style="width: 50%">Tìm Kiếm</button>
+                        <div th:if="${error != false}" class="text-danger mt-2">
+                            <p th:text="${error}"></p>
+                        </div>
+                    </form>
+                </div>
+                <!-- Search bar -->
+
+                <!-- Table  -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr>
+                            <th>#ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phòng ban</th>
+                            <th>Role</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="employee : ${employees}">
+                            <td th:text="${employee.employeeId}"></td>
+                            <td th:text="${employee.name}"></td>
+                            <td th:text="${employee.email}"></td>
+                            <td th:text="${employee.department}" ></td>
+                            <td th:text="${employee.role}"></td>
+                            <td>
+                                <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                                   th:href="@{/employees/detail/{id}(id=${employee.employeeId})}"
+                                   onclick="getContent(event, this.href)">
+                                    Detail
+                                </a>
+                                <a style="text-decoration: none"
+                                   th:href="@{/employees/edit/{id}(id=${employee.employeeId})}"
+                                   onclick="getContent(event, this.href)">
+                                    <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
+                                </a>
+
+                                <form th:action="@{/employees/{id}(id=${employee.employeeId})}"
+                                      method="post" style="display:inline;"
+                                      onsubmit="postContent(event, this)">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Table  -->
+
+
+                <!-- Phân trang -->
+                <nav class="d-flex justify-content-end">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               onclick="getContent(event, this.href)" th:href="@{/employees(page=${currentPage - 1})}">Previous</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                               onclick="getContent(event, this.href)" th:href="@{/employees(page=${i})}" th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link"
+                               onclick="getContent(event, this.href)" th:href="@{/employees(page=${currentPage + 1})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- Phân trang -->
 
             </div>
-
         </div>
+
+
     </div>
+    <!-- section -->
 
     <!-- footer -->
     <div th:replace="~{fragments/fragment :: footer}"></div>
 </div>
+
 </body>
 </html>

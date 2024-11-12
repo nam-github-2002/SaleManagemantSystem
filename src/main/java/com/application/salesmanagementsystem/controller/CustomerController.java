@@ -161,7 +161,8 @@ public class CustomerController {
 
     // Tạo mới khách hàng
     @PostMapping("/new")
-    public String createCustomer(@ModelAttribute("newCustomer") Customer customer) {
+    public String createCustomer(@ModelAttribute("newCustomer") Customer customer)
+    {
         String newId = customerService.generateCustomerID();
         customer.setCustomerID(newId);
         customerService.saveCustomer(customer);
