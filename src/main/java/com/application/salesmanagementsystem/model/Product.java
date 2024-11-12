@@ -30,9 +30,8 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
-
+    @ElementCollection
+    private List<Integer> imageIds = new ArrayList<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", nullable = false, updatable = false)
@@ -98,17 +97,16 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public List<Image> getImages() {
-        return new ArrayList<>(images);
+    public List<Integer> getImages() {
+        return imageIds;
     }
 
-    public void addImage(Image image) {
-        image.setProduct(this);
-        this.images.add(image);
+    public void addImage(Integer imageId) {
+        this.imageIds.add(imageId);
     }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+    public void setImages(List<Integer> ImageIds) {
+        this.imageIds = ImageIds;
     }
 
     public Date getCreateDate() {

@@ -114,7 +114,7 @@ public class ProductController {
         }
 
         Optional<Product> product = productService.getProductById(id);
-        List<Image> images = product.get().getImages();
+        List<Integer> images = productService.findImagesByProductID(id);
 
         if (product.isPresent()) {
 
@@ -174,11 +174,18 @@ public class ProductController {
         }
 
         Optional<Product> opProduct = productService.getProductById(id);
-        if (opProduct.isPresent()) {
+        List<Supplier> suppliers = supplierService.getAllSuppliers();
+        List<Integer> images;
 
+        if (model.containsAttribute("images")) {
+            images = (List<Integer>) model.getAttribute("images");
+        } else {
+            images = productService.findImagesByProductID(id);
+        }
+
+        if (opProduct.isPresent()) {
             Product product = opProduct.get();
-            List<Image> images = product.getImages();
-            List<Supplier> suppliers = supplierService.getAllSuppliers();
+
             model.addAttribute("viewMode", false);
             model.addAttribute("editMode", true);
             model.addAttribute("exist", true);
@@ -222,15 +229,19 @@ public class ProductController {
 
         productService.saveProduct(newProduct);
 
-        if(productService.findById(newProduct.getProductID()).isPresent()) {
+        if(productService.findById(newProduct.getProductID()).isPresent() && images != null && images.length > 0) {
            for(MultipartFile image : images) {
-               byte[] bytes = image.getBytes();
-               Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+               if(!image.isEmpty()) {
+                   byte[] bytes = image.getBytes();
+                   Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
 
-               Image newImage = new Image();
-               newImage.setImageContent(blob);
-               imageService.create(newImage);
-               newProduct.addImage(newImage);
+                   Image newImage = new Image();
+                   newImage.setImageContent(blob);
+                   newImage.setProductId(newProduct.getProductID());
+
+                   imageService.create(newImage);
+                   newProduct.addImage(newImage.getId());
+               }
            }
         }
 
@@ -251,17 +262,24 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        for(MultipartFile image : images) {
-            Image newImage = new Image();
-            byte[] bytes = image.getBytes();
-            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+        if(images != null && images.length > 0 ) {
+            System.out.println("Van Co anh-------------");
+            for(MultipartFile image : images) {
+                if(!image.isEmpty()) {
+                    byte[] bytes = image.getBytes();
+                    Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
 
-            newImage.setImageContent(blob);
-            newProduct.addImage(newImage);
+                    Image newImage = new Image();
+                    newImage.setImageContent(blob);
+                    newImage.setProductId(newProduct.getProductID());
+
+                    imageService.create(newImage);
+                    newProduct.addImage(newImage.getId());
+                }
+            }
         }
 
         productService.saveProduct(newProduct);
-        imageRepository.deleteImagesWithNullProductId();
         redirectAttributes.addFlashAttribute("viewMode", true);
         redirectAttributes.addFlashAttribute("editMode", false);
         return "redirect:/products/detail/" + newProduct.getProductID();
@@ -272,6 +290,18 @@ public class ProductController {
     {
         productService.deleteProduct(id);
         return "redirect:/products";
+    }
+
+    @PostMapping({"/image/{id}"})
+    public String deleteImage(HttpServletRequest request,
+                              @PathVariable int id,
+                              RedirectAttributes redirectAttributes)
+    {
+        Image image = imageService.viewById(id);
+        int productId = image.getProduct();
+        imageService.delete(id);
+
+        return "redirect:/products/edit/" + productId;
     }
 
     @PostMapping("/search")

@@ -71,16 +71,19 @@
                   <div style="width: 250px">
                       <div  th:if="${editMode}">
                         <label for="file-upload" class="btn border border-primary">
-                          <img th:src="@{/image/addimagesBtn.png}"
-                               style="width: 230px; height: 300px; object-fit: contain;"
-                               class="hover-effect" id="image-preview">
+                          <div id="image-preview-container" class="d-flex flex-wrap">
+                            <img th:src="@{/image/addimagesBtn.png}"
+                                 id="image-preview"
+                                 class="hover-effect"
+                                 style="width: 230px; height: 300px; object-fit: contain;">
+                          </div>
                         </label>
                         <input  name="image"
                                 type="file"
                                 id="file-upload"
                                 class="form-control-file" style="display: none"
                                 accept="image/*"
-                                onchange="previewImage(event)"
+                                onchange="previewImages(event)"
                                 multiple>
                         <ul id="file-list" class="mt-2"></ul>
                       </div>
@@ -91,20 +94,27 @@
 
                         <!-- Hình ảnh đầu tiên với kích thước 240x300px -->
                         <div th:if="${images != null && !#lists.isEmpty(images)}">
-                          <div>
+                          <!-- Hình ảnh chính -->
+                          <div class="image-container">
                             <img id="main-image" class="img-fluid rounded-3 hover-effect"
-                                 th:src="@{${'/products/display?id=' + images[0].id}}"
-                                 alt=""
+                                 th:src="@{${'/products/display?id=' + images[0]}}"
                                  style="object-fit: contain;">
+
+                            <!-- Nút xoá -->
+                            <a th:if="${exist && editMode}"
+                               th:href="'/products/image/' + ${images[0]}"
+                               onclick="deleteImage(event, this.href)"
+                               class="delete-img-btn">X</a>
                           </div>
                         </div>
+
 
                         <!-- Khung ảnh thumbnail (các ảnh nhỏ) dưới ảnh chính -->
                         <div class="thumbnail-gallery mt-2 ">
                           <div th:each="image : ${images}"
                                class="d-inline-block p-1">
                             <img class="img-fluid rounded-3 hover-effect"
-                                 th:src="@{${'/products/display?id=' + image.id}}"
+                                 th:src="@{${'/products/display?id=' + image}}"
                                  onclick="changeMainImage(this)">
                           </div>
                         </div>

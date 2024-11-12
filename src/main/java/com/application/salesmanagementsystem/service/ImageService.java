@@ -8,4 +8,5 @@ public interface ImageService {
      Image create(Image image);
      List<Image> viewAll();
      Image viewById(int id);
+     void delete(int id);
 }

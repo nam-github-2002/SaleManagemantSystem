@@ -130,6 +130,23 @@ window.postContent = function(event, form) {
     });
 };
 
+// Hàm xóa ảnh
+function deleteImage(event, url) {
+    event.preventDefault();
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        success: function(response) {
+            $('#mainArea').html(response);
+            history.pushState(null, '', url);
+        },
+        error: function(xhr, status, error) {
+            alert('Có lỗi xảy ra khi xoá ảnh');
+        }
+    });
+}
+
 //Lọc sản phẩm
 window.filterProductByCategory = function(event, category) {
     event.preventDefault();
@@ -149,25 +166,49 @@ window.filterProductByCategory = function(event, category) {
     });
 }
 
+
 //Xoá cookie khi đóng trang
 window.onbeforeunload = function() {
     document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 };
 
-function previewImage(event) {
-    var reader = new FileReader();
-    reader.onload = function() {
-        var output = document.getElementById('image-preview');
-        output.src = reader.result;
+function previewImages(event) {
+    const files = event.target.files;
+    const container = $('#image-preview-container');
+
+    // Xóa ảnh cũ
+    container.empty();
+
+    if (files.length === 1) {
+        // Hiển thị một ảnh với kích thước gốc
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = $('<img>')
+                .attr('src', e.target.result)
+                .css({ width: '230px', height: '300px', objectFit: 'contain' })
+                .addClass('hover-effect');
+            container.append(img);
+        };
+        reader.readAsDataURL(files[0]);
+    } else {
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = $('<img>')
+                    .attr('src', e.target.result)
+                    .css({ width: '100px', height: '120px', objectFit: 'contain', margin: '5px' })
+                    .addClass('hover-effect');
+                container.append(img);
+            };
+            reader.readAsDataURL(file);
+        });
     }
-    // Đọc tệp ảnh đã chọn
-    reader.readAsDataURL(event.target.files[0]);
 }
 
-function changeMainImage(thumbnail) {
-    // Lấy nguồn (src) của ảnh thumbnail
-    let newSrc = thumbnail.src;
 
-    // Thay đổi src của ảnh chính
-    document.getElementById('main-image').src = newSrc;
+function changeMainImage(thumbnail) {
+    let newSrc = $(thumbnail).attr('src');
+    let imageId = newSrc.split('=')[1];
+    $('#main-image').attr('src', '/products/display?id=' + imageId);
+    $('.delete-img-btn').attr('href', '/products/image/' + imageId);
 }

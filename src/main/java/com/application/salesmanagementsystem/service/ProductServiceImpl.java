@@ -19,54 +19,48 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ImageRepository imageRepository;
 
-    // Lấy tất cả sản phẩm
     @Override
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
-
-    // Lấy sản phẩm theo ID
-    @Override
-    public Optional<Product> getProductById(Integer id) {
-        return productRepository.findById(id);
-    }
-
-    // Lưu sản phẩm mới hoặc cập nhật sản phẩm hiện có
-    @Override
-    public void saveProduct(Product product) {
-        productRepository.save(product);
-    }
-
-    // Xóa sản phẩm theo ID
-    @Override
-    public void deleteProduct(Integer id) {
-        productRepository.deleteById(id);
-    }
-
     @Override
     public Page<Product> searchProducts(String keyword, Pageable pageable) {
         return productRepository.findByProductNameContaining(keyword, pageable);
     }
-
+    @Override
+    public Page<Product> getProductsByCategory(String category, Pageable pageable) {
+        return productRepository.findByCategoryCategoryName(category, pageable);
+    }
+    @Override
+    public Optional<Product> getProductById(Integer id) {
+        return productRepository.findById(id);
+    }
     @Override
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
-
+    @Override
+    public List<Product> getTop10NewestProducts() {
+        return productRepository.findTop10ByOrderByCreateDateDesc();
+    }
+    @Override
+    public List<Integer> findImagesByProductID(Integer id) {
+        return imageRepository.findAllByProductId(id);
+    }
+    @Override
     public int generateNewProductId() {
         Product product = productRepository.findTopByOrderByProductIDDesc();
         return product.getProductID() + 1;
     }
-
     @Override
-    public List<Product> getTop10NewestProducts() {
-        // Sử dụng phương thức của ProductRepository để lấy 10 sản phẩm mới nhất
-        return productRepository.findTop10ByOrderByCreateDateDesc();
+    public void saveProduct(Product product) {
+        productRepository.save(product);
     }
-
     @Override
-    public Page<Product> getProductsByCategory(String category, Pageable pageable) {
-        return productRepository.findByCategoryCategoryName(category, pageable);
+    public void deleteProduct(Integer id) {
+        productRepository.deleteById(id);
     }
 }

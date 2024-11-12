@@ -12,6 +12,9 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<Image, Integer> {
     @Modifying
     @Transactional
-    @Query("DELETE FROM Image i WHERE i.product IS NULL")
+    @Query("DELETE FROM Image i WHERE i.productId IS NULL")
     void deleteImagesWithNullProductId();
+
+    @Query("SELECT i.id FROM Image i WHERE i.productId = :productId")
+    List<Integer> findAllByProductId(int productId);
 }

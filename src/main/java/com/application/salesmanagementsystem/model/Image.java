@@ -16,13 +16,8 @@ public class Image {
     @Column(name = "image_Data", nullable = false)
     private Blob imageContent;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id", insertable = false, updatable = false)
-    private Product product;
-
-    @Basic
     @Column(name="product_id")
-    private int product_id;
+    private Integer productId;
 
     // Getters and setters
     public int getId() {
@@ -41,13 +36,12 @@ public class Image {
         this.imageContent = imageContent;
     }
 
-    public Product getProduct() {
-        return product;
+    public Integer getProduct() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product_id = product.getProductID();
-        this.product = product;
+    public void setProductId(Integer productId) {
+       this.productId = productId;
     }
 
 }

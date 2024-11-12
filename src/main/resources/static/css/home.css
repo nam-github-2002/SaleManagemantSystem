@@ -535,6 +535,34 @@ p {
 .product-image-gallery::-webkit-scrollbar-thumb:hover {
     background-color: #555;
 }
+/* Chứa hình ảnh và nút xoá */
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Nút xoá */
+.delete-img-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    line-height: 20px;
+    /*display: none; */
+}
+
+.delete-img-btn:hover {
+    background-color: darkred;
+}
+
+
 
 /* Cấu trúc của khung thumbnail */
 .thumbnail-gallery {

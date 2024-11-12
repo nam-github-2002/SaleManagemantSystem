@@ -9,25 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    // Lấy tất cả sản phẩm
     Page<Product> getAllProducts(Pageable pageable);
-
-    // Lấy sản phẩm theo ID
-    Optional<Product> getProductById(Integer id);
-
-    // Lưu sản phẩm mới hoặc cập nhật sản phẩm hiện có
-    void saveProduct(Product product);
-
-    // Xóa sản phẩm theo ID
-    void deleteProduct(Integer id);
-
-    Page<Product> searchProducts(String keyword, Pageable pageable);
-
-    Optional<Product> findById(int id);
-
-    int generateNewProductId();
-
-    List<Product> getTop10NewestProducts();
-
     Page<Product> getProductsByCategory(String category, Pageable pageable);
+    Page<Product> searchProducts(String keyword, Pageable pageable);
+    Optional<Product> getProductById(Integer id);
+    Optional<Product> findById(int id);
+    List<Product> getTop10NewestProducts();
+    List<Integer> findImagesByProductID(Integer id);
+    int generateNewProductId();
+    void saveProduct(Product product);
+    void deleteProduct(Integer id);
 }
