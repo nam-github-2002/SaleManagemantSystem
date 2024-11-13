@@ -53,23 +53,15 @@ $(document).ready(function() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    //Kích hoat DataTable cho table mới khi tải xong ajax của các trang có bảng
-    $(document).on('ajaxComplete', function() {
-        if ($.fn.DataTable) {
-            $('table').DataTable({
-                "columnDefs": [
-                    { "type": "num", "targets": 3 }
-                ],
-                "order": [[3, 'asc']],
-                "searching": false,
-                "info": true,
-                "paging": false
-            });
-        } else {
-            console.error("DataTable chưa được import chính xác");
-        }
+    $('table').DataTable({
+        "columnDefs": [
+            { "type": "num", "targets": 3 }
+        ],
+        "order": [],
+        "searching": false,
+        "info": true,
+        "paging": false
     });
-
 });
 
 
@@ -84,6 +76,17 @@ window.getContent = function(event, url) {
             if ($('#mainArea').length) {
 
                 $('#mainArea').html(response);
+
+                $('table').DataTable({
+                    "columnDefs": [
+                        { "type": "num", "targets": 3 }
+                    ],
+                    "order": [],
+                    "searching": false,
+                    "info": true,
+                    "paging": false
+                });
+
             } else {
 
                 console.log('#mainArea does not exist.');
@@ -114,6 +117,17 @@ window.getContent = function(event, url) {
 // Hàm post
 window.postContent = function(event, form) {
     event.preventDefault();
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    const hasTrashIcon = submitButton.querySelector('.fa-trash') !== null;
+
+    if (hasTrashIcon) {
+        const confirmDelete = confirm("Bạn có chắc chắn muốn xoá hàng này không?");
+        if (!confirmDelete) {
+            return;
+        }
+    }
+
     const url = form.action;
     const formData = new FormData(form);
 
@@ -149,7 +163,8 @@ function deleteImage(event, url) {
             history.pushState(null, '', url);
         },
         error: function(xhr, status, error) {
-            alert('Có lỗi xảy ra khi xoá ảnh');
+            let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
+            alert(errorMessage)
         }
     });
 }
@@ -218,3 +233,42 @@ function changeMainImage(thumbnail) {
     $('.delete-img-btn').attr('href', '/products/image/' + imageId);
 }
 
+document.getElementById('exportExcelBtn').addEventListener('click', function() {
+    exportTableToExcel('dataTable', 'DanhSachSanPham');
+});
+
+function exportTableToExcel(filename = '') {
+    // Lấy bảng dữ liệu bằng jQuery
+    const $table = $('table');
+    if ($table.length === 0) {
+        alert("Không tìm thấy bảng dữ liệu!");
+        return;
+    }
+
+    // Chuyển đổi bảng thành mảng 2D
+    const tableData = [];
+    const $rows = $table.find('tr');
+
+    // Duyệt qua từng hàng
+    $rows.each(function() {
+        const rowData = [];
+        const $cells = $(this).find('td, th');
+
+        $cells.each(function() {
+            rowData.push($(this).text().trim());
+        });
+
+        tableData.push(rowData);
+    });
+
+    // Tạo một workbook mới và thêm dữ liệu vào sheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(tableData);
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    // Tạo tên file
+    filename = filename ? filename + '.xlsx' : 'export.xlsx';
+
+    // Xuất file Excel
+    XLSX.writeFile(wb, filename);
+}

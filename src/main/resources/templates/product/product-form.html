@@ -47,15 +47,36 @@
       <div class="row">
 
         <div class="col-md-12">
-          <a th:if="${editMode || viewMode}"
-             onclick="getContent(event, this.href)"
-             th:href="@{/products/new}"
-             class="btn btn-primary mb-2">Thêm sản phẩm mới</a>
 
-          <a th:if="${viewMode}"
-             onclick="getContent(event, this.href)"
-             th:href="@{/products/edit/{id}(id=${newProduct.productID})}"
-             class="btn btn-primary mb-2">Thay đổi thông tin</a>
+          <div th:if="${editMode || viewMode}" class="d-flex">
+
+            <a th:if="${exist}"
+               onclick="getContent(event, this.href)"
+               th:href="@{/products/new}"
+               class="btn btn-success mb-2">+ Thêm</a>
+
+            <form th:if="${exist}"
+                  th:action="@{/products/delete/{id}(id=${newProduct.productID})}"
+                  method="post"
+                  onclick="postContent(event, this)"
+                  class="mb-2  ml-2">
+              <button type="submit" class="btn btn-danger">
+                <i class="fa-solid fa-trash"></i> Xoá
+              </button>
+            </form>
+
+            <a th:if="${exist}"
+               onclick="getContent(event, this.href)"
+               th:href="@{/products/edit/{id}(id=${newProduct.productID})}"
+               class="btn btn-warning mb-2 ml-2">
+              <i class="fa-solid fa-pen-to-square"></i> Sửa
+            </a>
+
+            <a onclick="getContent(event, this.href)"
+               th:href="@{/products}"
+               class="btn btn-info mb-2 ml-2">Danh sách</a>
+
+          </div>
 
           <div class="main-card mb-3 card">
             <div class="card-body">
@@ -108,6 +129,16 @@
                           </div>
                         </div>
 
+                        <!-- Nếu không có hình ảnh, hiển thị ảnh mặc định -->
+                        <div th:if="${images == null || #lists.isEmpty(images)}">
+                          <div class="image-container">
+                            <img id="main-image" class="img-fluid rounded-3 hover-effect"
+                                 th:src="@{/image/noimage.jpg}"
+                                 style="object-fit: contain;">
+                          </div>
+                        </div>
+
+
 
                         <!-- Khung ảnh thumbnail (các ảnh nhỏ) dưới ảnh chính -->
                         <div class="thumbnail-gallery mt-2 ">
@@ -122,9 +153,6 @@
                       </div>
 
                     </div>
-
-
-
 
                   </div>
 
@@ -207,6 +235,7 @@
                       </div>
                     </div>
                   </div>
+
                 </div>
 
                 <!-- Action Buttons -->

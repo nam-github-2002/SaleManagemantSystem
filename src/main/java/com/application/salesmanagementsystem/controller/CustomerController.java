@@ -178,7 +178,7 @@ public class CustomerController {
     }
 
     // Xóa khách hàng
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable String id) {
         customerService.deleteCustomer(id);
         return "redirect:/customers";

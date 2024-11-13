@@ -23,12 +23,17 @@ public class ProductServiceImpl implements ProductService {
     private ImageRepository imageRepository;
 
     @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
     @Override
     public Page<Product> searchProducts(String keyword, Pageable pageable) {
-        return productRepository.findByProductNameContaining(keyword, pageable);
+        return productRepository.findAllByKeyword(keyword, pageable);
     }
     @Override
     public Page<Product> getProductsByCategory(String category, Pageable pageable) {

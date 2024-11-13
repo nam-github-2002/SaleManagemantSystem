@@ -4,6 +4,8 @@ import com.application.salesmanagementsystem.model.Customer;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
@@ -12,8 +14,15 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
-    Page<Customer> findByCompanyNameContainingIgnoreCase(String keyword, Pageable pageable);
-    Page<Customer> findAll(@Nullable Pageable pageable);
+    @Query("SELECT c FROM Customer c WHERE " +
+            "LOWER(c.customerID) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(c.companyName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(c.phone) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(c.address) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(c.type) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Customer> findAllByKeyword(String keyword, Pageable pageable);
 
+    Page<Customer> findAll(@Nullable Pageable pageable);
     Optional<Customer> findByEmail(String email);
 }

@@ -51,7 +51,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     public Page<Supplier> findByName(String supplierName, Pageable pageable) {
-        return supplierRepository.findBySupplierName(supplierName, pageable);
+        return supplierRepository.findAllByKeyword(supplierName, pageable);
     }
 
     @Override

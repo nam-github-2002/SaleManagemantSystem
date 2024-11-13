@@ -139,7 +139,8 @@
                                 <li>
                                     <div class="new-products-list-info">
                                         <img class="img-fluid rounded-3"
-                                             th:src="${#lists.isEmpty(product.images) ? '/images/logoSmartSeller.png' : '/products/display?id=' + product.getImages().getFirst()}"
+                                             th:src="${#lists.isEmpty(product.images) ? '/images/logoSmartSeller.png'
+                                                                                        : '/products/display?id=' + product.getImages().getFirst()}"
                                              alt="Not Img"
                                              style="width: 40px; height: 40px; object-fit: cover;">
                                         <a class="new-products-list-name"

@@ -35,10 +35,13 @@ public class HomeController {
         List<Product> limitedProducts = lastestProducts.stream()
                 .limit(4)
                 .collect(Collectors.toList());
+
+        for(Product product : limitedProducts) {
+            System.out.println("product ID: "+ product.getProductID() + ", image: " + product.getImages());
+        }
         model.addAttribute("lastestProducts", limitedProducts);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            System.out.println("Tai fragement dashboard");
             return "home/home :: dashboard";
         }
 

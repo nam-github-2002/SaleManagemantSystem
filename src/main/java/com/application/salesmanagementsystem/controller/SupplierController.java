@@ -175,7 +175,7 @@ public class SupplierController {
     }
 
     // Xóa khách hàng
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteSupplier(@PathVariable int id) {
         supplierService.deleteSupplier(id);
         return "redirect:/suppliers";

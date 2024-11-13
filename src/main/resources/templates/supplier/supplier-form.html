@@ -34,6 +34,37 @@
 
         <div class="row">
           <div class="col-md-12">
+
+            <div th:if="${editMode || viewMode}" class="d-flex">
+              <a th:if="${exist}"
+                 onclick="getContent(event, this.href)"
+                 th:href="@{/suppliers/new}"
+                 class="btn btn-success mb-2">+ Thêm</a>
+
+              <form th:if="${exist}"
+                    th:action="@{/suppliers/delete/{id}(id=${newSupplier.supplierID})}"
+                    method="post"
+                    onclick="postContent(event, this)"
+                    class="mb-2 ml-2">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fa-solid fa-trash"></i> Xoá
+                </button>
+              </form>
+
+              <a th:if="${exist}"
+                 onclick="getContent(event, this.href)"
+                 th:href="@{/suppliers/edit/{id}(id=${newSupplier.supplierID})}"
+                 class="btn btn-warning mb-2 ml-2">
+                <i class="fa-solid fa-pen-to-square"></i> Sửa
+              </a>
+
+              <a onclick="getContent(event, this.href)"
+                 th:href="@{/suppliers}"
+                 class="btn btn-info mb-2 ml-2">Danh sách</a>
+
+            </div>
+
+
             <div class="main-card mb-3 card">
               <div class="card-body">
 

@@ -507,14 +507,13 @@ p {
 }
 
 .hover-effect {
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: scale 0.8s linear, opacity 0.8s linear !important;
 }
 
 .hover-effect:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
+    transform: scale(1.05) !important;
+    opacity: 0.9!important;
 }
-
 
 .product-image-gallery {
     background-color: var(--primary-color);
@@ -526,13 +525,8 @@ p {
     align-items: center;
 }
 
-.product-image-gallery img:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
 .product-image-gallery::-webkit-scrollbar {
-    height: 8px;  /* Chiều cao thanh cuộn */
+    height: 8px;
 }
 
 .product-image-gallery::-webkit-scrollbar-thumb {
@@ -601,8 +595,8 @@ p {
 }
 
 .thumbnail-gallery img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 4px;
     object-fit: cover;
     cursor: pointer;

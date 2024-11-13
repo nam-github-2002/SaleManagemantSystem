@@ -33,25 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public Employee saveEmployee(Employee employee) {
-        if (employee.getEmployeeId() != null && employeeRepository.existsById(employee.getEmployeeId())) {
-            employeeRepository.updateEmployeeDetails(
-                    employee.getEmployeeId(),
-                    employee.getName(),
-                    employee.getPhone(),
-                    employee.getEmail(),
-                    employee.getDepartment(),
-                    employee.getGender(),
-                    employee.getDateOfBirth(),
-                    employee.getHireDate(),
-                    employee.getSalary(),
-                    employee.getStatus(),
-                    employee.getImage()
-            );
-            return employee;
-        } else {
-
-            return employeeRepository.save(employee);
-        }
+        return employeeRepository.save(employee);
     }
 
     @Override
@@ -61,7 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Page<Employee> searchAllField(String keyword, Pageable pageable) {
-        return employeeRepository.searchAllFields(keyword, pageable);
+        return employeeRepository.findAllByKeyword(keyword, pageable);
     }
 
     @Override

@@ -145,15 +145,14 @@ public class ProductController {
             return "redirect:/login";
         }
 
+        Product newProduct = new Product();
+        newProduct.setProductID(productService.generateNewProductId());
+        List<Supplier> suppliers = supplierService.getAllSuppliers();
+
         model.addAttribute("viewMode", false);
         model.addAttribute("editMode", true);
         model.addAttribute("exist", false);
-
-        List<Supplier> suppliers = supplierService.getAllSuppliers();
         model.addAttribute("suppliers", suppliers);
-
-        Product newProduct = new Product();
-        newProduct.setProductID(productService.generateNewProductId());
         model.addAttribute("newProduct", newProduct);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -224,9 +223,8 @@ public class ProductController {
                                 RedirectAttributes redirectAttributes) throws IOException, SQLException
     {
         if (result.hasErrors()) {
-            return "redirect:/products";
+            return "redirect:/products/new";
         }
-
         productService.saveProduct(newProduct);
 
         if(productService.findById(newProduct.getProductID()).isPresent() && images != null && images.length > 0) {
@@ -245,9 +243,8 @@ public class ProductController {
            }
         }
 
+
         productService.saveProduct(newProduct);
-        redirectAttributes.addFlashAttribute("viewMode", true);
-        redirectAttributes.addFlashAttribute("editMode", false);
         return "redirect:/products/detail/" + newProduct.getProductID();
     }
 
@@ -259,11 +256,10 @@ public class ProductController {
             throws IOException, SQLException
     {
         if (result.hasErrors()) {
-            return "redirect:/products";
+            return "redirect:/products/edit/" + newProduct.getProductID();
         }
 
         if(images != null && images.length > 0 ) {
-            System.out.println("Van Co anh-------------");
             for(MultipartFile image : images) {
                 if(!image.isEmpty()) {
                     byte[] bytes = image.getBytes();
@@ -274,18 +270,20 @@ public class ProductController {
                     newImage.setProductId(newProduct.getProductID());
 
                     imageService.create(newImage);
+                    System.out.println("Anh da duoc them: " + newImage.getId());
+                    if (newProduct.getImages() == null) {
+                        System.out.println("Chua co arraylist");  // Khởi tạo nếu chưa có
+                    }
                     newProduct.addImage(newImage.getId());
                 }
             }
         }
 
         productService.saveProduct(newProduct);
-        redirectAttributes.addFlashAttribute("viewMode", true);
-        redirectAttributes.addFlashAttribute("editMode", false);
         return "redirect:/products/detail/" + newProduct.getProductID();
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable int id)
     {
         productService.deleteProduct(id);
@@ -298,9 +296,11 @@ public class ProductController {
                               RedirectAttributes redirectAttributes)
     {
         Image image = imageService.viewById(id);
-        int productId = image.getProduct();
+        Integer productId = image.getProductId();
+        Product product = productService.getProductById(productId).get();
         imageService.delete(id);
-
+        product.getImages().remove(Integer.valueOf(id));
+        productService.saveProduct(product);
         return "redirect:/products/edit/" + productId;
     }
 
@@ -314,11 +314,12 @@ public class ProductController {
         if (searchResults.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy sản phẩm nào với từ khóa '" + keyword + "'.");
         } else {
-            session.setAttribute("products", searchResults);
+            redirectAttributes.addFlashAttribute("products", searchResults);
         }
 
-        session.setAttribute("keyword", keyword);
+        redirectAttributes.addAttribute("keyword", keyword);
         return "redirect:/products";
     }
+
 
 }

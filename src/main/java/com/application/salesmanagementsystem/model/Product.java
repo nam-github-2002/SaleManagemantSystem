@@ -14,7 +14,7 @@ public class Product {
     private Integer productID;
 
     @Column(name = "product_name", nullable = false)
-    private String productName;
+    private String productName = "Product";
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "Category_id", nullable = false)
@@ -25,13 +25,13 @@ public class Product {
     private Supplier supplier;
 
     @Column(name = "price")
-    private Double price;
+    private Double price = 0.0;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private Integer quantity = 0;
 
     @ElementCollection
-    private List<Integer> imageIds = new ArrayList<>();
+    private List<Integer> imageIds;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", nullable = false, updatable = false)
@@ -45,6 +45,7 @@ public class Product {
     public Product() {
         this.createDate = new Date();
         this.updateDate = new Date();
+        this.imageIds = new ArrayList<>();
     }
 
     // Getters và Setters
@@ -102,7 +103,7 @@ public class Product {
     }
 
     public void addImage(Integer imageId) {
-        this.imageIds.add(imageId);
+        imageIds.add(imageId);
     }
 
     public void setImages(List<Integer> ImageIds) {

@@ -22,7 +22,7 @@ public class ImageServiceImpl implements ImageService {
     }
     @Override
     public Image viewById(int id) {
-        return imageRepository.findById(id).get();
+        return imageRepository.findById(id).orElse(null);
     }
     @Override
     public void delete(int id) {

@@ -22,7 +22,7 @@ public class Employee {
     private String department;
 
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     private String username;
     @Column(nullable = false)
     private String password;
@@ -38,6 +38,7 @@ public class Employee {
     private String status;
 
     @Lob
+    @Column(name = "image")
     private Blob image;
 
     @Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

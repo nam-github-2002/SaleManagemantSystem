@@ -34,6 +34,37 @@
 
         <div class="row">
           <div class="col-md-12">
+
+            <div  th:if="${editMode || viewMode}" class="d-flex">
+
+              <a th:if="${exist}"
+                 onclick="getContent(event, this.href)"
+                 th:href="@{/employees/new}"
+                 class="btn btn-success mb-2">+ Thêm</a>
+
+              <form th:if="${exist}"
+                    th:action="@{/employees/delete/{id}(id=${newEmployee.employeeId})}"
+                    method="post"
+                    onclick="postContent(event, this)"
+                    class="mb-2">
+                <button type="submit" class="btn btn-danger ml-2">
+                  <i class="fa-solid fa-trash"></i> Xoá
+                </button>
+              </form>
+
+              <a th:if="${exist}"
+                 onclick="getContent(event, this.href)"
+                 th:href="@{/employees/edit/{id}(id=${newEmployee.employeeId})}"
+                 class="btn btn-warning mb-2 ml-2">
+                <i class="fa-solid fa-pen-to-square"></i> Sửa
+              </a>
+
+              <a onclick="getContent(event, this.href)"
+                 th:href="@{/employees}"
+                 class="btn btn-info mb-2 ml-2">Danh sách</a>
+
+            </div>
+
             <div class="main-card mb-3 card">
               <div class="card-body">
 
@@ -48,29 +79,32 @@
                       <div style="width: 20%">
 
                         <div  th:if="${editMode}">
+
                           <label for="file-upload" class="btn border border-primary">
-                            <img th:src="@{/image/addimagesBtn.png}"
-                                 style="width: 230px; height: 300px; object-fit: contain;"
-                                 class="hover-effect" id="image-preview">
+                            <div id="image-preview-container" class="d-flex flex-wrap">
+                              <img th:src="@{/image/user.png}"
+                                   id="image-preview"
+                                   class="hover-effect"
+                                   style="width: 230px; height: 300px; object-fit: contain;">
+                            </div>
                           </label>
 
                           <input  name="image"
                                   type="file"
                                   id="file-upload"
-                                  class="form-control-file btn" style="display: none"
+                                  class="form-control-file" style="display: none"
                                   accept="image/*"
-                                  onchange="previewImage(event)"
-                                  multiple>
-                          <ul id="file-list" ></ul>
+                                  onchange="previewImages(event)">
+
                         </div>
 
-                        <div th:if="${exist}">
-                          <div class="product-image-gallery overflow-auto" th:if="${newEmployee.image != null}">
-                            <img class="img-fluid rounded-3"
-                                 th:src="@{${'/employees/display?id=' + newEmployee.employeeId}}"
-                                 style="width: 200px; height: 300px; object-fit: cover;">
-                          </div>
+                        <div class="product-image-gallery overflow-auto"
+                             th:if="${exist && newEmployee.image != null}">
+                          <img class="img-fluid rounded-3 hover-effect"
+                               th:src="@{${'/employees/display?id=' + newEmployee.employeeId}}"
+                               style="width: 200px; height: 300px; object-fit: cover;">
                         </div>
+
                       </div>
 
                       <div style="width: 34%;">
@@ -132,10 +166,10 @@
                           <div class="col-md-8 col-xl-8">
                             <select th:if="${editMode}" required name="role" id="role" class="form-control">
                               <option value="">-- Select Role --</option>
-                              <option th:value="admin" th:selected="${exist ? newEmployee.role == 'admin' : null}">Admin</option>
-                              <option th:value="manager" th:selected="${exist ? newEmployee.role == 'manager' : null}">Manager</option>
-                              <option th:value="headdepartment" th:selected="${exist ? newEmployee.role == 'headdepartment' : null}">Head-Department</option>
-                              <option th:value="staff" th:selected="${exist ? newEmployee.role == 'staff' : null}">Staff</option>
+                              <option th:value="Admin" th:selected="${exist ? newEmployee.role == 'Admin' : null}">Admin</option>
+                              <option th:value="Manager" th:selected="${exist ? newEmployee.role == 'Manager' : null}">Manager</option>
+                              <option th:value="Head-Department" th:selected="${exist ? newEmployee.role == 'Head-Department' : null}">Head-Department</option>
+                              <option th:value="Staff" th:selected="${exist ? newEmployee.role == 'Staff' : null}">Staff</option>
                             </select>
                             <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.role}"></p>
                           </div>
@@ -197,7 +231,7 @@
                               <option th:value="Probation" th:selected="${exist ? newEmployee.status == 'Probation' : null}">Probation</option>
 
                             </select>
-                            <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.gender}"></p>
+                            <p th:if="${viewMode}" class="text-md-left form-control-plaintext"  th:text="${newEmployee.gender}"></p>
                           </div>
                         </div>
 

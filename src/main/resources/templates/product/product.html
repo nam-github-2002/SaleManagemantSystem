@@ -28,15 +28,19 @@
 
                 <section class="content-main px-3">
                     <div class="productMan">
+
                         <!-- Action buttons and summary -->
                         <div class="row mb-3">
                             <!-- Cột nút hành động -->
                             <div class="col-md-6">
-                                <a  onclick="getContent(event, this.href)" href="/products/new" class="btn btn-primary btn-sm">+ Thêm sản phẩm mới</a>
-                                <button class="btn btn-success btn-sm">Xuất ra Excel</button>
+                                <a  onclick="getContent(event, this.href)" href="/products/new" class="btn btn-primary btn-sm">+ Thêm sản phẩm</a>
+                                <button id="exportExcelBtn"
+                                        class="btn btn-success btn-sm"
+                                        onclick="exportTableToExcel()">Xuất ra Excel</button>
                             </div>
-                            <!-- Cột lọc theo danh mục -->
+
                             <div class="col-md-6 d-flex justify-content-end flex-column">
+                                <!-- lọc theo danh mục -->
                                 <div class="form-inline ml-auto">
                                     <label for="categoryFilter" class="mr-2">Lọc theo danh mục:</label>
                                     <select id="categoryFilter" class="form-control form-control-sm"
@@ -56,9 +60,14 @@
                                     </select>
 
                                 </div>
+
+                                <!-- Tìm kiếm -->
                                 <div class="form-inline ml-auto mt-4">
-                                    <form action="/products/search " method="POST" class="d-flex search-form">
-                                        <input  type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." name="keyword" aria-label="Search">
+                                    <form th:action="@{/products/search}"
+                                          method="POST"
+                                          onsubmit="postContent(event, this)"
+                                          class="d-flex search-form">
+                                        <input  type="text" class="form-control" placeholder="Tìm kiếm..." name="keyword" aria-label="Search">
                                         <button type="submit" class="btn btn-primary ml-2">
                                             Tìm kiếm
                                         </button>
@@ -101,7 +110,7 @@
                                                 <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
                                             </a>
 
-                                            <form th:action="@{/products/{id}(id=${product.productID})}"
+                                            <form th:action="@{/products/delete/{id}(id=${product.productID})}"
                                                   method="post" style="display:inline;"
                                                   onsubmit="postContent(event, this)">
                                                 <input type="hidden" name="_method" value="DELETE" />
@@ -122,7 +131,7 @@
                                     <a class="page-link"
                                        th:href="@{'/products?page=0&category=' + ${category}}"
                                        aria-label="Previous" o
-                                       nclick="getContent(event, this.href)">
+                                       onclick="getContent(event, this.href)">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>

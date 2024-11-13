@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
+    List<Product> getAllProducts();
     Page<Product> getAllProducts(Pageable pageable);
     Page<Product> getProductsByCategory(String category, Pageable pageable);
     Page<Product> searchProducts(String keyword, Pageable pageable);

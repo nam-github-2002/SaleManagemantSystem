@@ -10,7 +10,7 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Lob
     @Column(name = "image_Data", nullable = false)
@@ -20,11 +20,11 @@ public class Image {
     private Integer productId;
 
     // Getters and setters
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -36,7 +36,7 @@ public class Image {
         this.imageContent = imageContent;
     }
 
-    public Integer getProduct() {
+    public Integer getProductId() {
         return productId;
     }
 

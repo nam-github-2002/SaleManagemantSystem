@@ -17,106 +17,118 @@
 
         <div id="mainArea">
             <div th:fragment="supplierPage">
-                <h2 class="text-center mb-5">QUẢN LÝ NHÀ CUNG CẤP</h2>
+                <section class="content-header">
+                    <h1>Quản lý NHÀ CUNG CẤP</h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+                        <li class="active"><i class="fas fa-box"></i>Product</li>
+                    </ol>
+                </section>
 
-                <!-- Search bar -->
-                <div class="mb-2 mt-2 d-flex justify-content-center">
-                    <a href="/suppliers/new" onclick="getContent(event,this.href)"
-                       style="height: 38px"
-                       id="addNewCusButton" class="btn btn-primary mr-auto">
-                        <i class="fa-solid fa-square-plus"></i>
-                        <span>Thêm Mới</span>
-                    </a>
+                <section class="content-main px-3">
+                    <div class="productMan">
 
-                    <form th:action="@{/suppliers/search}" method="post"
-                          onsubmit="postContent(event, this)"
-                          class="d-flex ml-auto" id="search-form">
+                        <!-- Action buttons and summary -->
+                        <div class="row mb-3">
+                            <!-- Cột nút hành động -->
+                            <div class="col-md-6">
+                                <a  onclick="getContent(event, this.href)" href="/suppliers/new" class="btn btn-primary btn-sm">+ Thêm nhà cung cấp</a>
+                                <button id="exportExcelBtn"
+                                        class="btn btn-success btn-sm"
+                                        onclick="exportTableToExcel()">Xuất ra Excel</button>
+                            </div>
 
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="keyword"
-                                   th:value="${keyword}" placeholder="Tìm kiếm theo tên công ty...">
+                            <!-- Tìm kiếm -->
+                            <div class="col-md-6 d-flex justify-content-end flex-column">
+                                <div class="form-inline ml-auto mt-4">
+                                    <form action="/suppliers/search"
+                                          method="POST"
+                                          onsubmit="postContent(this)"
+                                          class="d-flex search-form">
+                                        <input  type="text" class="form-control" placeholder="Tìm kiếm..." name="keyword" aria-label="Search">
+                                        <button type="submit" class="btn btn-primary ml-2">
+                                            Tìm kiếm
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
                         </div>
-                        <button class="btn btn-outline-secondary ms-2 form-control" type="submit" style="width: 50%">Tìm Kiếm</button>
-                        <div th:if="${error != false}" class="text-danger mt-2">
-                            <p th:text="${error}"></p>
+                        <!-- Search bar -->
+
+                        <!-- Table  -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>#ID</th>
+                                    <th>Tên Nhà cung cấp</th>
+                                    <th>Email</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="supplier : ${suppliers}">
+                                    <td th:text="${supplier.supplierID}"></td>
+                                    <td th:text="${supplier.supplierName}" style="width: 20%"></td>
+                                    <td th:text="${supplier.email}"></td>
+                                    <td th:text="${supplier.address}" style="width: 20%" ></td>
+                                    <td th:text="${supplier.phone}"></td>
+                                    <td>
+                                        <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                                           th:href="@{/suppliers/detail/{id}(id=${supplier.supplierID})}"
+                                           onclick="getContent(event, this.href)">
+                                            Detail
+                                        </a>
+                                        <a style="text-decoration: none"
+                                           th:href="@{/suppliers/edit/{id}(id=${supplier.supplierID})}"
+                                           onclick="getContent(event, this.href)">
+                                            <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        </a>
+
+                                        <form th:action="@{/suppliers/delete/{id}(id=${supplier.supplierID})}"
+                                              method="post" style="display:inline;"
+                                              onsubmit="postContent(event, this)">
+                                            <input type="hidden" name="_method" value="DELETE" />
+                                            <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </form>
-                </div>
-                <!-- Search bar -->
+                        <!-- Table  -->
 
-                <!-- Table  -->
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                        <tr>
-                            <th>#ID</th>
-                            <th>Tên Nhà cung cấp</th>
-                            <th>Email</th>
-                            <th>Địa chỉ</th>
-                            <th>Số điện thoại</th>
-                            <th>Thao Tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="supplier : ${suppliers}">
-                            <td th:text="${supplier.supplierID}"></td>
-                            <td th:text="${supplier.supplierName}" style="width: 20%"></td>
-                            <td th:text="${supplier.email}"></td>
-                            <td th:text="${supplier.address}" style="width: 20%" ></td>
-                            <td th:text="${supplier.phone}"></td>
-                            <td>
-                                <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
-                                   th:href="@{/suppliers/detail/{id}(id=${supplier.supplierID})}"
-                                   onclick="getContent(event, this.href)">
-                                    Detail
-                                </a>
-                                <a style="text-decoration: none"
-                                   th:href="@{/suppliers/edit/{id}(id=${supplier.supplierID})}"
-                                   onclick="getContent(event, this.href)">
-                                    <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                                </a>
+                        <!-- Phân trang -->
+                        <nav class="d-flex justify-content-end">
+                            <ul class="pagination">
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${currentPage - 1})}">Previous</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link"
+                                       onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${i})}" th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                    <a class="page-link"
+                                       onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${currentPage + 1})}">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- Phân trang -->
 
-                                <form th:action="@{/suppliers/{id}(id=${supplier.supplierID})}"
-                                      method="post" style="display:inline;"
-                                      onsubmit="postContent(event, this)">
-                                    <input type="hidden" name="_method" value="DELETE" />
-                                    <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Table  -->
-
-
-                <!-- Phân trang -->
-                <nav class="d-flex justify-content-end">
-                    <ul class="pagination">
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link"
-                               onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${currentPage - 1})}">Previous</a>
-                        </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                            th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link"
-                               onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${i})}" th:text="${i + 1}"></a>
-                        </li>
-                        <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link"
-                               onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${currentPage + 1})}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- Phân trang -->
+                    </div>
+                </section>
 
             </div>
         </div>
-
-
     </div>
     <!-- section -->
 

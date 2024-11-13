@@ -118,13 +118,13 @@ public class EmployeeController {
             return "redirect:/login";
         }
 
-        model.addAttribute("viewMode", false);
-        model.addAttribute("editMode", true);
-        model.addAttribute("exist", false);
-
         int newId = employeeService.generateEmployeeId();
         Employee newEmployee = new Employee();
         newEmployee.setEmployeeId(newId);
+
+        model.addAttribute("viewMode", false);
+        model.addAttribute("editMode", true);
+        model.addAttribute("exist", false);
         model.addAttribute("newEmployee", newEmployee);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -178,21 +178,25 @@ public class EmployeeController {
 
     // Tạo mới khách hàng
     @PostMapping("/new")
-    public String createEmployee(@ModelAttribute("newEmployee") Employee employee,
+    public String createEmployee(@ModelAttribute("newEmployee") Employee newEmployee,
+                                 BindingResult result,
                                  @RequestParam("image") MultipartFile image) throws SQLException, IOException
     {
-        employee.setUsername(employee.getName().replaceAll("\\s+", "").toLowerCase() + employee.getEmployeeId());
-        employee.setPassword("123");
-        employeeService.saveEmployee(employee);
-
-        if (!image.isEmpty()) {
-            byte[] bytes = image.getBytes();
-            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
-            employee.setImage(blob);
+        if (result.hasErrors()) {
+            System.out.println("-----------------" + result.getAllErrors() + "-----------------------");
         }
 
-        employeeService.saveEmployee(employee);
-        return "redirect:/employees";
+         if(image != null) {
+            newEmployee.setImage(null);
+            byte[] bytes = image.getBytes();
+            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+            newEmployee.setImage(blob);
+        }
+
+        newEmployee.setUsername(newEmployee.getName().replaceAll("\\s+", "").toLowerCase() + newEmployee.getEmployeeId());
+        newEmployee.setPassword("123");
+        employeeService.saveEmployee(newEmployee);
+        return "redirect:/employees/detail/" + newEmployee.getEmployeeId();
     }
 
 
@@ -202,25 +206,23 @@ public class EmployeeController {
                                  BindingResult result,
                                  @RequestParam("image") MultipartFile image) throws SQLException, IOException
     {
-
-//        if (result.hasErrors()) {
-//            System.out.println("----------------------------\n" + result.getAllErrors() + "\n-----------------------------------");
-//            return "redirect:/employees";  // Điều hướng nếu có lỗi trong biểu mẫu
-//        }
-
-        if(image != null) {
-
-                byte[] bytes = image.getBytes();
-                Blob blob = new SerialBlob(bytes);
-                newEmployee.setImage(blob);
+        if (result.hasErrors()) {
+            System.out.println("-----------------" + result.getAllErrors() + "-----------------------");
         }
-        System.out.println("-----------------------------------------id: " + newEmployee.getEmployeeId() + ", Name: " + newEmployee.getName());
+
+        if(!image.isEmpty()) {
+            newEmployee.setImage(null);
+            byte[] bytes = image.getBytes();
+            Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+            newEmployee.setImage(blob);
+        }
+
         employeeService.saveEmployee(newEmployee);
-        return "redirect:/employees";
+        return "redirect:/employees/detail/" + newEmployee.getEmployeeId();
     }
 
     // Xóa khách hàng
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable int id) {
         employeeService.deleteEmployee(id);
         return "redirect:/employees";
