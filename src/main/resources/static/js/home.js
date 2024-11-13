@@ -14,6 +14,13 @@ $(document).ready(function() {
         $('a.nav-link[href="/"]').closest('.nav-item').addClass('active');
     }
 
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $(this).toggleClass('collapsed');
+        $('#mainArea').toggleClass('expanded');
+        $('a.navbar-brand').toggle()
+    });
+
     // Sự kiện khi sử dụng nút quay lại
     $(window).on('popstate', function(event) {
         const url = window.location.pathname;
@@ -46,7 +53,7 @@ $(document).ready(function() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    //Chạy hàm khi tải xong ajax
+    //Kích hoat DataTable cho table mới khi tải xong ajax của các trang có bảng
     $(document).on('ajaxComplete', function() {
         if ($.fn.DataTable) {
             $('table').DataTable({
@@ -166,7 +173,6 @@ window.filterProductByCategory = function(event, category) {
     });
 }
 
-
 //Xoá cookie khi đóng trang
 window.onbeforeunload = function() {
     document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -205,10 +211,10 @@ function previewImages(event) {
     }
 }
 
-
 function changeMainImage(thumbnail) {
     let newSrc = $(thumbnail).attr('src');
     let imageId = newSrc.split('=')[1];
     $('#main-image').attr('src', '/products/display?id=' + imageId);
     $('.delete-img-btn').attr('href', '/products/image/' + imageId);
 }
+
