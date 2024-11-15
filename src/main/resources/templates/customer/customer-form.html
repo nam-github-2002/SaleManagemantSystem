@@ -40,7 +40,7 @@
             <a th:if="${exist}"
                onclick="getContent(event, this.href)"
                th:href="@{/customers/new}"
-               class="btn btn-success mb-2">+ Thêm</a>
+               class="btn btn-success mb-2">Thêm</a>
 
             <form th:if="${exist}"
                   th:action="@{/customers/delete/{id}(id=${newCustomer.customerID})}"
@@ -73,6 +73,19 @@
                     method="post"
                     enctype="multipart/form-data"
                     onsubmit="postContent(event, this)">
+
+                <!-- Action Buttons -->
+                <div th:if="${editMode}" class="d-flex justify-content-end mb-3 col-md-9 col-xl-8 offset-md-2">
+                  <div class="col-md-9 col-xl-8 offset-md-2">
+                    <a href="#" class="border-0 btn btn-danger mr-1">
+                      <i class="fa fa-times fa-w-20"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
+                      <i class="fa fa-download fa-w-20"></i> Save
+                    </button>
+                  </div>
+                </div>
+
                 <!-- id -->
                 <div class="position-relative row form-group mb-3">
                   <label for="customerID" class="col-md-3 text-md-right col-form-label">ID</label>
@@ -137,33 +150,20 @@
                   </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div th:if="${editMode}" class="position-relative row form-group mb-1">
-                  <div class="col-md-9 col-xl-8 offset-md-2">
-                    <a href="#" class="border-0 btn btn-outline-danger mr-1">
-                      <i class="fa fa-times fa-w-20"></i> Cancel
-                    </a>
-                    <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
-                      <i class="fa fa-download fa-w-20"></i> Save
-                    </button>
-                  </div>
-                </div>
-
               </form>
 
             </div>
           </div>
         </div>
       </div>
+
+      <!-- footer -->
+      <div th:replace="~{fragments/fragment :: footer}"></div>
+
     </div>
   </div>
   <!-- Main Content -->
-
 </div>
-
-  <!-- footer -->
-  <div th:replace="~{fragments/fragment :: footer}"></div>
-
 </div>
 </body>
 </html>

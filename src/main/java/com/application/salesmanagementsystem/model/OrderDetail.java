@@ -3,22 +3,24 @@ package com.application.salesmanagementsystem.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "OrderDetail")
+@Table(name = "order_detail")
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="order_detail_id")
     private int orderDetailId;
 
     @ManyToOne
-    @JoinColumn(name = "OrderID", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Orders orderId;
 
     @ManyToOne
-    @JoinColumn(name = "ProductID", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     private Short quantity;
 
+    @Column(name="unit_price")
     private Double unitPrice;
 
     // Getters và Setters

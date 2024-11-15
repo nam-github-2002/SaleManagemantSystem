@@ -23,13 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.*;
@@ -60,8 +54,8 @@ public class ProductController {
                                   @RequestParam(required = false) String category,
                                   HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         int pageSize = 8;
@@ -109,8 +103,8 @@ public class ProductController {
     public String showProductDetail(@PathVariable int id, Model model,
                                     HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Product> product = productService.getProductById(id);
@@ -141,8 +135,8 @@ public class ProductController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Product newProduct = new Product();
@@ -168,8 +162,8 @@ public class ProductController {
     public String showEditForm(@PathVariable int id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Product> opProduct = productService.getProductById(id);
@@ -235,16 +229,12 @@ public class ProductController {
 
                    Image newImage = new Image();
                    newImage.setImageContent(blob);
-                   newImage.setProductId(newProduct.getProductID());
-
+                   newImage.setProduct(newProduct);
                    imageService.create(newImage);
-                   newProduct.addImage(newImage.getId());
                }
            }
         }
 
-
-        productService.saveProduct(newProduct);
         return "redirect:/products/detail/" + newProduct.getProductID();
     }
 
@@ -267,14 +257,8 @@ public class ProductController {
 
                     Image newImage = new Image();
                     newImage.setImageContent(blob);
-                    newImage.setProductId(newProduct.getProductID());
-
+                    newImage.setProduct(newProduct);
                     imageService.create(newImage);
-                    System.out.println("Anh da duoc them: " + newImage.getId());
-                    if (newProduct.getImages() == null) {
-                        System.out.println("Chua co arraylist");  // Khởi tạo nếu chưa có
-                    }
-                    newProduct.addImage(newImage.getId());
                 }
             }
         }
@@ -290,19 +274,28 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @PostMapping({"/image/{id}"})
+    @PostMapping("/image/{id}")
     public String deleteImage(HttpServletRequest request,
                               @PathVariable int id,
-                              RedirectAttributes redirectAttributes)
-    {
+                              RedirectAttributes redirectAttributes) {
         Image image = imageService.viewById(id);
-        Integer productId = image.getProductId();
-        Product product = productService.getProductById(productId).get();
+        if (image == null) {
+            redirectAttributes.addFlashAttribute("error", "Image not found");
+            return "redirect:/products";
+        }
+        Integer productId = image.getProduct().getProductID();
+        Product product = productService.getProductById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.getImages().remove(image);
         imageService.delete(id);
-        product.getImages().remove(Integer.valueOf(id));
         productService.saveProduct(product);
+
+        redirectAttributes.addFlashAttribute("success", "Image deleted successfully");
+
         return "redirect:/products/edit/" + productId;
     }
+
 
     @PostMapping("/search")
     public String searchProducts(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page,

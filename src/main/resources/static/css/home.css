@@ -9,18 +9,37 @@
 
 /* Cài đặt cho body */
 body {
-    --background-color: #fafafa;
-    --primary-color: #3c8dbc;
-    --secondary-color: #357abd;
-    --sub-color: #222d32;
-    --text-color: #b8c7ce;
-    background-color: var(--background-color);
+    --background-color: rgba(0,0,0,0.1);
+    --primary-color: rgba(0,0,0,0.3);
+    --secondary-color: rgba(0,0,0,0.5);
+    --sub-color: rgba(0,0,0,0.3);
+    --text-color: #ffffff;
+
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%,
+                                        rgba(198,155,255,1) 62%,
+                                        rgba(148,187,233,1) 100%);
     margin: 0;
     padding: 0;
     height: auto;
     overflow-x: hidden;
     min-height: 750px;
+    position: relative;
 }
+
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+
 
 /* Container chính */
 .container-fluid {
@@ -33,13 +52,12 @@ body {
 /* ===================================== */
 header {
     height: 60px;
-    /* background-color: #872992; */
-    background-color: var(--primary-color);
-    /* Màu nền của header */
+    background-color: rgba(0,0,0, 0.2);
     color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
 }
 
 .navbar {
@@ -51,17 +69,16 @@ header {
 
 .navbar-dark {
     /* chỉnh màu cho logo và nút toggle */
-    color: white;
+    color: var(--text-color);
     font-weight: bold;
 }
 /* Style cho nút toggle */
 #sidebarCollapse {
     border: none;
     color: white;
-    margin-left: 18px;
     padding: 17px 18px;
     font-weight: bold;
-    transition: background 0.1s, transform 0.4s ease, margin-left 0.4s linear;
+    transition: background 0.2s, transform 0.4s ease, margin-left 0.4s linear;
 }
 
 /* Hiệu ứng hover cho nút toggle */
@@ -69,27 +86,27 @@ header {
     background-color: var(--secondary-color);
 }
 
-/* Hiệu ứng khi đóng */
+/* Hiệu ứng khi đóng sidebar */
 #sidebarCollapse.collapsed {
     margin-left: 0;
-    transform: rotate(180deg); /* Hiệu ứng xoay nếu cần */
+    transform: rotate(180deg); /* Di chuyển sidebar ra ngoài và xoay */
 }
 
-/* Hiệu ứng khi mở */
+/* Hiệu ứng khi mở sidebar */
 #sidebarCollapse:not(.collapsed) {
-    transform: rotate(0deg); /* Quay về trạng thái ban đầu */
+    transform: translateX(0) rotate(0deg); /* Sidebar trở về vị trí ban đầu và xoay lại */
 }
-
 
 
 .navbar.active {
     transform: translateX(-190px);
-    transition: all 0.3s;
+    transition: all 0.4s;
 }
 .navbar.active #sidebarCollapse {
     margin-left: 18px;
 }
 .navbar-brand {
+    width: 192px;
     margin: 0;
     display: block;
     transition: background 0.1s;
@@ -120,7 +137,6 @@ header {
 .user-info p {
     font-size: 14px;
     color: white;
-    /* Màu chữ cho user-info */
 }
 
 #user-avatar {
@@ -133,7 +149,6 @@ header {
 
 #user-avatar:hover {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-    /* Hiệu ứng shadow khi hover */
 }
 
 /* ===================================== */
@@ -142,21 +157,19 @@ header {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background-color: var(--sub-color);
-    /* Màu nền của sidebar */
+    background-color: rgba(0,0,0,0.2);
     color: #ffffff;
     transition: all 0.3s;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 1px 5px 2px var(--sub-color);
 }
+
 
 #sidebar.active {
     margin-left: -190px;
-    /* Ẩn sidebar khi không hoạt động */
 }
 
 #sidebar.active .nav-link {
     justify-content: flex-end;
-    /* Căn icon sang phải khi sidebar thu nhỏ */
 }
 
 #sidebar .nav-link {
@@ -190,7 +203,6 @@ header {
 
 #sidebar .nav-link.active {
     background-color: #444;
-    /* Màu nền khi nav-link hoạt động */
 }
 
 #sidebar .nav-link i {
@@ -206,20 +218,17 @@ header {
 
 #sidebar.active .nav-link .item-text {
     display: none;
-    /* Ẩn text khi sidebar thu nhỏ */
 }
 
 /* Media query cho sidebar */
 @media (min-width: 768px) {
     #sidebar.active {
         display: none;
-        /* Ẩn sidebar khi ở chế độ active */
         transition: all 0.3s;
     }
 
     #sidebar.active {
         display: block;
-        /* Hiển thị sidebar khi không active */
         transition: all 0.3s;
     }
 }
@@ -230,16 +239,22 @@ header {
 /*              CONTENT                  */
 /* ===================================== */
 #mainArea {
-    padding: 6px 10px 10px;
     width: 100%;
+    padding: 6px 10px 10px;
     transition: all 0.3s;
     overflow-x: hidden;
-    background: #ecf0f5;
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+.main-card {
+    min-height: 70vh;
+    background: var(--background-color) !important;
+    box-shadow: 1px 1px 5px 2px var(--sub-color);
 }
 
 .content-main {
     min-height: calc(100vh - 50px - 50px);
-    /* Chiều cao tối thiểu cho content main */
     padding: 0;
 }
 
@@ -248,7 +263,7 @@ header {
     background: transparent;
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 12px;
+    font-size: 14px;
     padding: 7px 5px;
     position: absolute;
     top: 15px;
@@ -267,7 +282,7 @@ header {
 }
 
 .content-header>.breadcrumb>li>a {
-    color: #444;
+    color: var(--secondary-color);
     text-decoration: none;
     display: inline-block;
 }
@@ -283,20 +298,38 @@ header {
 }
 
 .breadcrumb>.active {
-    color: #777;
+    color: var(--text-color);
+}
+.table-responsive {
+    box-shadow: 1px 1px 5px 2px var(--secondary-color);
+    margin-bottom: 20px;
+    padding: 0 0 5px 0;
 }
 
+.table {
+    color: #FFFFFF;
+    background-color: var(--background-color);
+}
+.table thead {
+    border: none
+}
+.table-light {
+    background-color: var(--background-color);
+}
+
+tr:hover {
+    background-color: var(--secondary-color);
+}
 /* ===================================== */
 /*              FOOTER                   */
 /* ===================================== */
 .footer {
     min-height: 100px;
-    background-color: var(--primary-color);
+    background-color: var(--background-color);
     padding: 20px 0;
     text-align: center;
     color: #ffffff;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-    border-top: 2px solid #138DFB;
+    box-shadow: 1px 1px 5px 2px var(--sub-color);
 }
 
 .footer-text {
@@ -321,18 +354,21 @@ header {
 /*              HOME.HTML                */
 /* ===================================== */
 /* Css cho content của trang home */
+/* Main container styling */
+
 .info-box {
     display: flex;
     margin-bottom: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 4px 2px  rgba(0, 0, 0, 0.2);
     transition: transform 0.3s, box-shadow 0.3s;
     border-radius: 3px;
     overflow: hidden;
+    background-color: var(--sub-color);
 }
 
 .info-box:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 6px 2px rgba(0, 0, 0, 0.3);
 }
 
 .info-box-icon {
@@ -351,8 +387,6 @@ header {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #fff;
-    color: #333333;
 }
 
 .info-box-text {
@@ -379,141 +413,146 @@ p {
     font-size: 12px;
 }
 
-
-/* ================================ */
-/* khách hàng mới nhất moi nhat */
-.new-customers {
-    background-color: #fff;
-    margin-top: 10px;
-    border-top: 3px solid #FFC107;
-    border-radius: 3px;
+a {
+    color: var(--secondary-color);
+}
+a:hover {
+    color: var(--text-color);
 }
 
-.new-customers-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+
+.new-products {
+    background-color: var(--sub-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.new-products h3 {
     text-align: center;
-    border-top: 1px solid var(--text-color);
-    border-bottom: 1px solid var(--text-color);
+    margin-bottom: 20px;
+    color: #333;
 }
 
-.new-customers-list>li {
-    padding: 15px;
-}
-
-.new-customers-list>li img {
-    border-radius: 50%;
-    max-width: 100%;
-    height: auto;
-}
-
-.new-customers-list-name {
-    font-weight: 600;
-    color: #444;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: block;
-}
-
-.footer-list-box {
-    border-top: 1px solid #f4f4f4;
-    padding: 10px;
-    background-color: #fff;
-}
-/* ================================ */
-/* Sản phẩm mới nhất */
-.new-products{
-    background-color: #fff;
-    margin-top: 10px;
-    border-top: 3px solid #DC3545;
-    border-radius: 3px;
-}
-.new-products-list{
+/* List styling */
+.new-products-list {
     list-style-type: none;
     padding: 0;
-    margin: 0;
-    border-top: 1px solid var(--text-color);
 }
-.new-products-list>li{
+
+/* List item styling */
+.new-products-list li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 13px 0;
-    border-bottom: 1px solid var(--text-color);
-}
-.new-products-list-info>img{
-    height: 50px;
-}
-.new-products-list-name{
-    font-size: 14px;
-    color: var(--primary-color);;
-    margin-left: 20px;
-}
-.new-products-list-price{
-    justify-content: flex-end;
-    margin-right: 10px;
-    padding: 0 5px;
-    border-radius: 5px;
-}
-/* ================================ */
-/*Don hang moi nhat*/
-.new-orders{
-    margin-top: 10px;
-    background-color: #fff;
-    border-top: 3px solid #007BFF;
-    border-radius: 3px;
-}
-.new-orders-list{
-    border-top: 1px solid var(--text-color);
-    border-bottom: 1px solid var(--text-color);
-}
-/*Het trang home end*/
-/*====================*/
-
-
-
-/* ===================================== */
-/*              PRODUCTS.HTML            */
-/*   css cho trang sản phẩm products     */
-/* ===================================== */
-.productMan{
-    background-color: #fff;
     padding: 10px;
-    border-radius: 3px;
-    border-top: 3px solid var(--text-color);
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
 }
 
-#productTable img{
-    height: 50px;
-    width: 50px;
-    object-fit: cover;
+/* Hover effect for list item */
+.new-products-list li:hover {
+    background-color: var(--secondary-color);
 }
 
-#productTable th{
-    text-align: left;
-    align-items: flex-start;
-    vertical-align: text-top;
+/* Product image styling */
+.new-products-list-info img {
+    border-radius: 50%;
+    margin-right: 15px;
 }
 
-#productTable td{
-    text-align: left;
-    align-items: flex-start;
-    vertical-align: text-top;
+/* Product name link styling */
+.new-products-list-name {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--secondary-color);
+    transition: color 0.3s ease;
 }
 
-.hover-effect {
-    transition: scale 0.8s linear, opacity 0.8s linear !important;
+/* Hover effect for product name */
+.new-products-list-name:hover {
+    color: var(--text-color);
+
 }
 
-.hover-effect:hover {
-    transform: scale(1.05) !important;
-    opacity: 0.9!important;
+/* Price styling */
+.new-products-list-price {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--sub-color);
 }
+
+/* Footer link styling */
+.footer-list-box {
+    margin-top: 20px;
+}
+
+.footer-list-box a {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+.footer-list-box a:hover {
+    color: var(--text-color);
+    text-decoration: underline;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .new-products {
+        padding: 15px;
+    }
+
+    .new-products-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .new-products-list-info {
+        margin-bottom: 10px;
+    }
+}
+
+
+/* ================================ */
+
+/* Styling for the form inline container */
+.form-inline {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+    margin-left: auto; /* Align to the right */
+}
+
+/* Label styling */
+.form-inline label {
+    color: var(--text-color); /* Set text color */
+    margin-right: 10px; /* Space between label and select */
+}
+
+/* Select dropdown styling */
+.form-control {
+    background-color: var(--background-color); /* Background color */
+    color: var(--text-color); /* Text color */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    padding: 5px 10px; /* Padding for the dropdown */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Hover effect for the select dropdown */
+.form-control:hover {
+    background-color: var(--secondary-color); /* Change background on hover */
+    color: var(--text-color); /* Change text color on hover */
+}
+
+
+
+/* ================================ */
+
 
 .product-image-gallery {
     background-color: var(--primary-color);
@@ -557,12 +596,12 @@ p {
     font-size: 18px;
     text-align: center;
     line-height: 20px;
-    /*display: none; */
 }
 
 .delete-img-btn:hover {
     background-color: darkred;
 }
+
 
 .thumbnail-gallery {
     width: 240px;
@@ -571,27 +610,34 @@ p {
     overflow-x: auto;
     white-space: nowrap;
     margin-top: 10px;
-    padding: 5px 0;
+    cursor: grab!important;
+}
+
+.thumbnail-gallery img {
+    transition: transform 0.3s ease-in-out;
 }
 
 .thumbnail-gallery .d-inline-block {
+    padding: 5px 5px 15px 5px;
     height: 100%;
     margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .thumbnail-gallery::-webkit-scrollbar {
-    height: 8px;
-    background: #f1f1f1;
-    color: #4C489D;
+    margin-top: 10px;
+    height: 12px;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .thumbnail-gallery::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .thumbnail-gallery::-webkit-scrollbar-thumb:hover {
-    background-color: #005d56;
+    background-color: #FFFFFF;
 }
 
 .thumbnail-gallery img {
@@ -600,4 +646,106 @@ p {
     border-radius: 4px;
     object-fit: cover;
     cursor: pointer;
+}
+
+/* ===================================== */
+/*            COMPONENT                  */
+/*                                       */
+/* ===================================== */
+a.page-link {
+    color: #FFFFFF;
+    background-color: var(--background-color);
+}
+.page-item:hover a.page-link {
+    color: #FFFFFF;
+    background-color: var(--secondary-color);
+}
+
+.page-item.active a.page-link {
+    background-color: var(--secondary-color);
+}
+
+.hover-effect {
+    box-shadow: 2px 2px 4px 2px var(--sub-color);
+    transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Hiệu ứng khi hover */
+.hover-effect:hover {
+    box-shadow: 5px 5px 6px 2px var(--secondary-color);
+    transform: translate(-5px, -5px) scale(1.05);
+    opacity: 0.9;
+}
+
+img {
+    border-radius: 10px;
+}
+
+input[readonly] {
+    color: #FFFFFF;
+    background-color: var(--sub-color) !important;
+}
+
+.btn-outline-primary {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.btn {
+    font-weight: bold;
+}
+.btn-danger {
+    color: rgb(255, 58, 58);
+    background-color: var(--sub-color);
+}
+.btn-info {
+    position: relative;
+    padding-left: 30px;
+    color: rgba(0, 255, 196, 0.87);
+    background-color: var(--sub-color);
+}
+.btn-warning {
+    color: rgba(247, 255, 0, 0.87);
+    background-color: var(--sub-color);
+}
+.btn-success {
+    position: relative;
+    padding-left: 30px;
+    color: rgba(47, 255, 0, 0.87);
+    background-color: var(--sub-color);
+}
+.btn-primary {
+    color: rgba(2, 187, 255, 0.87);
+    background-color: var(--sub-color);
+}
+
+.btn-warning:hover {
+    color: var(--text-color);
+    background-color: rgba(247, 255, 0, 0.87);
+}
+.btn-info::before {
+    content: "\f03a";
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 900;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.btn-success::before {
+    content: "\f067";
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 900;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+input {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+input::placeholder {
+    color: var(--text-color);
 }

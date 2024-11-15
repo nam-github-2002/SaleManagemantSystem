@@ -15,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,8 +30,8 @@ public class SupplierController {
     public String showSupplier(Model model, @RequestParam(defaultValue = "0") int page,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         int pageSize = 8;
@@ -76,8 +75,8 @@ public class SupplierController {
     public String showDetailForm(@PathVariable int id, Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Supplier> Supplier = supplierService.getSupplierById(id);
@@ -104,8 +103,8 @@ public class SupplierController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         model.addAttribute("viewMode", false);
@@ -131,8 +130,8 @@ public class SupplierController {
     public String showEditForm(@PathVariable int id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Supplier> opSupplier = supplierService.getSupplierById(id);

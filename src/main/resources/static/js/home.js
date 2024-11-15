@@ -272,3 +272,4 @@ function exportTableToExcel(filename = '') {
     // Xuất file Excel
     XLSX.writeFile(wb, filename);
 }
+

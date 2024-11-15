@@ -27,8 +27,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String body(HttpSession session, HttpServletRequest request, Model model) {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         List<Product> lastestProducts = productService.getTop10NewestProducts();
@@ -39,6 +39,7 @@ public class HomeController {
         for(Product product : limitedProducts) {
             System.out.println("product ID: "+ product.getProductID() + ", image: " + product.getImages());
         }
+
         model.addAttribute("lastestProducts", limitedProducts);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {

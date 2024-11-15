@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,8 +32,8 @@ public class CustomerController {
     public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         int pageSize = 8;
@@ -78,8 +77,8 @@ public class CustomerController {
     public String showDetailForm(@PathVariable String id, Model model,
                                 HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Customer> customer = customerService.getCustomerById(id);
@@ -106,8 +105,8 @@ public class CustomerController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         model.addAttribute("viewMode", false);
@@ -133,8 +132,8 @@ public class CustomerController {
     public String showEditForm(@PathVariable String id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Customer> opCustomer = customerService.getCustomerById(id);

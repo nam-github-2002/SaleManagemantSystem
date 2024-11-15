@@ -33,34 +33,24 @@ public class LoginController {
             return "redirect:/";
         } else {
             redirectAttributes.addFlashAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
-            return "redirect:/login";
+            return "login";
         }
     }
 
 
     @PostMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
-        session.invalidate(); // Xóa toàn bộ thông tin trong session
-        redirectAttributes.addFlashAttribute("success", false);
+        session.invalidate();
         redirectAttributes.addFlashAttribute("message", "Bạn đã đăng xuất thành công!");
         return "redirect:/login";
     }
 
 
+
     public static boolean isAuthenticated(HttpSession session, Model model) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-
-        if (loggedInUser == null) {
-            return false;
-        }
-
-        Boolean success = (Boolean) model.asMap().get("success");
-        if (success != null && !success) {
-            // Nếu success == false, đăng xuất và xóa thông tin đăng nhập
-            session.invalidate();
-            return false; // Trả về false để chuyển hướng về trang đăng nhập
-        }
-
-        return true;
+        return loggedInUser == null;
     }
+
+
 }

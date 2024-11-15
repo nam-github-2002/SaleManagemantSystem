@@ -58,8 +58,8 @@
 
                         <!-- Table  -->
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="table-light">
+                            <table class="table">
+                                <thead>
                                 <tr>
                                     <th>#ID</th>
                                     <th>Tên Nhà cung cấp</th>
@@ -127,13 +127,17 @@
                     </div>
                 </section>
 
+
+                <!-- footer -->
+                <div th:replace="~{fragments/fragment :: footer}"></div>
             </div>
+
+            <!-- fragment -->
         </div>
+
     </div>
     <!-- section -->
 
-    <!-- footer -->
-    <div th:replace="~{fragments/fragment :: footer}"></div>
 </div>
 
 </body>

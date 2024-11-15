@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Blob;
 
 @Entity
-@Table(name="image")
+@Table(name = "image")
 public class Image {
 
     @Id
@@ -16,8 +16,9 @@ public class Image {
     @Column(name = "image_Data", nullable = false)
     private Blob imageContent;
 
-    @Column(name="product_id")
-    private Integer productId;
+    @ManyToOne(fetch = FetchType.LAZY)  // This indicates many images can belong to one product
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private Product product;  // This is the reference to the associated product
 
     // Getters and setters
     public Integer getId() {
@@ -36,12 +37,11 @@ public class Image {
         this.imageContent = imageContent;
     }
 
-    public Integer getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Integer productId) {
-       this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
-
 }

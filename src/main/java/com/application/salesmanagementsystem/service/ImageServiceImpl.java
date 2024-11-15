@@ -29,4 +29,9 @@ public class ImageServiceImpl implements ImageService {
         imageRepository.deleteById(id);
     }
 
+    @Override
+    public List<Integer> getAllByProductID(int productID) {
+        return imageRepository.findAllByProductId(productID);
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.application.salesmanagementsystem.controller;
 
 import com.application.salesmanagementsystem.model.Employee;
-import com.application.salesmanagementsystem.model.Image;
 import com.application.salesmanagementsystem.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,13 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/employees")
@@ -41,8 +36,8 @@ public class EmployeeController {
     public String showEmployee(Model model, @RequestParam(defaultValue = "0") int page,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         int pageSize = 8;
@@ -86,8 +81,8 @@ public class EmployeeController {
     public String showDetailForm(@PathVariable int id, Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Employee employee = employeeService.getEmployeeById(id);
@@ -114,8 +109,8 @@ public class EmployeeController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         int newId = employeeService.generateEmployeeId();
@@ -141,8 +136,8 @@ public class EmployeeController {
     public String showEditForm(@PathVariable int id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Employee employee = employeeService.getEmployeeById(id);
@@ -156,6 +151,7 @@ public class EmployeeController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+
             return "employee/employee-form :: employeeDetailPage";
         }
 

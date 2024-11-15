@@ -9,4 +9,5 @@ public interface ImageService {
      List<Image> viewAll();
      Image viewById(int id);
      void delete(int id);
+     List<Integer> getAllByProductID(int productID);
 }

@@ -27,7 +27,7 @@ public class OrderController {
     public String listOrder(Model model, HttpSession session, HttpServletRequest request) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return "redirect:/login";
+            return "login";
         }
         model.addAttribute("currentUser", loggedInUser);
 

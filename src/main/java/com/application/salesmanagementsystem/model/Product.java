@@ -30,9 +30,6 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity = 0;
 
-    @ElementCollection
-    private List<Integer> imageIds;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", nullable = false, updatable = false)
     private Date createDate;
@@ -41,14 +38,15 @@ public class Product {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
-    // Constructor
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)  // Set the mappedBy attribute
+    private List<Image> images = new ArrayList<>();  // This holds all images associated with the product
+
     public Product() {
         this.createDate = new Date();
         this.updateDate = new Date();
-        this.imageIds = new ArrayList<>();
     }
 
-    // Getters và Setters
+    // Getters and Setters
 
     public Integer getProductID() {
         return productID;
@@ -98,16 +96,12 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public List<Integer> getImages() {
-        return imageIds;
+    public List<Image> getImages() {
+        return images;  // This will return all images associated with this product
     }
 
-    public void addImage(Integer imageId) {
-        imageIds.add(imageId);
-    }
-
-    public void setImages(List<Integer> ImageIds) {
-        this.imageIds = ImageIds;
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
     public Date getCreateDate() {
@@ -116,10 +110,5 @@ public class Product {
 
     public Date getUpdateDate() {
         return updateDate;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updateDate = new Date();
     }
 }
