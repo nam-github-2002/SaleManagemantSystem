@@ -117,6 +117,7 @@ window.getContent = function(event, url) {
 // Hàm post
 window.postContent = function(event, form) {
     event.preventDefault();
+    $('#searchModal').modal('hide');
 
     const submitButton = form.querySelector('button[type="submit"]');
     const hasTrashIcon = submitButton.querySelector('.fa-trash') !== null;
@@ -140,6 +141,7 @@ window.postContent = function(event, form) {
         success: function(response) {
             $('#mainArea').html(response);
             history.pushState(null, '', url);
+            $('#searchModal').modal('hide');
         },
         error: function(xhr, status, error) {
             let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
@@ -161,6 +163,7 @@ function deleteImage(event, url) {
         success: function(response) {
             $('#mainArea').html(response);
             history.pushState(null, '', url);
+
         },
         error: function(xhr, status, error) {
             let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : error;
@@ -273,3 +276,13 @@ function exportTableToExcel(filename = '') {
     XLSX.writeFile(wb, filename);
 }
 
+
+function closeModal() {
+    $('#searchModal').modal('hide');
+}
+function handleEnter(event) {
+    if (event.key === 'Enter') {
+        postContent(event);  // Gọi hàm postContent nếu bạn muốn gửi form ngay lập tức
+        closeModal();         // Đóng modal sau khi gửi form
+    }
+}

@@ -86,7 +86,7 @@ public class SupplierController {
             model.addAttribute("exist", true);
             model.addAttribute("newSupplier", Supplier.get());
         } else {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            model.addAttribute("error", "Không tìm thấy nhà cung cấp.");
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -142,7 +142,7 @@ public class SupplierController {
             model.addAttribute("exist", true);
             model.addAttribute("newSupplier", Supplier);
         } else {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            model.addAttribute("error", "Không tìm thấy nhà cung cấp.");
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -188,7 +188,7 @@ public class SupplierController {
 
         if (searchResults.isEmpty()) {
 
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng nào với từ khóa '" + keyword + "'.");
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy nhà cung cáp nào với từ khóa '" + keyword + "'.");
         } else {
 
             redirectAttributes.addFlashAttribute("Suppliers", searchResults);

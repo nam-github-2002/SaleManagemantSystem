@@ -92,7 +92,7 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required readonly name="customerID" id="customerID" type="text"
                            class="form-control" th:placeholder="customerID" th:value="${newCustomer.customerID}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.customerID}"></p>
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.customerID}"></p>
                   </div>
                 </div>
 
@@ -102,7 +102,7 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="companyName" id="companyName" type="text"
                            class="form-control" th:placeholder="Name" th:value="${exist ? newCustomer.companyName : ''}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.companyName}"></p>
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.companyName}"></p>
                   </div>
                 </div>
 
@@ -112,7 +112,7 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="email" id="email" type="email"
                            class="form-control" th:placeholder="Email" th:value="${exist ? newCustomer.email : ''}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.email}"></p>
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.email}"></p>
                   </div>
                 </div>
 
@@ -122,7 +122,7 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="address" id="address" type="text"
                            class="form-control" th:placeholder="Address" th:value="${exist ? newCustomer.address : ''}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.address}"></p>
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.address}"></p>
                   </div>
                 </div>
 
@@ -132,7 +132,7 @@
                   <div class="col-md-9 col-xl-8">
                     <input th:if="${editMode}" required name="phone" id="phone" type="tel"
                            class="form-control" th:placeholder="Phone" th:value="${exist ? newCustomer.phone : ''}">
-                    <p th:if="${viewMode}" th:text="${newCustomer.phone}"></p>
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.phone}"></p>
                   </div>
                 </div>
 
@@ -146,7 +146,7 @@
                       <option value="Corporate" th:selected="${exist && newCustomer.type == 'Corporate'}">Corporate</option>
                       <option value="VIP" th:selected="${exist && newCustomer.type == 'VIP'}">VIP</option>
                     </select>
-                    <p th:if="${viewMode}" th:text="${newCustomer.type}"></p>
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.type}"></p>
                   </div>
                 </div>
 

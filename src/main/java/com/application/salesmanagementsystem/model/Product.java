@@ -38,6 +38,15 @@ public class Product {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
+    @Column(name = "discount", nullable = false)
+    private Double discount = 0.0;  // Mới: Mức giảm giá sản phẩm
+
+    @Column(name = "rating", nullable = false)
+    private Double rating = 0.0;  // Mới: Đánh giá trung bình của sản phẩm
+
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;  // Mới: Trạng thái sản phẩm (Còn bán hay không)
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)  // Set the mappedBy attribute
     private List<Image> images = new ArrayList<>();  // This holds all images associated with the product
 
@@ -94,6 +103,30 @@ public class Product {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public List<Image> getImages() {

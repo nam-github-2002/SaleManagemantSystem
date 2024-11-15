@@ -39,13 +39,14 @@
                                         onclick="exportTableToExcel()">Xuất ra Excel</button>
                             </div>
 
-                            <div class="col-md-6 d-flex justify-content-end flex-column">
+                            <div class="col-md-6 d-flex justify-content-end align-items-center">
                                 <!-- lọc theo danh mục -->
-                                <div class="form-inline ml-auto">
-                                    <label for="categoryFilter" class="mr-2">Lọc theo danh mục:</label>
+                                <div class="form-inline">
+                                    <label for="categoryFilter" class="mr-2">Danh mục:</label>
                                     <select id="categoryFilter" class="form-control form-control-sm"
                                             th:value="${category}"
-                                            onchange="filterProductByCategory(event, this.value)">
+                                            onchange="filterProductByCategory(event, this.value)"
+                                            style="height: 40px">
                                         <option value="">Tất cả</option>
                                         <option value="Laptops" th:selected="${category == 'Laptops'}">Laptops</option>
                                         <option value="Smartphones" th:selected="${category == 'Smartphones'}">Smartphones</option>
@@ -62,17 +63,44 @@
                                 </div>
 
                                 <!-- Tìm kiếm -->
-                                <div class="form-inline ml-auto mt-4">
-                                    <form th:action="@{/products/search}"
-                                          method="POST"
-                                          onsubmit="postContent(event, this)"
-                                          class="d-flex search-form">
-                                        <input  type="text" class="form-control" placeholder="Tìm kiếm..." name="keyword" aria-label="Search">
-                                        <button type="submit" class="btn btn-primary ml-2">
-                                            Tìm kiếm
-                                        </button>
-                                    </form>
+                                <div class="form-inline ml-auto">
+                                    <button type="button" class="btn btn-primary"
+                                            data-toggle="modal" data-target="#searchModal">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        Tìm kiếm
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+
+                                                <div class="modal-body">
+
+                                                    <form th:action="@{/products/search}"
+                                                          method="POST"
+                                                          onsubmit="postContent(event, this); closeModal()"
+                                                          class="d-flex search-form"
+                                                          style="width: 100%; padding-left: 10px">
+                                                        <input type="text"
+                                                               class="search-input"
+                                                               placeholder="Tìm kiếm..."
+                                                               name="keyword"
+                                                               aria-label="Search">
+                                                        <button id="search-submit" type="submit">
+                                                            <i class="fa-solid fa-magnifying-glass" style="font-size: 30px"></i>
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+                                <!-- Tìm kiếm -->
+
                             </div>
 
                         </div>

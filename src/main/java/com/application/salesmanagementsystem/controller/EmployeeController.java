@@ -92,7 +92,7 @@ public class EmployeeController {
             model.addAttribute("exist", true);
             model.addAttribute("newEmployee", employee);
         } else {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            model.addAttribute("error", "Không tìm thấy nhân viên.");
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -147,7 +147,7 @@ public class EmployeeController {
             model.addAttribute("exist", true);
             model.addAttribute("newEmployee", employee);
         } else {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            model.addAttribute("error", "Không tìm thấy nhân viên.");
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -232,7 +232,7 @@ public class EmployeeController {
 
         if (searchResults.isEmpty()) {
 
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng nào với từ khóa '" + keyword + "'.");
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy nhân viên nào với từ khóa '" + keyword + "'.");
         } else {
 
             redirectAttributes.addFlashAttribute("employees", searchResults);

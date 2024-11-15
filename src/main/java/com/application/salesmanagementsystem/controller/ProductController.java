@@ -309,7 +309,7 @@ public class ProductController {
         } else {
             redirectAttributes.addFlashAttribute("products", searchResults);
         }
-
+        System.out.println("------------------Da chuyen huong------------");
         redirectAttributes.addAttribute("keyword", keyword);
         return "redirect:/products";
     }
