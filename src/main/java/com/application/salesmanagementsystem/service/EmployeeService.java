@@ -1,20 +1,27 @@
 package com.application.salesmanagementsystem.service;
 
 import com.application.salesmanagementsystem.model.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeService {
     List<Employee> getAllEmployees();
+    Page<Employee> getAllEmployees(Pageable pageable);
 
-    Optional<Employee> getEmployeeById(Integer id);
+    Employee getEmployeeById(Integer id);
 
     Employee saveEmployee(Employee employee);
 
     void deleteEmployee(Integer id);
 
-    Employee findByUsername(String username);
+    Page<Employee> searchAllField(String keyword, Pageable pageable);
 
     boolean checkPassword(Employee employee, String password);
+
+    int generateEmployeeId();
+
+    Employee findByUsername(String username);
 }

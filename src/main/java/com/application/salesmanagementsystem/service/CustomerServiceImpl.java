@@ -65,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Page<Customer> searchCustomers(String keyword, Pageable pageable) {
-        return customerRepository.findByCompanyNameContainingIgnoreCase(keyword, pageable);
+        return customerRepository.findAllByKeyword(keyword, pageable);
     }
 
     public Optional<Customer> findByEmail(String email) {

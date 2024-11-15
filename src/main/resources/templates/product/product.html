@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/fragment :: head}"></div>
+</head>
+<body>
+<div class="container-fluid">
+
+    <!-- header -->
+    <div th:replace="~{fragments/fragment :: header}"></div>
+
+    <!-- section -->
+    <div class="d-flex">
+
+        <!-- Sidebar-->
+        <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+        <!-- Sidebar -->
+
+        <div id="mainArea">
+            <div th:fragment="productPage">
+                <section class="content-header">
+                    <h1>Quản lý sản phẩm</h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+                        <li class="active"><i class="fas fa-box"></i>Product</li>
+                    </ol>
+                </section>
+
+                <section class="content-main px-3">
+                    <div class="productMan">
+
+                        <!-- Action buttons and summary -->
+                        <div class="row mb-3">
+                            <!-- Cột nút hành động -->
+                            <div class="col-md-6">
+                                <a  onclick="getContent(event, this.href)" href="/products/new" class="btn btn-primary btn-sm">+ Thêm sản phẩm</a>
+                                <button id="exportExcelBtn"
+                                        class="btn btn-success btn-sm"
+                                        onclick="exportTableToExcel()">Xuất ra Excel</button>
+                            </div>
+
+                            <div class="col-md-6 d-flex justify-content-end flex-column">
+                                <!-- lọc theo danh mục -->
+                                <div class="form-inline ml-auto">
+                                    <label for="categoryFilter" class="mr-2">Lọc theo danh mục:</label>
+                                    <select id="categoryFilter" class="form-control form-control-sm"
+                                            th:value="${category}"
+                                            onchange="filterProductByCategory(event, this.value)">
+                                        <option value="">Tất cả</option>
+                                        <option value="Laptops" th:selected="${category == 'Laptops'}">Laptops</option>
+                                        <option value="Smartphones" th:selected="${category == 'Smartphones'}">Smartphones</option>
+                                        <option value="Tablets" th:selected="${category == 'Tablets'}">Tablets</option>
+                                        <option value="Desktops" th:selected="${category == 'Desktops'}">Desktops</option>
+                                        <option value="Giày dép" th:selected="${category == 'Giày dép'}">Giày dép</option>
+                                        <option value="Mỹ phẩm" th:selected="${category == 'Mỹ phẩm'}">Mỹ phẩm</option>
+                                        <option value="Sức khỏe" th:selected="${category == 'Sức khỏe'}">Sức khỏe</option>
+                                        <option value="Gia dụng" th:selected="${category == 'Gia dụng'}">Gia dụng</option>
+                                        <option value="Nhà cửa" th:selected="${category == 'Nhà cửa'}">Nhà cửa</option>
+                                        <option value="Oto xe máy" th:selected="${category == 'Oto xe máy'}">Oto xe máy</option>
+                                    </select>
+
+                                </div>
+
+                                <!-- Tìm kiếm -->
+                                <div class="form-inline ml-auto mt-4">
+                                    <form th:action="@{/products/search}"
+                                          method="POST"
+                                          onsubmit="postContent(event, this)"
+                                          class="d-flex search-form">
+                                        <input  type="text" class="form-control" placeholder="Tìm kiếm..." name="keyword" aria-label="Search">
+                                        <button type="submit" class="btn btn-primary ml-2">
+                                            Tìm kiếm
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Bảng danh sách sản phẩm -->
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th  class="text-start">Mã <br> sản phẩm</th>
+                                    <th  class="text-start">Tên sản phẩm</th>
+                                    <th>Loại sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Nhà cung cấp</th>
+                                    <th>Hành động</th>
+                                </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${products}">
+                                        <td th:text="${product.productID}"></td>
+                                        <td th:text="${product.productName}"></td>
+                                        <td th:if="${product.category != null}" th:text="${product.category.categoryName}"></td>
+                                        <td th:text="${product.price}"></td>
+                                        <td th:text="${product.supplier.supplierName}"></td>
+                                        <td>
+                                            <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                                               th:href="@{/products/detail/{id}(id=${product.productID})}"
+                                               onclick="getContent(event, this.href)">
+                                                Detail
+                                            </a>
+                                            <a style="text-decoration: none"
+                                               th:href="@{/products/edit/{id}(id=${product.productID})}"
+                                               onclick="getContent(event, this.href)">
+                                                <button class="btn btn-outline-warning border-0 btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            </a>
+
+                                            <form th:action="@{/products/delete/{id}(id=${product.productID})}"
+                                                  method="post" style="display:inline;"
+                                                  onsubmit="postContent(event, this)">
+                                                <input type="hidden" name="_method" value="DELETE" />
+                                                <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="pagination">
+
+                            <ul class="pagination justify-content-center">
+                                <li th:class="'page-item ' + ${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/products?page=0&category=' + ${category}}"
+                                       aria-label="Previous" o
+                                       onclick="getContent(event, this.href)">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <!-- Hiển thị các trang giữa -->
+                                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:class="'page-item ' + ${i == currentPage ? 'active' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/products?page=' + ${i} + '&category=' + ${category}}"
+                                        onclick="getContent(event, this.href)">
+                                        <span th:text="${i + 1}"></span>
+                                    </a>
+                                </li>
+
+                                <li th:class="'page-item ' + ${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link"
+                                       th:href="@{'/products?page=' + ${totalPages - 1} + '&category=' + ${category}}"
+                                       aria-label="Next"
+                                        onclick="getContent(event, this.href)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <div th:replace="~{fragments/fragment :: footer}"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

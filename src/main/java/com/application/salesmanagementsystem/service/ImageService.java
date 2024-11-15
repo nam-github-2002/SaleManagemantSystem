@@ -3,10 +3,11 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Image;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ImageService {
      Image create(Image image);
      List<Image> viewAll();
      Image viewById(int id);
+     void delete(int id);
+     List<Integer> getAllByProductID(int productID);
 }

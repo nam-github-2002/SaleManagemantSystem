@@ -26,20 +26,24 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+
     // Hiển thị danh sách khách hàng
     @GetMapping
     public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page,
-                               HttpSession session, HttpServletRequest request) {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+                               HttpSession session, HttpServletRequest request)
+    {
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         int pageSize = 8;
         Page<Customer> customers;
 
         if (model.containsAttribute("customers")) {
-            customers = (Page<Customer>) model.getAttribute("customers");
+
+            customers = (Page<Customer>) model.getAttribute("customers");;
         } else {
+
             customers = customerService.getAllCustomers(PageRequest.of(page, pageSize));
         }
 
@@ -58,13 +62,13 @@ public class CustomerController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer :: customerPage"; // Giữ nguyên nếu là Ajax
+            return "customer/customer :: customerPage";
         }
 
-        // Trả về view 'customer-list' (tức là trang customer-list.html)
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer/customer-list"; // Đây là nơi thay đổi chính, trả về trang customer-list.html
+
+        return "customer/customer";
     }
 
 
@@ -73,8 +77,8 @@ public class CustomerController {
     public String showDetailForm(@PathVariable String id, Model model,
                                 HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Customer> customer = customerService.getCustomerById(id);
@@ -88,12 +92,12 @@ public class CustomerController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer :: customerDetailPage";
+            return "customer/customer-form :: customerDetailPage";
         }
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer/customer-detail";
+        return "customer/customer-form";
     }
 
     // Hiển thị form tạo mới khách hàng
@@ -101,8 +105,8 @@ public class CustomerController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         model.addAttribute("viewMode", false);
@@ -115,12 +119,12 @@ public class CustomerController {
         model.addAttribute("newCustomer", newCustomer);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer-add :: customerDetailPage";
+            return "customer/customer-form :: customerDetailPage";
         }
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer-add";
+        return "customer/customer-form";
     }
 
     // Hiển thị form chỉnh sửa khách hàng
@@ -128,8 +132,8 @@ public class CustomerController {
     public String showEditForm(@PathVariable String id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
         Optional<Customer> opCustomer = customerService.getCustomerById(id);
@@ -144,19 +148,20 @@ public class CustomerController {
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            return "customer/customer-edit :: customerDetailPage";
+            return "customer/customer-form :: customerDetailPage";
         }
 
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
-        return "customer-edit";
+        return "customer/customer-form";
     }
 
 
 
     // Tạo mới khách hàng
-    @PostMapping("/add")
-    public String createCustomer(@ModelAttribute("newCustomer") Customer customer) {
+    @PostMapping("/new")
+    public String createCustomer(@ModelAttribute("newCustomer") Customer customer)
+    {
         String newId = customerService.generateCustomerID();
         customer.setCustomerID(newId);
         customerService.saveCustomer(customer);
@@ -172,7 +177,7 @@ public class CustomerController {
     }
 
     // Xóa khách hàng
-    @PostMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable String id) {
         customerService.deleteCustomer(id);
         return "redirect:/customers";

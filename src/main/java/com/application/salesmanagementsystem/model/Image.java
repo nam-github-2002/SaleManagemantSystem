@@ -5,36 +5,28 @@ import jakarta.persistence.*;
 import java.sql.Blob;
 
 @Entity
-@Table(name="image")
+@Table(name = "image")
 public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private Integer id;
 
     @Lob
-    @Column(name = "image_Data")
+    @Column(name = "image_Data", nullable = false)
     private Blob imageContent;
 
+    @ManyToOne(fetch = FetchType.LAZY)  // This indicates many images can belong to one product
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private Product product;  // This is the reference to the associated product
+
     // Getters and setters
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public Blob getImageContent() {
@@ -43,5 +35,13 @@ public class Image {
 
     public void setImageContent(Blob imageContent) {
         this.imageContent = imageContent;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

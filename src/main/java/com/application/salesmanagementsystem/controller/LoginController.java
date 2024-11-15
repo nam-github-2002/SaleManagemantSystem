@@ -18,58 +18,39 @@ public class LoginController {
     @Autowired
     private EmployeeService employeeService;
 
-    // Hiển thị form đăng nhập
     @GetMapping("/login")
     public String showLoginForm() {
-        return "login";  // Trả về trang login.html
+        return "login";
     }
 
-    // Xử lý đăng nhập
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session, Model model) {
+    public String login(@RequestParam String username, @RequestParam String password,
+                        RedirectAttributes redirectAttributes, HttpSession session) {
         Employee employee = employeeService.findByUsername(username);
-
         if (employee != null && employeeService.checkPassword(employee, password)) {
-            // Lưu thông tin người dùng vào session
             session.setAttribute("loggedInUser", employee);
-
-            // Truyền thông tin người dùng vào model
-            model.addAttribute("currentUser", employee);
-
-            // Thêm thông báo thành công vào flash attribute
             redirectAttributes.addFlashAttribute("success", true);
-            return "redirect:/";  // Chuyển hướng đến trang chủ
+            return "redirect:/";
         } else {
             redirectAttributes.addFlashAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
-            return "redirect:/login";  // Nếu thất bại, quay lại trang login
+            return "login";
         }
     }
 
 
-    // Xử lý đăng xuất
     @PostMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
-        session.invalidate();  // Xóa toàn bộ thông tin trong session
-        redirectAttributes.addFlashAttribute("success", false);
+        session.invalidate();
         redirectAttributes.addFlashAttribute("message", "Bạn đã đăng xuất thành công!");
-        return "redirect:/login";  // Chuyển hướng đến trang login sau khi đăng xuất
+        return "redirect:/login";
     }
 
-    // Kiểm tra người dùng đã đăng nhập chưa
+
+
     public static boolean isAuthenticated(HttpSession session, Model model) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-
-        if (loggedInUser == null) {
-            return false;
-        }
-
-        Boolean success = (Boolean) model.asMap().get("success");
-        if (success != null && !success) {
-            // Nếu success == false, đăng xuất và xóa thông tin đăng nhập
-            session.invalidate();
-            return false;  // Trả về false để chuyển hướng về trang đăng nhập
-        }
-
-        return true;
+        return loggedInUser == null;
     }
+
+
 }

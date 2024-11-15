@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragments/fragment :: head}"></div>
+</head>
+<body>
+<div class="container-fluid">
+
+  <!-- header -->
+  <div th:replace="~{fragments/fragment :: header}"></div>
+
+  <!-- section -->
+  <div class="d-flex" style="height: calc(100vh - 60px);">
+
+    <!-- Sidebar-->
+    <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+    <!-- Sidebar -->
+
+    <div id="mainArea">
+      <div th:fragment="employeeDetailPage">
+
+        <div class="app-page-title">
+          <div class="page-title-wrapper">
+            <div class="page-title-heading">
+              <div class="page-title-icon">
+                <i class="pe-7s-ticket icon-gradient bg-mean-fruit"></i>
+              </div>
+              <div>User
+                <div class="page-title-subheading">View, create, update, delete and manage.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+
+            <div  th:if="${editMode || viewMode}" class="d-flex">
+
+              <a th:if="${exist}"
+                 onclick="getContent(event, this.href)"
+                 th:href="@{/employees/new}"
+                 class="btn btn-success mb-2">Thêm</a>
+
+              <form th:if="${exist}"
+                    th:action="@{/employees/delete/{id}(id=${newEmployee.employeeId})}"
+                    method="post"
+                    onclick="postContent(event, this)"
+                    class="mb-2">
+                <button type="submit" class="btn btn-danger ml-2">
+                  <i class="fa-solid fa-trash"></i> Xoá
+                </button>
+              </form>
+
+              <a th:if="${exist}"
+                 onclick="getContent(event, this.href)"
+                 th:href="@{/employees/edit/{id}(id=${newEmployee.employeeId})}"
+                 class="btn btn-warning mb-2 ml-2">
+                <i class="fa-solid fa-pen-to-square"></i> Sửa
+              </a>
+
+              <a onclick="getContent(event, this.href)"
+                 th:href="@{/employees}"
+                 class="btn btn-info mb-2 ml-2">Danh sách</a>
+
+            </div>
+
+            <div class="main-card mb-3 card">
+              <div class="card-body">
+
+                <form th:action="${exist ? '/employees/edit/' + newEmployee.employeeId : '/employees/new'}"
+                      th:object="${newEmployee}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      onsubmit="postContent(event, this)">
+
+                  <!-- Action Buttons -->
+                  <div th:if="${editMode}" class="d-flex justify-content-end mb-3 col-md-9 col-xl-8 offset-md-2">
+                    <div class="col-md-9 col-xl-8 offset-md-2">
+                      <a href="#" class="border-0 btn btn-danger mr-1">
+                        <i class="fa fa-times fa-w-20"></i> Cancel
+                      </a>
+                      <button type="submit" class="btn-shadow btn-hover-shine btn btn-primary">
+                        <i class="fa fa-download fa-w-20"></i> Save
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between">
+
+                    <div style="width: 20%">
+
+                      <div  th:if="${editMode}">
+
+                        <label for="file-upload" class="btn">
+                          <div id="image-preview-container" class="d-flex flex-wrap">
+                            <img th:src="@{/image/addimagesBtn.png}"
+                                 id="image-preview"
+                                 class="hover-effect"
+                                 style="width: 150px; height: 150px; object-fit: contain;">
+                          </div>
+                        </label>
+
+                        <input  name="image"
+                                type="file"
+                                id="file-upload"
+                                class="form-control-file" style="display: none"
+                                accept="image/*"
+                                onchange="previewImages(event)">
+
+                      </div>
+
+                      <div class="product-image-gallery overflow-auto"
+                           th:if="${exist && newEmployee.image != null}">
+                        <img class="img-fluid rounded-3 hover-effect"
+                             th:src="@{${'/employees/display?id=' + newEmployee.employeeId}}"
+                             style="width: 200px; height: 300px; object-fit: cover;">
+                      </div>
+
+                    </div>
+
+                    <div style="width: 34%;">
+                      <!-- id -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="employeeId" class="col-md-4 text-md-left col-form-label font-weight-bold">ID:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required readonly name="employeeId" id="employeeId" type="text"
+                                 class="form-control" th:placeholder="employeeID" th:value="${newEmployee.employeeId}">
+                          <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newEmployee.employeeId}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Name -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="name" class="col-md-4 text-md-left col-form-label font-weight-bold">Name:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required name="name" id="name" type="text"
+                                 class="form-control" th:placeholder="Name" th:value="${exist ? newEmployee.name : ''}">
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext " th:text="${newEmployee.name}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="email" class="col-md-4 text-md-left col-form-label font-weight-bold">Email:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required name="email" id="email" type="email"
+                                 class="form-control" th:placeholder="Email" th:value="${exist ? newEmployee.email : ''}">
+                          <p th:if="${viewMode}"  class="text-md-left form-control-plaintext " th:text="${newEmployee.email}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Department -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="department" class="col-md-4 text-md-left col-form-label font-weight-bold">Department:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" name="department" id="department" type="text"
+                                 class="form-control" th:value="${exist ? newEmployee.department : ''}">
+                          <p th:if="${viewMode}"  class="text-md-left form-control-plaintext " th:text="${newEmployee.department}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Phone -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="phone" class="col-md-4 text-md-left col-form-label font-weight-bold">Phone:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required name="phone" id="phone" type="tel"
+                                 class="form-control" th:placeholder="Phone" th:value="${exist ? newEmployee.phone : ''}">
+                          <p th:if="${viewMode}"  class="text-md-left form-control-plaintext " th:text="${newEmployee.phone}"></p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="width: 34%; margin-left: 10px">
+                      <!-- Role -->
+                      <div class="position-relative mb-3 row form-group">
+                        <label for="role" class="col-md-4 text-md-left col-form-label font-weight-bold">Role: :</label>
+                        <div class="col-md-8 col-xl-8">
+                          <select th:if="${editMode}" required name="role" id="role" class="form-control">
+                            <option value="">-- Select Role --</option>
+                            <option th:value="Admin" th:selected="${exist ? newEmployee.role == 'Admin' : null}">Admin</option>
+                            <option th:value="Manager" th:selected="${exist ? newEmployee.role == 'Manager' : null}">Manager</option>
+                            <option th:value="Head-Department" th:selected="${exist ? newEmployee.role == 'Head-Department' : null}">Head-Department</option>
+                            <option th:value="Staff" th:selected="${exist ? newEmployee.role == 'Staff' : null}">Staff</option>
+                          </select>
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.role}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Gender -->
+                      <div class="position-relative mb-3 row form-group">
+                        <label for="gender" class="col-md-4 text-md-left col-form-label font-weight-bold">Gender: :</label>
+                        <div class="col-md-8 col-xl-8">
+                          <select th:if="${editMode}" required name="gender" id="gender" class="form-control">
+                            <option value="">-- Select Gender --</option>
+                            <option th:value="Male" th:selected="${exist ? newEmployee.gender == 'Male' : null}">Male</option>
+                            <option th:value="Female" th:selected="${exist ? newEmployee.gender == 'Female' : null}">Female</option>
+                          </select>
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.gender}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Date Of Birth -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="dateOfBirth" class="col-md-4 text-md-left col-form-label font-weight-bold">Date Of Birth:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required name="dateOfBirth" id="dateOfBirth" type="date"
+                                 class="form-control" th:value="${exist ? newEmployee.dateOfBirth : ''}">
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.dateOfBirth}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Hire Date -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="hireDate" class="col-md-4 text-md-left col-form-label font-weight-bold">Hire Date:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required name="hireDate" id="hireDate" type="date"
+                                 class="form-control" th:value="${exist ? newEmployee.hireDate : ''}">
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.hireDate}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Salary -->
+                      <div class="position-relative row form-group mb-3">
+                        <label for="salary" class="col-md-4 text-md-left col-form-label font-weight-bold">Salary:</label>
+                        <div class="col-md-8 col-xl-8">
+                          <input th:if="${editMode}" required name="salary" id="salary" type="number"
+                                 class="form-control" th:value="${exist ? newEmployee.salary : ''}">
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext "  th:text="${newEmployee.salary}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Status -->
+                      <div class="position-relative mb-3 row form-group">
+                        <label for="status" class="col-md-4 text-md-left col-form-label font-weight-bold">Status: :</label>
+                        <div class="col-md-8 col-xl-8">
+                          <select th:if="${editMode}" required name="status" id="status" class="form-control">
+                            <option value="">-- Select Status --</option>
+                            <option th:value="Active" th:selected="${exist ? newEmployee.status == 'Active' : null}">Active</option>
+                            <option th:value="Inactive" th:selected="${exist ? newEmployee.status == 'Inactive' : null}">Inactive</option>
+                            <option th:value="Suspended" th:selected="${exist ? newEmployee.status == 'Suspended' : null}">Suspended</option>
+                            <option th:value="Resigned" th:selected="${exist ? newEmployee.status == 'Resigned' : null}">Resigned</option>
+                            <option th:value="Probation" th:selected="${exist ? newEmployee.status == 'Probation' : null}">Probation</option>
+
+                          </select>
+                          <p th:if="${viewMode}" class="text-md-left form-control-plaintext"  th:text="${newEmployee.gender}"></p>
+                        </div>
+                      </div>
+
+                      <!-- Password -->
+                      <input name="password" type="hidden" th:value="${exist ? newEmployee.password : ''}">
+                      <!-- Username -->
+                      <input name="username" type="hidden" th:value="${exist ? newEmployee.username : ''}">
+                    </div>
+
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- footer -->
+        <div th:replace="~{fragments/fragment :: footer}"></div>
+
+      </div>
+    </div>
+    <!-- Main Content -->
+  </div>
+</div>
+</body>
+</html>
+

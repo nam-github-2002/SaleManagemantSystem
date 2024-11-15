@@ -10,10 +10,10 @@ public class Supplier {
     @Column(name="Supplier_ID")
     private Integer supplierID;
 
-    @Column(name="Supplier_Name")
+    @Column(name="Supplier_Name", nullable = false)
     private String supplierName;
 
-    @Column(name="phone")
+    @Column(name="phone", length = 10)
     private String phone;
 
     @Column(name="address")

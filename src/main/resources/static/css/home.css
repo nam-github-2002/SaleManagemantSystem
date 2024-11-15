@@ -1,0 +1,751 @@
+/* ===================================== */
+/*              LAYOUT                   */
+/* ===================================== */
+
+/* Reset box-sizing */
+* {
+    box-sizing: border-box;
+}
+
+/* Cài đặt cho body */
+body {
+    --background-color: rgba(0,0,0,0.1);
+    --primary-color: rgba(0,0,0,0.3);
+    --secondary-color: rgba(0,0,0,0.5);
+    --sub-color: rgba(0,0,0,0.3);
+    --text-color: #ffffff;
+
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%,
+                                        rgba(198,155,255,1) 62%,
+                                        rgba(148,187,233,1) 100%);
+    margin: 0;
+    padding: 0;
+    height: auto;
+    overflow-x: hidden;
+    min-height: 750px;
+    position: relative;
+}
+
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+
+
+/* Container chính */
+.container-fluid {
+    margin: 0;
+    padding: 0;
+}
+
+/* ===================================== */
+/*              HEADER                   */
+/* ===================================== */
+header {
+    height: 60px;
+    background-color: rgba(0,0,0, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.navbar {
+    transition: all 0.3s;
+    padding: 0;
+    margin: 0;
+    min-width: 250px;
+}
+
+.navbar-dark {
+    /* chỉnh màu cho logo và nút toggle */
+    color: var(--text-color);
+    font-weight: bold;
+}
+/* Style cho nút toggle */
+#sidebarCollapse {
+    border: none;
+    color: white;
+    padding: 17px 18px;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.4s ease, margin-left 0.4s linear;
+}
+
+/* Hiệu ứng hover cho nút toggle */
+#sidebarCollapse:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Hiệu ứng khi đóng sidebar */
+#sidebarCollapse.collapsed {
+    margin-left: 0;
+    transform: rotate(180deg); /* Di chuyển sidebar ra ngoài và xoay */
+}
+
+/* Hiệu ứng khi mở sidebar */
+#sidebarCollapse:not(.collapsed) {
+    transform: translateX(0) rotate(0deg); /* Sidebar trở về vị trí ban đầu và xoay lại */
+}
+
+
+.navbar.active {
+    transform: translateX(-190px);
+    transition: all 0.4s;
+}
+.navbar.active #sidebarCollapse {
+    margin-left: 18px;
+}
+.navbar-brand {
+    width: 192px;
+    margin: 0;
+    display: block;
+    transition: background 0.1s;
+    padding: 15px;
+}
+
+.navbar-brand:hover {
+    background-color: var(--secondary-color);
+}
+/* Ẩn logo khi sidebar mở */
+.navbar .logo-brand {
+    display: none;
+}
+/* Khi sidebar đóng, hiển thị logo */
+.navbar.active .logo-brand {
+    display: block;
+}
+.logo-container{
+    justify-content: center;
+    align-items: center;
+}
+.logo-brand{
+    height: 50px;
+    width: 120px;
+    object-fit: contain;
+}
+/*User avatat*/
+.user-info p {
+    font-size: 14px;
+    color: white;
+}
+
+#user-avatar {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+    margin-right: 10px;
+}
+
+#user-avatar:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================================== */
+/*              SIDEBAR                  */
+/* ===================================== */
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background-color: rgba(0,0,0,0.2);
+    color: #ffffff;
+    transition: all 0.3s;
+    box-shadow: 1px 1px 5px 2px var(--sub-color);
+}
+
+
+#sidebar.active {
+    margin-left: -190px;
+}
+
+#sidebar.active .nav-link {
+    justify-content: flex-end;
+}
+
+#sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--text-color);
+    padding: 15px 20px;
+    transition: background 0.1s;
+}
+
+#sidebar .nav .nav-item:hover {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+#sidebar .nav .nav-item.active {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.item-text {
+    color: var(--text-color);
+    margin-left: 3px;
+}
+
+#sidebar .nav-link:hover .item-text {
+    color: #fff;
+    font-weight: bold;
+}
+
+#sidebar .nav-link.active {
+    background-color: #444;
+}
+
+#sidebar .nav-link i {
+    transition: all 0.3s;
+    padding: 3px;
+}
+
+#sidebar .nav-link:hover i {
+    font-size: 17px;
+    color: #fff;
+}
+
+
+#sidebar.active .nav-link .item-text {
+    display: none;
+}
+
+/* Media query cho sidebar */
+@media (min-width: 768px) {
+    #sidebar.active {
+        display: none;
+        transition: all 0.3s;
+    }
+
+    #sidebar.active {
+        display: block;
+        transition: all 0.3s;
+    }
+}
+
+
+
+/* ===================================== */
+/*              CONTENT                  */
+/* ===================================== */
+#mainArea {
+    width: 100%;
+    padding: 6px 10px 10px;
+    transition: all 0.3s;
+    overflow-x: hidden;
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+.main-card {
+    min-height: 70vh;
+    background: var(--background-color) !important;
+    box-shadow: 1px 1px 5px 2px var(--sub-color);
+}
+
+.content-main {
+    min-height: calc(100vh - 50px - 50px);
+    padding: 0;
+}
+
+.content-header>.breadcrumb {
+    float: right;
+    background: transparent;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 14px;
+    padding: 7px 5px;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    border-radius: 2px;
+}
+
+.content-header {
+    position: relative;
+    padding: 12px 15px;
+}
+
+.content-header>h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.content-header>.breadcrumb>li>a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.content-header>.breadcrumb>li+li:before {
+    content: '>\00a0';
+}
+
+.breadcrumb>li+li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\00a0";
+}
+
+.breadcrumb>.active {
+    color: var(--text-color);
+}
+.table-responsive {
+    box-shadow: 1px 1px 5px 2px var(--secondary-color);
+    margin-bottom: 20px;
+    padding: 0 0 5px 0;
+}
+
+.table {
+    color: #FFFFFF;
+    background-color: var(--background-color);
+}
+.table thead {
+    border: none
+}
+.table-light {
+    background-color: var(--background-color);
+}
+
+tr:hover {
+    background-color: var(--secondary-color);
+}
+/* ===================================== */
+/*              FOOTER                   */
+/* ===================================== */
+.footer {
+    min-height: 100px;
+    background-color: var(--background-color);
+    padding: 20px 0;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 1px 1px 5px 2px var(--sub-color);
+}
+
+.footer-text {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+
+/* hết layout */
+/* =========================================== */
+/*                   END LAYOUT                */
+/*                   END LAYOUT                */
+/*                   END LAYOUT                */
+/* =========================================== */
+
+
+
+
+/* ===================================== */
+/*              HOME.HTML                */
+/* ===================================== */
+/* Css cho content của trang home */
+/* Main container styling */
+
+.info-box {
+    display: flex;
+    margin-bottom: 15px;
+    box-shadow: 2px 2px 4px 2px  rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: var(--sub-color);
+}
+
+.info-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 5px 5px 6px 2px rgba(0, 0, 0, 0.3);
+}
+
+.info-box-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    color: #fff;
+}
+
+.info-box-content {
+    height: 90px;
+    flex-grow: 1;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-box-text {
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.info-box-number {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+h4 {
+    font-size: 14px;
+}
+
+p {
+    font-size: 12px;
+}
+
+a {
+    color: var(--secondary-color);
+}
+a:hover {
+    color: var(--text-color);
+}
+
+
+.new-products {
+    background-color: var(--sub-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.new-products h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* List styling */
+.new-products-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* List item styling */
+.new-products-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for list item */
+.new-products-list li:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Product image styling */
+.new-products-list-info img {
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+/* Product name link styling */
+.new-products-list-name {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--secondary-color);
+    transition: color 0.3s ease;
+}
+
+/* Hover effect for product name */
+.new-products-list-name:hover {
+    color: var(--text-color);
+
+}
+
+/* Price styling */
+.new-products-list-price {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--sub-color);
+}
+
+/* Footer link styling */
+.footer-list-box {
+    margin-top: 20px;
+}
+
+.footer-list-box a {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+.footer-list-box a:hover {
+    color: var(--text-color);
+    text-decoration: underline;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .new-products {
+        padding: 15px;
+    }
+
+    .new-products-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .new-products-list-info {
+        margin-bottom: 10px;
+    }
+}
+
+
+/* ================================ */
+
+/* Styling for the form inline container */
+.form-inline {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+    margin-left: auto; /* Align to the right */
+}
+
+/* Label styling */
+.form-inline label {
+    color: var(--text-color); /* Set text color */
+    margin-right: 10px; /* Space between label and select */
+}
+
+/* Select dropdown styling */
+.form-control {
+    background-color: var(--background-color); /* Background color */
+    color: var(--text-color); /* Text color */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    padding: 5px 10px; /* Padding for the dropdown */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Hover effect for the select dropdown */
+.form-control:hover {
+    background-color: var(--secondary-color); /* Change background on hover */
+    color: var(--text-color); /* Change text color on hover */
+}
+
+
+
+/* ================================ */
+
+
+.product-image-gallery {
+    background-color: var(--primary-color);
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-image-gallery::-webkit-scrollbar {
+    height: 8px;
+}
+
+.product-image-gallery::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+}
+
+.product-image-gallery::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+.delete-img-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    line-height: 20px;
+}
+
+.delete-img-btn:hover {
+    background-color: darkred;
+}
+
+
+.thumbnail-gallery {
+    width: 240px;
+    height: 70px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-top: 10px;
+    cursor: grab!important;
+}
+
+.thumbnail-gallery img {
+    transition: transform 0.3s ease-in-out;
+}
+
+.thumbnail-gallery .d-inline-block {
+    padding: 5px 5px 15px 5px;
+    height: 100%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.thumbnail-gallery::-webkit-scrollbar {
+    margin-top: 10px;
+    height: 12px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.thumbnail-gallery::-webkit-scrollbar-thumb {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.thumbnail-gallery::-webkit-scrollbar-thumb:hover {
+    background-color: #FFFFFF;
+}
+
+.thumbnail-gallery img {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* ===================================== */
+/*            COMPONENT                  */
+/*                                       */
+/* ===================================== */
+a.page-link {
+    color: #FFFFFF;
+    background-color: var(--background-color);
+}
+.page-item:hover a.page-link {
+    color: #FFFFFF;
+    background-color: var(--secondary-color);
+}
+
+.page-item.active a.page-link {
+    background-color: var(--secondary-color);
+}
+
+.hover-effect {
+    box-shadow: 2px 2px 4px 2px var(--sub-color);
+    transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Hiệu ứng khi hover */
+.hover-effect:hover {
+    box-shadow: 5px 5px 6px 2px var(--secondary-color);
+    transform: translate(-5px, -5px) scale(1.05);
+    opacity: 0.9;
+}
+
+img {
+    border-radius: 10px;
+}
+
+input[readonly] {
+    color: #FFFFFF;
+    background-color: var(--sub-color) !important;
+}
+
+.btn-outline-primary {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.btn {
+    font-weight: bold;
+}
+.btn-danger {
+    color: rgb(255, 58, 58);
+    background-color: var(--sub-color);
+}
+.btn-info {
+    position: relative;
+    padding-left: 30px;
+    color: rgba(0, 255, 196, 0.87);
+    background-color: var(--sub-color);
+}
+.btn-warning {
+    color: rgba(247, 255, 0, 0.87);
+    background-color: var(--sub-color);
+}
+.btn-success {
+    position: relative;
+    padding-left: 30px;
+    color: rgba(47, 255, 0, 0.87);
+    background-color: var(--sub-color);
+}
+.btn-primary {
+    color: rgba(2, 187, 255, 0.87);
+    background-color: var(--sub-color);
+}
+
+.btn-warning:hover {
+    color: var(--text-color);
+    background-color: rgba(247, 255, 0, 0.87);
+}
+.btn-info::before {
+    content: "\f03a";
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 900;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.btn-success::before {
+    content: "\f067";
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 900;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+input {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+input::placeholder {
+    color: var(--text-color);
+}

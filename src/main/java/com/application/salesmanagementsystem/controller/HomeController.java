@@ -1,7 +1,9 @@
 package com.application.salesmanagementsystem.controller;
 
 import com.application.salesmanagementsystem.model.Employee;
+import com.application.salesmanagementsystem.model.Product;
 import com.application.salesmanagementsystem.service.EmployeeService;
+import com.application.salesmanagementsystem.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping
 public class HomeController {
@@ -17,41 +22,33 @@ public class HomeController {
     @Autowired
     private EmployeeService employeeService;
 
-    // Trang chủ
+    @Autowired
+    private ProductService productService;
+
     @GetMapping("/")
-    public String home(Model model, HttpSession session) {
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";  // Chuyển hướng đến trang login nếu chưa đăng nhập
-        }
-
-        // Lấy thông tin người dùng đã đăng nhập từ session
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        model.addAttribute("currentUser", loggedInUser);  // Truyền thông tin người dùng vào model
-
-        return "home";  // Trả về trang home.html
-    }
-
-
-    // Trang Dashboard (có thể là một phần của trang home, được tải lại thông qua Ajax)
-    @GetMapping("/dashboard")
     public String body(HttpSession session, HttpServletRequest request, Model model) {
-        // Kiểm tra người dùng đã đăng nhập chưa
-        if (!LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";  // Nếu chưa đăng nhập, chuyển hướng đến trang login
+        if (LoginController.isAuthenticated(session, model)) {
+            return "login";
         }
 
-        // Kiểm tra nếu yêu cầu từ Ajax (để tải phần trang tương ứng mà không tải lại toàn bộ trang)
+        List<Product> lastestProducts = productService.getTop10NewestProducts();
+        List<Product> limitedProducts = lastestProducts.stream()
+                .limit(4)
+                .collect(Collectors.toList());
+
+        for(Product product : limitedProducts) {
+            System.out.println("product ID: "+ product.getProductID() + ", image: " + product.getImages());
+        }
+
+        model.addAttribute("lastestProducts", limitedProducts);
+
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-            System.out.println("Tải fragment dashboard");
-            return "home :: dashboard";  // Trả về phần tử dashboard của trang home
+            return "home/home :: dashboard";
         }
 
-        // Lấy thông tin người dùng đã đăng nhập từ session
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        model.addAttribute("currentUser", loggedInUser);  // Truyền thông tin người dùng vào model
-
-        System.out.println("Tải lại toàn bộ trang home");
-        return "home";  // Trả về trang home.html
+        model.addAttribute("currentUser", loggedInUser);
+        return "home/home";
     }
 
 }

@@ -1,29 +1,58 @@
 package com.application.salesmanagementsystem.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Employee")
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer employeeid;
-
+    @Column(name="employee_id", nullable = false)
+    private Integer employeeId;
     private String name;
     private String phone;
+    private String email;
+    private String department;
+
+
+    @Column(nullable = false, unique = true, updatable = false)
     private String username;
+    @Column(nullable = false)
     private String password;
+
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+    @Column(name = "hire_date")
+    private LocalDate hireDate;
     private String role;
+    private String gender;
+    private BigDecimal salary;
+    private String status;
 
     @Lob
-    private byte[] image;
+    @Column(name = "image")
+    private Blob image;
 
+    @Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDate createdAt;
+    @Column(name = "updated_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDate updatedAt;
+
+    // Getters and Setters
     public Integer getEmployeeId() {
-        return employeeid;
+        return employeeId;
     }
 
     public void setEmployeeId(Integer employeeId) {
-        this.employeeid = employeeId;
+        this.employeeId = employeeId;
     }
 
     public String getName() {
@@ -66,12 +95,75 @@ public class Employee {
         this.role = role;
     }
 
-    public byte[] getImage() {
+    public Blob getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(Blob image) {
         this.image = image;
     }
-// Getters and Setters
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
+
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public void setSalary(BigDecimal salary) {
+        this.salary = salary;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
 }
