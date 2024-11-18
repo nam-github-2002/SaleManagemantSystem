@@ -6,6 +6,7 @@ import com.application.salesmanagementsystem.repository.ImageRepository;
 import com.application.salesmanagementsystem.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
@@ -68,4 +69,5 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
     }
+
 }

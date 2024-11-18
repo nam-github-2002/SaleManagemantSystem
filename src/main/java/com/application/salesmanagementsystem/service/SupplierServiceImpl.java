@@ -50,7 +50,7 @@ public class SupplierServiceImpl implements SupplierService {
         supplierRepository.deleteById(id);
     }
 
-    public Page<Supplier> findByName(String supplierName, Pageable pageable) {
+    public Page<Supplier> findAllField(String supplierName, Pageable pageable) {
         return supplierRepository.findAllByKeyword(supplierName, pageable);
     }
 

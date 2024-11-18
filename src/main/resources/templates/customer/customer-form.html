@@ -65,6 +65,7 @@
 
           </div>
 
+          <!-- Main -->
           <div class="main-card mb-3 card">
             <div class="card-body">
 
@@ -98,11 +99,11 @@
 
                 <!-- Name -->
                 <div class="position-relative row form-group mb-3">
-                  <label for="companyName" class="col-md-3 text-md-right col-form-label">Name</label>
+                  <label for="name" class="col-md-3 text-md-right col-form-label">Name</label>
                   <div class="col-md-9 col-xl-8">
-                    <input th:if="${editMode}" required name="companyName" id="companyName" type="text"
-                           class="form-control" th:placeholder="Name" th:value="${exist ? newCustomer.companyName : ''}">
-                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.companyName}"></p>
+                    <input th:if="${editMode}" required name="name" id="name" type="text"
+                           class="form-control" th:placeholder="Name" th:value="${exist ? newCustomer.name : ''}">
+                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newCustomer.name}"></p>
                   </div>
                 </div>
 

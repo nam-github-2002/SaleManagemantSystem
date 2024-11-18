@@ -1,10 +1,13 @@
 package com.application.salesmanagementsystem.service;
 
 import com.application.salesmanagementsystem.model.Order;
+import com.application.salesmanagementsystem.model.OrderDetail;
 import com.application.salesmanagementsystem.model.OrderStatus;
 import com.application.salesmanagementsystem.repository.OrderDetailRepository;
 import com.application.salesmanagementsystem.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
@@ -24,6 +27,16 @@ public class OrderServiceImpl implements OrderService {
     private EntityManager entityManager;
 
     @Override
+    public Page<Order> findAllByKeyword(String keyword, Pageable pageable) {
+        return orderRepository.findAllOrdersByKeyword(keyword, pageable);
+    }
+
+    @Override
+    public Page<Order> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
@@ -36,23 +49,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order createOrder(Order order) {
+        // Tính tổng giá trị đơn hàng
+        double totalAmount = 0;
+        for (OrderDetail detail : order.getOrderDetails()) {
+            totalAmount += detail.getUnitPrice() * detail.getQuantity();
+        }
+
+        order.setTotalAmount(totalAmount);
         return orderRepository.save(order);
     }
 
     @Override
     @Transactional
-    public Order updateOrder(Integer id, Order orderData) {
-        Optional<Order> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            order.setCustomer(orderData.getCustomer());
-            order.setEmployee(orderData.getEmployee());
-            order.setOrderDate(orderData.getOrderDate());
-            order.setOrderStatus(orderData.getOrderStatus());
-            order.setTotalAmount(orderData.getTotalAmount());
-            return orderRepository.save(order);
-        }
-        return null;
+    public int updateOrderStatus(Integer id, OrderStatus orderStatus) {
+
+        return orderRepository.updateOrderStatus(id, orderStatus);
     }
 
     @Override
@@ -62,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int generateEmployeeId() {
+    public int generateOrderId() {
         return orderRepository.findTopByOrderByOrderIdDesc().getOrderId() + 1;
     }
 

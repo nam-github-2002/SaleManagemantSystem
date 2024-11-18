@@ -1,10 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <div th:replace="~{fragments/fragment :: head}"></div>
 </head>
 <body>
+<div class="container-fluid">
 
+    <!-- header -->
+    <div th:replace="~{fragments/fragment :: header}"></div>
+
+    <!-- section -->
+    <div class="d-flex" style="height: calc(100vh - 60px);">
+
+        <!-- Sidebar-->
+        <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
+        <!-- Sidebar -->
+
+        <div id="mainArea">
+            <div th:fragment="orderDetailPage">
+
+                <div class="app-page-title">
+                    <div class="page-title-wrapper">
+                        <div class="page-title-heading">
+                            <div class="page-title-icon">
+                                <i class="pe-7s-ticket icon-gradient bg-mean-fruit"></i>
+                            </div>
+                            <div>User
+                                <div class="page-title-subheading">View, create, update, delete and manage.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div  th:if="${editMode || viewMode}" class="d-flex">
+
+                            <a th:if="${exist}"
+                               onclick="getContent(event, this.href)"
+                               th:href="@{/orders/new}"
+                               class="btn btn-success mb-2">Thêm</a>
+
+                            <form th:if="${exist}"
+                                  th:action="@{/orders/delete/{id}(id=${newOrder.orderId})}"
+                                  method="post"
+                                  onclick="postContent(event, this)"
+                                  class="mb-2">
+                                <button type="submit" class="btn btn-danger ml-2">
+                                    <i class="fa-solid fa-trash"></i> Xoá
+                                </button>
+                            </form>
+
+                            <a onclick="getContent(event, this.href)"
+                               th:href="@{/orders}"
+                               class="btn btn-info mb-2 ml-2">Danh sách</a>
+
+                        </div>
+
+                        <!-- Main -->
+                        <div class="main-card mb-3 card">
+                            <div class="card-body">
+
+                                <!--HOÁ ĐƠN-->
+                                <form id="invoiceForm"
+                                      onsubmit="postContent(event, this)"
+                                      th:action="@{/order/new}"
+                                      th:object="${newOrder}"
+                                      method="post">
+                                    <div class="row form-group mb-3">
+
+                                        <!-- Thông tin Khách hàng -->
+                                        <div class="col-md-6">
+                                            <div class="position-relative row form-group">
+                                                <label for="customerName" class="col-md-4 col-form-label font-weight-bold">Tên Khách Hàng:</label>
+                                                <div class="col-md-8">
+                                                    <div th:if="${editMode}" class=order-customer>
+                                                        <input type="text" id="customerName"
+                                                               class="form-control"
+                                                               name="query"
+                                                               style="width: 100%"
+                                                               placeholder="Nhập tên khách hàng"
+                                                               oninput="searchCustomer(this)">
+                                                        <div id="customerSuggestions" class="list-group"></div>
+                                                    </div>
+                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newOrder.customer.name}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="position-relative row form-group">
+                                                <label for="customerAddress" class="col-md-4 col-form-label font-weight-bold">Địa Chỉ:</label>
+                                                <div class="col-md-8">
+                                                    <input th:if="${editMode}" type="text" name="address" id="customerAddress" class="form-control" placeholder="Địa chỉ" readonly>
+                                                    <p th:if="${viewMode}" class="text-md-left form-control-plaintext" th:text="${newOrder.customer.address}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="position-relative row form-group">
+                                                <label for="customerPhone" class="col-md-4 col-form-label font-weight-bold">Số Điện Thoại:</label>
+                                                <div class="col-md-8">
+                                                    <input th:if="${editMode}" type="text" name="phone" id="customerPhone" class="form-control" placeholder="Số điện thoại" readonly>
+                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newOrder.customer.phone}"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Thông tin Nhân viên-->
+                                        <div class="col-md-6">
+                                            <div class="position-relative row form-group">
+                                                <label for="employeeId" class="col-md-4 col-form-label font-weight-bold">ID Nhân Viên:</label>
+                                                <div class="col-md-8">
+                                                    <input th:if="${editMode}" type="text" id="employeeId" class="form-control"
+                                                            readonly th:value="${employee.employeeId}">
+                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.employee.employeeId}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="position-relative row form-group">
+                                                <label for="employeeName" class="col-md-4 col-form-label font-weight-bold">Tên Nhân Viên:</label>
+                                                <div class="col-md-8">
+                                                    <input th:if="${editMode}" type="text" id="employeeName" class="form-control"
+                                                            readonly th:value="${employee.name}">
+                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.employee.name}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="position-relative row form-group">
+                                                <label for="employeeDepartment" class="col-md-4 col-form-label font-weight-bold">Phòng Ban:</label>
+                                                <div class="col-md-8">
+                                                    <input th:if="${editMode}" type="text" id="employeeDepartment" class="form-control"
+                                                           readonly th:value="${employee.department}">
+                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.employee.department}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="position-relative row form-group">
+                                                <label for="employeeRole" class="col-md-4 col-form-label font-weight-bold">Chức Vụ:</label>
+                                                <div class="col-md-8">
+                                                    <input th:if="${editMode}" type="text" id="employeeRole" class="form-control"
+                                                           readonly th:value="${employee.role}">
+                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.employee.role}"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <hr>
+
+                                    <h5>Chi Tiết Hàng Hóa</h5>
+                                    <div id="productList">
+                                        <div class="row mb-2 product-item">
+                                            <div class="col-md-5 order-product">
+                                                <input type="text" class="form-control product-name" name="query"
+                                                       placeholder="Nhập tên sản phẩm" oninput="searchProduct(this)">
+                                                <div class="product-suggestions list-group"></div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="number" class="form-control product-quantity" placeholder="Số lượng" min="1" value="1">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-success" onclick="addProductRow()">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary mt-3">Lưu Hóa Đơn</button>
+                                </form>
+                                <!--HOÁ ĐƠN-->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- footer -->
+                <div th:replace="~{fragments/fragment :: footer}"></div>
+
+            </div>
+        </div>
+        <!-- Main Content -->
+    </div>
+</div>
 </body>
 </html>
+

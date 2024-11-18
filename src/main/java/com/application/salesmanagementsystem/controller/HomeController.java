@@ -27,7 +27,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String body(HttpSession session, HttpServletRequest request, Model model) {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -35,10 +35,6 @@ public class HomeController {
         List<Product> limitedProducts = lastestProducts.stream()
                 .limit(4)
                 .collect(Collectors.toList());
-
-        for(Product product : limitedProducts) {
-            System.out.println("product ID: "+ product.getProductID() + ", image: " + product.getImages());
-        }
 
         model.addAttribute("lastestProducts", limitedProducts);
 

@@ -10,13 +10,14 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
     @Query("SELECT c FROM Customer c WHERE " +
             "LOWER(c.customerID) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(c.companyName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(c.phone) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(c.address) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
@@ -25,4 +26,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     Page<Customer> findAll(@Nullable Pageable pageable);
     Optional<Customer> findByEmail(String email);
+
+    List<Customer> findByNameContainingIgnoreCase(String query);
+
 }

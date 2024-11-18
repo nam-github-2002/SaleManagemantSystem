@@ -1,18 +1,23 @@
 package com.application.salesmanagementsystem.service;
 
 import com.application.salesmanagementsystem.model.Order;
+import com.application.salesmanagementsystem.model.OrderStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public interface OrderService {
+    Page<Order> findAllByKeyword(String keyword, Pageable pageable);
+    Page<Order> getAllOrders(Pageable pageable);
     List<Order> getAllOrders();
     Optional<Order> getOrderById(Integer id);
     Order createOrder(Order order);
-    Order updateOrder(Integer id, Order orderData);
+    int updateOrderStatus(Integer id, OrderStatus status);
     void deleteOrder(Integer id);
-    int generateEmployeeId();
+    int generateOrderId();
 
     // Thống kê
     long countTotalOrders();

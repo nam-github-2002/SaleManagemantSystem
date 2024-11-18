@@ -1,6 +1,9 @@
 package com.application.salesmanagementsystem.model;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -32,6 +35,8 @@ public class Order {
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     public Order() {
     }
@@ -92,5 +97,25 @@ public class Order {
         this.paymentMethod = paymentMethod;
     }
 
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "paymentMethod=" + paymentMethod +
+                ", orderStatus=" + orderStatus +
+                ", totalAmount=" + totalAmount +
+                ", orderDate=" + orderDate +
+                ", employee=" + employee.getName() +
+                ", customer=" + customer.getName() +
+                ", orderId=" + orderId +
+                '}';
+    }
 }
 

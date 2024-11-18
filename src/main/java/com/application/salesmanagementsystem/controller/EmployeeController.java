@@ -29,23 +29,24 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    private static final String TEMP_DIR = "src/main/resources/static/images/employees/";
-
     // Hiển thị danh sách khách hàng
     @GetMapping
     public String showEmployee(Model model, @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(required = false) String keyword,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
 
         int pageSize = 8;
         Page<Employee> employees;
+        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("keyword");
 
-        if (model.containsAttribute("employees")) {
+        if (validKeword) {
 
-            employees = (Page<Employee>) model.getAttribute("employees");;
+            employees = employeeService.searchAllField(keyword, PageRequest.of(page, pageSize));
         } else {
 
             employees = employeeService.getAllEmployees(PageRequest.of(page, pageSize));
@@ -54,23 +55,15 @@ public class EmployeeController {
         model.addAttribute("employees", employees.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", employees.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("error", model.getAttribute("error"));
+        model.addAttribute("currentUser", loggedInUser);
 
-        if (model.containsAttribute("error")) {
-            model.addAttribute("error", model.getAttribute("error"));
-        } else {
-            model.addAttribute("error", false);
-        }
-
-        if (!model.containsAttribute("keyword")) {
-            model.addAttribute("keyword", null);
-        }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "employee/employee :: employeePage";
         }
 
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        model.addAttribute("currentUser", loggedInUser);
 
         return "employee/employee";
     }
@@ -81,7 +74,7 @@ public class EmployeeController {
     public String showDetailForm(@PathVariable int id, Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -109,7 +102,7 @@ public class EmployeeController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -136,7 +129,7 @@ public class EmployeeController {
     public String showEditForm(@PathVariable int id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -224,21 +217,4 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
-    // Tìm kiếm khách hàng
-    @PostMapping("/search")
-    public String searchEmployees(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page, RedirectAttributes redirectAttributes) {
-        int pageSize = 8;
-        Page<Employee> searchResults = employeeService.searchAllField(keyword, PageRequest.of(page, pageSize));
-
-        if (searchResults.isEmpty()) {
-
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy nhân viên nào với từ khóa '" + keyword + "'.");
-        } else {
-
-            redirectAttributes.addFlashAttribute("employees", searchResults);
-        }
-
-        redirectAttributes.addFlashAttribute("keyword", keyword);
-        return "redirect:/employees";
-    }
 }

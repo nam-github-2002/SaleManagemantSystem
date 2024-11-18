@@ -1,5 +1,6 @@
 package com.application.salesmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
@@ -13,6 +14,7 @@ public class Image {
     private Integer id;
 
     @Lob
+    @JsonIgnore
     @Column(name = "image_Data", nullable = false)
     private Blob imageContent;
 

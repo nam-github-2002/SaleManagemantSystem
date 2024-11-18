@@ -8,8 +8,8 @@ public class Customer {
     @Column(name="customer_id",length = 10, unique = true, nullable = false)
     private String customerID;
 
-    @Column(name="Company_Name", nullable = false)
-    private String companyName;
+    @Column(name= "name", nullable = false)
+    private String name;
 
     @Column(name="phone", length = 10)
     private String phone;
@@ -32,12 +32,12 @@ public class Customer {
         this.customerID = customerID;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setName(String Name) {
+        this.name = name;
     }
 
     public String getPhone() {

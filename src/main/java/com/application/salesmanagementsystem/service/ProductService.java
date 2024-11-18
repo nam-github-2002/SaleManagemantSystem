@@ -3,6 +3,7 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Image;
 import com.application.salesmanagementsystem.model.Product;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

@@ -23,6 +23,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(e.phone) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(e.role) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.status) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(e.department) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Employee> findAllByKeyword(String keyword, Pageable pageable);
 

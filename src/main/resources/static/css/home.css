@@ -12,7 +12,7 @@ body {
     --primary-color: rgba(0,0,0,0.3);
     --secondary-color: rgba(0,0,0,0.5);
     --sub-color: rgba(0,0,0,0.3);
-    --dark-color: rgba(0,0,0,0.6);
+    --dark-color: rgba(0, 0, 0, 0.76);
     --text-color: #ffffff;
 
     background: url('../image/background.jpg') no-repeat center center fixed;
@@ -649,6 +649,64 @@ a:hover {
     cursor: pointer;
 }
 
+
+/* ================================================================================================ */
+
+.order-customer {
+    position: relative;
+}
+#customerSuggestions {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    border-radius: 0 0 5px 5px;
+}
+
+#customerSuggestions a {
+    cursor: pointer;
+    background-color: var(--text-color);
+    color: var(--dark-color);
+}
+
+#customerSuggestions a:hover {
+    color: var(--text-color);
+    background-color: var(--dark-color);
+}
+
+
+/* ================================================================================================ */
+
+.order-product {
+    width: 100%;
+    position: relative;
+}
+
+.product-suggestions {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    display: none; /* Mặc định ẩn */
+    max-height: 200px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Hiển thị thanh cuộn nếu vượt quá chiều cao */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.product-suggestions a {
+    cursor: pointer;
+    background-color: var(--text-color);
+    color: var(--dark-color);
+}
+
+.product-suggestions a:hover {
+    color: var(--text-color);
+    background-color: var(--dark-color);
+}
+
+
 /* ============================================================================================================= */
 /*   --------------------------------         COMPONENT       --------------------------------                   */
 /*                                                                                                               */
@@ -948,6 +1006,7 @@ form input:not([type="checkbox"]):not([type="radio"]) {
     padding: 5px 20px!important;
     color: var(--text-color);
 }
+
 #search-submit {
     position: absolute;
     display: flex;
@@ -955,9 +1014,9 @@ form input:not([type="checkbox"]):not([type="radio"]) {
     justify-content: center;
     right: 0;
     top: 50%;
-    width: 60px;
-    height: 60px;
-    margin-right: 15px;
+    width: 50px;
+    height: 50px;
+    margin-right: 21px;
     padding: 10px;
     border-radius: 50%;
     transform: translateY(-50%);
@@ -969,4 +1028,77 @@ form input:not([type="checkbox"]):not([type="radio"]) {
 #search-submit:hover {
     background-color: var(--text-color);
     color: var(--dark-color);
+}
+
+
+/*----------------------------------------------- SELECT DROPDOWN ------------------------------------*/
+.status-dropdown {
+    width: 150px; /* Điều chỉnh chiều rộng theo nhu cầu */
+    position: relative;
+
+}
+
+.status-select {
+    width: 100%;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    appearance: none; /* Loại bỏ mũi tên mặc định */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+
+.processing {
+    background-color: rgba(208, 230, 255, 0.8); /* Xanh dương nhạt */
+    color: #004085;
+}
+
+.delivering {
+    background-color: rgba(255, 244, 211, 0.8); /* Vàng nhạt */
+    color: #856404;
+}
+
+.completed {
+    background-color: rgba(211, 255, 221, 0.8); /* Xanh lá nhạt */
+    color: #155724;
+}
+
+.cancelled {
+    background-color: rgba(255, 219, 222, 0.8); /* Đỏ nhạt */
+    color: #721c24;
+}
+
+/* Tùy chỉnh màu sắc theo từng trạng thái */
+.status-select.processing {
+    background-color: rgba(208, 230, 255, 0.8); /* Xanh dương nhạt */
+    color: #004085;
+}
+
+.status-select.delivering {
+    background-color: rgba(255, 244, 211, 0.8); /* Vàng nhạt */
+    color: #856404;
+}
+
+.status-select.completed {
+    background-color: rgba(211, 255, 221, 0.8); /* Xanh lá nhạt */
+    color: #155724;
+}
+
+.status-select.cancelled {
+    background-color: rgba(255, 219, 222, 0.8); /* Đỏ nhạt */
+    color: #721c24;
+}
+
+/* Mũi tên tùy chỉnh */
+.status-dropdown::after {
+    content: '▼';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #6c757d;
 }
