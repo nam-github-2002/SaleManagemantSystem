@@ -1,0 +1,276 @@
+* {
+    box-sizing: border-box;
+}
+
+.logo-container {
+    align-items: center;
+}
+
+.logo-brand {
+    height: 50px;
+    width: 120px;
+    object-fit: contain;
+}
+
+#user-avatar {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+#user-avatar:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hiển thị menu khi hover vào dropdown */
+.user-info:hover .dropdown-menu {
+    display: block;
+}
+
+.user-info {}
+
+.dropdown {
+    position: relative;
+    z-index: 1050;
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    /* Chắc chắn là không bị ghi đè */
+    z-index: 1050;
+    /* Bootstrap sử dụng z-index từ 1000 trở lên */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Ẩn menu danh sách sản phẩm mặc định */
+.cart-dropdown {
+    display: none;
+    position: absolute;
+    top: 90%;
+    /* Hiển thị bên dưới nút giỏ hàng */
+    right: 0;
+    width: 300px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1000;
+    padding: 10px;
+    color: #333;
+}
+
+/* Hiển thị danh sách sản phẩm khi hover */
+.header-top-main-cart:hover .cart-dropdown {
+    display: block;
+}
+
+/* Danh sách sản phẩm */
+.cart-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mỗi sản phẩm trong danh sách */
+.cart-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.cart-item-price {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+}
+
+/* Khi không có sản phẩm */
+.cart-empty {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin: 10px 0;
+}
+
+/* Badge */
+.badge-pill {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background-color: #ff4d4d;
+    color: #fff;
+}
+
+#dichvucongty .card {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+/* CSS cho danh mục sản phẩm theo icon */
+#list-icon-category {
+    background-color: #f9f9f9;
+    /* Màu nền nhạt */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#list-icon-category h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.product-category {
+    text-align: center;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-category img {
+    width: 75px;
+    /* Kích thước icon */
+    height: 75px;
+    /* Kích thước icon */
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.product-category-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #555;
+}
+
+/* Hiệu ứng hover */
+.product-category:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+}
+
+
+
+.product-category-title:hover {
+    color: #007bff;
+    /* Thay đổi màu chữ khi hover */
+}
+
+.brand-container {
+    background-color: #f9f9f9;
+    /* Màu nền nhạt */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.brand-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* Card của nhãn hàng */
+.brand-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    background-color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hover hiệu ứng */
+.brand-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Hình ảnh của nhãn hàng */
+.brand-card img {
+    max-width: 100%;
+    max-height: 30px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Tên của nhãn hàng */
+.brand-card p {
+    font-size: 10px;
+    color: #555;
+    font-weight: 500;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.product-list-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    border: 0.5px solid #f97a7ac8;
+}
+
+.card-img-top {
+    border-radius: 8px 8px 0 0;
+    object-fit: cover;
+    height: 200px;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 12px;
+    margin-bottom: 15px;
+}
