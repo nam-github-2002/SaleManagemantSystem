@@ -308,9 +308,6 @@ public class ProductController {
     @ResponseBody
     public List<Product> searchProduct(@RequestParam String query) {
         List<Product> products = productRepository.findByProductName(query);
-        for (Product product : products)
-        System.out.println("============================== " +product.toString());
-
         return products;
     }
 

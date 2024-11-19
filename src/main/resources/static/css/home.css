@@ -688,6 +688,7 @@ a:hover {
     position: absolute;
     z-index: 1000;
     width: 100%;
+    max-width: 363px;
     display: none; /* Mặc định ẩn */
     max-height: 200px; /* Giới hạn chiều cao */
     overflow-y: auto; /* Hiển thị thanh cuộn nếu vượt quá chiều cao */

@@ -334,7 +334,6 @@ function searchProduct(input) {
         return;
     }
 
-
     $.ajax({
         url: `/products/searchProductName`,
         method: 'GET',
@@ -347,16 +346,22 @@ function searchProduct(input) {
             }
             $suggestionBox.empty();
             products.forEach(product => {
-                console.log("product: " ,product.productName)
                 const $item = $('<a>')
                     .addClass('list-group-item list-group-item-action')
                     .text(product.productName)
                     .on('click', function () {
+                        const $row = $(input).closest('.row'); // Tìm dòng cha
+
+                        // Gán giá trị vào các ô liên quan
                         $(input).val(product.productName);
+                        $row.find(".product-price").val(product.price); // Điền đơn giá
+                        updateTotal($row.find(".product-quantity")); // Cập nhật tổng tiền của dòng hiện tại
+                        calculateGrandTotal(); // Tính tổng tiền toàn bộ
+
+                        // Xóa danh sách gợi ý
                         $suggestionBox.empty();
                     });
                 $suggestionBox.append($item);
-
             });
 
             // Hiển thị box gợi ý với hiệu ứng slideDown
@@ -370,37 +375,54 @@ function searchProduct(input) {
     });
 }
 
-// Hàm thêm hàng hóa
 function addProductRow() {
-    const $productList = $('#productList');
-    const $newRow = $('<div>').addClass('row mb-2 product-item');
-
-    $newRow.html(`
-        <div class="col-md-5">
-            <input type="text" class="form-control product-name" placeholder="Nhập tên sản phẩm">
+    const newRow = `
+    <div class="row mb-2 product-item">
+        <div class="col-md-4 order-product">
+            <input type="text" class="form-control product-name" name="query"
+                   placeholder="Nhập tên sản phẩm" oninput="searchProduct(this)">
             <div class="product-suggestions list-group"></div>
         </div>
-        <div class="col-md-3">
-            <input type="number" class="form-control product-quantity" placeholder="Số lượng" min="1" value="1">
+        <div class="col-md-2">
+            <input type="number" class="form-control product-price" placeholder="Đơn giá" min="0" value="0" oninput="updateTotal(this)">
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-danger remove-product">-</button>
+            <input type="number" class="form-control product-quantity" placeholder="Số lượng" min="1" value="1" oninput="updateTotal(this)">
         </div>
-    `);
-
-    // Gắn sự kiện tìm kiếm sản phẩm khi nhập tên
-    $newRow.find('.product-name').on('input', function () {
-        searchProduct(this);
-    });
-
-    // Gắn sự kiện xóa dòng sản phẩm
-    $newRow.find('.remove-product').on('click', function () {
-        $(this).closest('.product-item').remove();
-    });
-
-    $productList.append($newRow);
+        <div class="col-md-2">
+            <input type="text" class="form-control product-total" placeholder="Tổng tiền" readonly>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" onclick="addProductRow()">+</button>
+            <button type="button" class="btn btn-danger" onclick="removeProductRow(this)">-</button>
+        </div>
+    </div>
+    `;
+    $('#productList').append(newRow);
 }
 
+function removeProductRow(button) {
+    $(button).closest('.product-item').remove();
+    calculateGrandTotal();
+}
+
+function updateTotal(input) {
+    const $row = $(input).closest('.product-item');
+    const price = parseFloat($row.find('.product-price').val()) || 0;
+    const quantity = parseFloat($row.find('.product-quantity').val()) || 1;
+    const total = price * quantity;
+
+    $row.find('.product-total').val(total.toFixed(2)); // Cập nhật tổng tiền cho dòng
+    calculateGrandTotal(); // Cập nhật tổng tiền tất cả sản phẩm
+}
+
+function calculateGrandTotal() {
+    let grandTotal = 0;
+    $('.product-total').each(function () {
+        grandTotal += parseFloat($(this).val()) || 0;
+    });
+    $('.grand-total').val(grandTotal.toFixed(2)); // Hiển thị tổng tiền tất cả sản phẩm
+}
 // Hàm xóa hàng hóa
 function removeProductRow(button) {
     $(button).closest('.product-item').remove();
