@@ -198,6 +198,41 @@ public class ProductController {
         return "product/product-form";
     }
 
+//    @GetMapping("/display")
+//    public ResponseEntity<byte[]> displayImage(@RequestParam("id") int id) throws IOException, SQLException
+//    {
+//        Image image = imageService.viewById(id);
+//        byte [] imageBytes = null;
+//        imageBytes = image.getImageContent().getBytes(1,(int) image.getImageContent().length());
+//        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
+//    }
+
+//    @GetMapping("/display")
+//    public ResponseEntity<byte[]> displayImage(@RequestParam("id") int productId) throws IOException, SQLException {
+//        // Tìm Product dựa trên productId
+//        Optional<Product> product = productService.getProductById(productId);
+//        if (product.isEmpty()) {
+//            // Trả về HTTP 404 nếu sản phẩm không tồn tại
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+//        // Lấy hình ảnh đầu tiên liên kết với sản phẩm
+//        List<Image> images = product.get().getImages();
+//        if (images == null || images.isEmpty()) {
+//            // Trả về HTTP 404 nếu không có hình ảnh nào liên kết
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+//        // Lấy hình ảnh đầu tiên từ danh sách
+//        Image image = images.get(0);
+//        if (image.getImageContent() == null) {
+//            // Trả về HTTP 404 nếu hình ảnh không có dữ liệu
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+//        // Lấy dữ liệu nhị phân của hình ảnh
+//        byte[] imageBytes = image.getImageContent().getBytes(1, (int) image.getImageContent().length());
+//        // Trả về dữ liệu hình ảnh với loại MIME là JPEG
+//        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
+//    }
+
     @GetMapping("/display")
     public ResponseEntity<byte[]> displayImage(@RequestParam("id") int id) throws IOException, SQLException
     {
@@ -206,6 +241,7 @@ public class ProductController {
         imageBytes = image.getImageContent().getBytes(1,(int) image.getImageContent().length());
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
     }
+
 
 
 
@@ -313,6 +349,50 @@ public class ProductController {
         redirectAttributes.addAttribute("keyword", keyword);
         return "redirect:/products";
     }
+
+
+    @GetMapping("/shop")
+    public String showShopPage(Model model,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(required = false) String category) {
+        int pageSize = 8; // Số sản phẩm trên mỗi trang
+        page = Math.max(page, 0); // Đảm bảo không có giá trị âm
+
+        Page<Product> products;
+        if (category != null && !category.isBlank() && !category.equals("null")) {
+            // Lấy sản phẩm theo danh mục nếu có
+            products = productService.getProductsByCategory(category, PageRequest.of(page, pageSize));
+        } else {
+            // Lấy tất cả sản phẩm
+            products = productService.getAllProducts(PageRequest.of(page, pageSize));
+        }
+//        // Tạo map lưu hình ảnh đầu tiên của từng sản phẩm
+//        Map<Integer, String> productImages = new HashMap<>();
+//        for (Product product : products.getContent()) {
+//            String imageUrl = productService.findImagesByProductID(product.getProductID()).toString();
+//            productImages.put(product.getProductID(), imageUrl);
+//        }
+        // Tạo map lưu ID của hình ảnh đầu tiên liên quan đến từng sản phẩm
+        Map<Integer, Integer> productImages = new HashMap<>();
+        for (Product product : products.getContent()) {
+            List<Integer> imageIds = productService.findImagesByProductID(product.getProductID());
+            if (imageIds != null && !imageIds.isEmpty()) {
+                productImages.put(product.getProductID(), imageIds.get(0)); // Lấy ID đầu tiên
+            }
+        }
+
+
+        // Đưa dữ liệu vào model
+        model.addAttribute("products", products.getContent());
+        model.addAttribute("productImages", productImages); // Truyền map hình ảnh
+        model.addAttribute("category", category);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", products.getTotalPages());
+
+
+        return "shop/html/shoppe"; // Trả về view shoppe
+    }
+
 
 
 }
