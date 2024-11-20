@@ -353,9 +353,9 @@ public class ProductController {
             HttpSession session, // Để lấy thông tin người dùng từ session
             Model model) {
 
-        if (LoginController.isAuthenticated(session, model)) {
-            return "redirect:/login";
-        }
+//        if (LoginController.isAuthenticated(session, model)) {
+//            return "redirect:/login";
+//        }
 
         int pageSize = 12; // Số sản phẩm trên mỗi trang
         List<Product> allProducts = productService.getAllProducts(); // Lấy tất cả sản phẩm từ DB
