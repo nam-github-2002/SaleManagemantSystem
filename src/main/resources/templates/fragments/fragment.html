@@ -58,7 +58,9 @@
     <div class="col text-end d-flex justify-content-end align-items-center">
       <div class="user-info d-flex align-items-center">
         <div class="dropdown">
-          <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2"
+
+<!--      <img src="https://via.placeholder.com/40" alt="User Avatar" class="rounded-circle me-2"-->
+          <img th:src="${currentUser.employeeId != null ? '/employees/display?id=' + currentUser.employeeId : '/images/noimage.jpg'}"
                id="user-avatar" data-toggle="dropdown" aria-expanded="false">
           <ul class="dropdown-menu hide" aria-labelledby="user-avatar">
             <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> View Profile</a></li>
