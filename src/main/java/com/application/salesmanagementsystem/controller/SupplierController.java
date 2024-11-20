@@ -28,43 +28,37 @@ public class SupplierController {
     // Hiển thị danh sách khách hàng
     @GetMapping
     public String showSupplier(Model model, @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(required = false) String keyword,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
 
-        int pageSize = 8;
-        Page<Supplier> Suppliers;
+        int pageSize = 6;
+        page = Math.max(page, 0);
+        Page<Supplier> suppliers;
+        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("null");
 
-        if (model.containsAttribute("Suppliers")) {
+        if (validKeword) {
 
-            Suppliers = (Page<Supplier>) model.getAttribute("Suppliers");;
+            suppliers = supplierService.findAllField(keyword, PageRequest.of(page, pageSize));
         } else {
 
-            Suppliers = supplierService.getAllSuppliers(PageRequest.of(page, pageSize));
+            suppliers = supplierService.getAllSuppliers(PageRequest.of(page, pageSize));
         }
 
-        model.addAttribute("suppliers", Suppliers.getContent());
+        model.addAttribute("suppliers", suppliers.getContent());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", Suppliers.getTotalPages());
-
-        if (model.containsAttribute("error")) {
-            model.addAttribute("error", model.getAttribute("error"));
-        } else {
-            model.addAttribute("error", false);
-        }
-
-        if (!model.containsAttribute("keyword")) {
-            model.addAttribute("keyword", null);
-        }
+        model.addAttribute("totalPages", suppliers.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("error", model.getAttribute("error"));
+        model.addAttribute("currentUser", loggedInUser);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "supplier/supplier :: supplierPage";
         }
-
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        model.addAttribute("currentUser", loggedInUser);
 
         return "supplier/supplier";
     }
@@ -75,7 +69,7 @@ public class SupplierController {
     public String showDetailForm(@PathVariable int id, Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -86,7 +80,7 @@ public class SupplierController {
             model.addAttribute("exist", true);
             model.addAttribute("newSupplier", Supplier.get());
         } else {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            model.addAttribute("error", "Không tìm thấy nhà cung cấp.");
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -103,7 +97,7 @@ public class SupplierController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -130,7 +124,7 @@ public class SupplierController {
     public String showEditForm(@PathVariable int id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -142,7 +136,7 @@ public class SupplierController {
             model.addAttribute("exist", true);
             model.addAttribute("newSupplier", Supplier);
         } else {
-            model.addAttribute("error", "Không tìm thấy khách hàng.");
+            model.addAttribute("error", "Không tìm thấy nhà cung cấp.");
         }
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
@@ -180,21 +174,4 @@ public class SupplierController {
         return "redirect:/suppliers";
     }
 
-    // Tìm kiếm khách hàng
-    @PostMapping("/search")
-    public String searchSuppliers(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page, RedirectAttributes redirectAttributes) {
-        int pageSize = 8;
-        Page<Supplier> searchResults = supplierService.findByName(keyword, PageRequest.of(page, pageSize));
-
-        if (searchResults.isEmpty()) {
-
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng nào với từ khóa '" + keyword + "'.");
-        } else {
-
-            redirectAttributes.addFlashAttribute("Suppliers", searchResults);
-        }
-
-        redirectAttributes.addFlashAttribute("keyword", keyword);
-        return "redirect:/suppliers";
-    }
 }

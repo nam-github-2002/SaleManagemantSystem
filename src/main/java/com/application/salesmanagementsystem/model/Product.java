@@ -1,5 +1,6 @@
 package com.application.salesmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +15,7 @@ public class Product {
     private Integer productID;
 
     @Column(name = "product_name", nullable = false)
-    private String productName = "Product";
+    private String productName;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "Category_id", nullable = false)
@@ -38,7 +39,17 @@ public class Product {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)  // Set the mappedBy attribute
+    @Column(name = "discount", nullable = false)
+    private Double discount = 0.0;  // Mới: Mức giảm giá sản phẩm
+
+    @Column(name = "rating", nullable = false)
+    private Double rating = 0.0;  // Mới: Đánh giá trung bình của sản phẩm
+
+    @Column(name = "status", nullable = false)
+    private Boolean status = true;  // Mới: Trạng thái sản phẩm (Còn bán hay không)
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Image> images = new ArrayList<>();  // This holds all images associated with the product
 
     public Product() {
@@ -96,6 +107,30 @@ public class Product {
         this.quantity = quantity;
     }
 
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
     public List<Image> getImages() {
         return images;  // This will return all images associated with this product
     }
@@ -110,5 +145,12 @@ public class Product {
 
     public Date getUpdateDate() {
         return updateDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productName='" + productName + '\'' +
+                '}';
     }
 }

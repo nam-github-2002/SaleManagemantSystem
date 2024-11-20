@@ -8,8 +8,8 @@ public class Customer {
     @Column(name="customer_id",length = 10, unique = true, nullable = false)
     private String customerID;
 
-    @Column(name="Company_Name", nullable = false)
-    private String companyName;
+    @Column(name= "name", nullable = false)
+    private String name;
 
     @Column(name="phone", length = 10)
     private String phone;
@@ -23,6 +23,8 @@ public class Customer {
     @Column(name="type")
     private String type;
 
+    @Column(name="total_spend")
+    private Double totalSpend = 0.0;
 
     public String getCustomerID() {
         return customerID;
@@ -32,12 +34,12 @@ public class Customer {
         this.customerID = customerID;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getName() {
+        return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {
@@ -72,4 +74,21 @@ public class Customer {
         this.type = type;
     }
 
+    public Double getTotalSpend() {
+        return totalSpend;
+    }
+
+    public void setTotalSpend(Double totalSpend) {
+        this.totalSpend = totalSpend;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", name='" + name + '\'' +
+                ", customerID='" + customerID + '\'' +
+                '}';
+    }
 }

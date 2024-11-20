@@ -38,20 +38,46 @@
                                         onclick="exportTableToExcel()">Xuất ra Excel</button>
                             </div>
 
+
                             <!-- Tìm kiếm -->
-                            <div class="col-md-6 d-flex justify-content-end flex-column">
-                                <div class="form-inline ml-auto mt-4">
-                                    <form action="/suppliers/search"
-                                          method="POST"
-                                          onsubmit="postContent(this)"
-                                          class="d-flex search-form">
-                                        <input  type="text" class="form-control" placeholder="Tìm kiếm..." name="keyword" aria-label="Search">
-                                        <button type="submit" class="btn btn-primary ml-2">
-                                            Tìm kiếm
-                                        </button>
-                                    </form>
+                            <div class="form-inline ml-auto">
+                                <button type="button" class="btn btn-primary"
+                                        data-toggle="modal" data-target="#searchModal"
+                                        onclick="focusInput()">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Tìm kiếm
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+
+                                            <div class="modal-body">
+
+                                                <form th:action="@{/suppliers}"
+                                                      method="GET"
+                                                      onsubmit="searchContent(event, this); closeModal()"
+                                                      class="d-flex search-form">
+                                                    <input type="text"
+                                                           class="search-input"
+                                                           placeholder="Tìm kiếm..."
+                                                           name="keyword"
+                                                           th:value="${keyword != null ? keyword : ''}"
+                                                           aria-label="Search">
+                                                    <button id="search-submit" type="submit">
+                                                        <i class="fa-solid fa-magnifying-glass" style="font-size: 30px"></i>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
+                            <!-- Tìm kiếm -->
 
                         </div>
                         <!-- Search bar -->
@@ -109,16 +135,25 @@
                             <ul class="pagination">
                                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                                     <a class="page-link"
-                                       onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${currentPage - 1})}">Previous</a>
+                                       onclick="getContent(event, this.href)"
+                                       th:href="@{'/suppliers?page=0&keyword=' + keyword}">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
                                 </li>
                                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                                     th:classappend="${i == currentPage} ? 'active'">
                                     <a class="page-link"
-                                       onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${i})}" th:text="${i + 1}"></a>
+                                       onclick="getContent(event, this.href)"
+                                       th:href="@{'/suppliers?page=' + ${i} + '&keyword=' + ${keyword}}">
+                                        <span th:text="${i + 1}"></span>
+                                    </a>
                                 </li>
                                 <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
                                     <a class="page-link"
-                                       onclick="getContent(event, this.href)" th:href="@{/suppliers(page=${currentPage + 1})}">Next</a>
+                                       onclick="getContent(event, this.href)"
+                                       th:href="@{'/suppliers?page=' + ${totalPages - 1} + '&keyword=' + ${keyword}}">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
                                 </li>
                             </ul>
                         </nav>

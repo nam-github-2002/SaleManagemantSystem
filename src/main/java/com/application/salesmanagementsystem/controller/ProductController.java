@@ -4,6 +4,7 @@ import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Image;
 import com.application.salesmanagementsystem.model.Supplier;
 import com.application.salesmanagementsystem.repository.ImageRepository;
+import com.application.salesmanagementsystem.repository.ProductRepository;
 import com.application.salesmanagementsystem.service.ImageService;
 import com.application.salesmanagementsystem.service.SupplierService;
 import com.application.salesmanagementsystem.model.Product;
@@ -38,59 +39,60 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private SupplierService supplierService;
 
     @Autowired
     private ImageService imageService;
 
-    private static final String TEMP_DIR = "src/main/resources/static/images/products";
     @Autowired
     private ImageRepository imageRepository;
+
 
     // Hiển thị danh sách sản phẩm
     @GetMapping
     public String showProductList(Model model,
                                   @RequestParam(defaultValue = "0") int page,
                                   @RequestParam(required = false) String category,
+                                  @RequestParam(required = false) String keyword,
                                   HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
         int pageSize = 8;
         page = Math.max(page, 0);
 
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         Page<Product> products;
-        if (model.getAttribute("products") != null) {
 
-            products = (Page<Product>) model.getAttribute("products");
+        boolean validKeyword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("null");
+        boolean validCategory = category != null && !category.isEmpty() && !category.equalsIgnoreCase("null");
+
+       if (validKeyword) {
+            // Chỉ tìm kiếm theo từ khóa
+            products = productService.searchProducts(keyword, PageRequest.of(page, pageSize));
+
+        } else if (validCategory) {
+            // Chỉ lọc theo danh mục
+            products = productService.getProductsByCategory(category, PageRequest.of(page, pageSize));
 
         } else {
-
-            if (category != null && StringUtils.isNotBlank(category) && !category.equals("null")) {
-                products = productService.getProductsByCategory(category, PageRequest.of(page, pageSize));
-            } else {
-                products = productService.getAllProducts(PageRequest.of(page, pageSize));
-            }
+            // Lấy tất cả sản phẩm
+            products = productService.getAllProducts(PageRequest.of(page, pageSize));
         }
 
         model.addAttribute("products", products.getContent());
         model.addAttribute("category", category);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", products.getTotalPages());
-
-        if (model.containsAttribute("error")) {
-            model.addAttribute("error", model.getAttribute("error"));
-        } else {
-            model.addAttribute("error", false);
-        }
-        if (!model.containsAttribute("keyword")) {
-            model.addAttribute("keyword", null);
-        }
-
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         model.addAttribute("currentUser", loggedInUser);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+        model.addAttribute("error", model.getAttribute("error"));
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "product/product :: productPage";
@@ -99,11 +101,12 @@ public class ProductController {
         return "product/product";
     }
 
+
     @GetMapping("/detail/{id}")
     public String showProductDetail(@PathVariable int id, Model model,
                                     HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -135,7 +138,7 @@ public class ProductController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -162,7 +165,7 @@ public class ProductController {
     public String showEditForm(@PathVariable int id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -210,6 +213,7 @@ public class ProductController {
 
 
 
+    //Thêm mới
     @PostMapping({ "/new"})
     public String saveProduct(@ModelAttribute("newProduct") Product newProduct,
                                 @RequestParam("image") MultipartFile[] images,
@@ -238,6 +242,7 @@ public class ProductController {
         return "redirect:/products/detail/" + newProduct.getProductID();
     }
 
+    //Edit
     @PostMapping({"/edit/{id}"})
     public String updateProduct(@ModelAttribute("newProduct") Product newProduct,
                                 @RequestParam("image") MultipartFile[] images,
@@ -267,6 +272,7 @@ public class ProductController {
         return "redirect:/products/detail/" + newProduct.getProductID();
     }
 
+    //Xoá sản phẩm
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable int id)
     {
@@ -274,6 +280,7 @@ public class ProductController {
         return "redirect:/products";
     }
 
+    //Xoá ảnh
     @PostMapping("/image/{id}")
     public String deleteImage(HttpServletRequest request,
                               @PathVariable int id,
@@ -296,23 +303,12 @@ public class ProductController {
         return "redirect:/products/edit/" + productId;
     }
 
-
-    @PostMapping("/search")
-    public String searchProducts(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page,
-                                 RedirectAttributes redirectAttributes, HttpSession session)
-    {
-        int pageSize = 8;
-        Page<Product> searchResults = productService.searchProducts(keyword, PageRequest.of(page, pageSize));
-
-        if (searchResults.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy sản phẩm nào với từ khóa '" + keyword + "'.");
-        } else {
-            redirectAttributes.addFlashAttribute("products", searchResults);
-        }
-
-        redirectAttributes.addAttribute("keyword", keyword);
-        return "redirect:/products";
+    //Tìm sản phẩm đã có
+    @GetMapping("/searchProductName")
+    @ResponseBody
+    public List<Product> searchProduct(@RequestParam String query) {
+        List<Product> products = productRepository.findByProductName(query);
+        return products;
     }
-
 
 }

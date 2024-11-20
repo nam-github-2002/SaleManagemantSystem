@@ -20,7 +20,7 @@ public interface SupplierService {
 
     void deleteSupplier(Integer id);
 
-    Page<Supplier> findByName(String name, Pageable pageable);
+    Page<Supplier> findAllField(String name, Pageable pageable);
 
     Optional<Supplier> findById(int id);
 

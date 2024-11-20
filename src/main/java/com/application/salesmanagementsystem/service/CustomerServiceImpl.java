@@ -3,15 +3,13 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -70,6 +68,27 @@ public class CustomerServiceImpl implements CustomerService {
 
     public Optional<Customer> findByEmail(String email) {
         return customerRepository.findByEmail(email);
+    }
+
+    @Override
+    public double countTotalCustomers() {
+        return customerRepository.countTotalCustomers();
+    }
+
+    public List<Customer> getTopSpendingCustomers(int topN) {
+        List<Object[]> result = customerRepository.findTopSpendingCustomers(PageRequest.of(0,5));
+
+        List<Customer> topCustomers = new ArrayList<>();
+        for (Object[] row : result) {
+            Customer customer = (Customer) row[0];
+            Double totalSpent = (Double) row[1];
+
+            totalSpent = Math.floor(totalSpent * 100) / 100;
+
+            customer.setTotalSpend(totalSpent);
+            topCustomers.add(customer);
+        }
+        return topCustomers;
     }
 
 }

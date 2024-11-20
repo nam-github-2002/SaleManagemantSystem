@@ -10,25 +10,183 @@
   <div th:replace="~{fragments/fragment :: header}"></div>
 
   <!-- section -->
-  <div class="d-flex" style="height: calc(100vh - 60px);">
+  <div class="d-flex">
 
     <!-- Sidebar-->
     <nav th:replace="~{fragments/fragment :: sidebar}"></nav>
     <!-- Sidebar -->
 
     <div id="mainArea">
-
       <div th:fragment="orderPage">
+        <section class="content-header">
+          <h1>Quản lý sản phẩm</h1>
+          <ol class="breadcrumb">
+            <li><a href="/" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+            <li class="active"><i class="fas fa-box"></i>Order</li>
+          </ol>
+        </section>
 
-        Đây là trang quản lý hoá đơn
+        <section class="content-main px-3">
+          <div class="productMan">
 
+            <!-- Action buttons and summary -->
+            <div class="row mb-3">
+              <!-- Cột nút hành động -->
+              <div class="col-md-6">
+                <a  onclick="getContent(event, this.href)" href="/orders/new" class="btn btn-primary btn-sm">+ Tạo hoá đơn</a>
+                <button id="exportExcelBtn"
+                        class="btn btn-success btn-sm"
+                        onclick="exportTableToExcel()">Xuất ra Excel</button>
+              </div>
+
+              <div class="col-md-6 d-flex justify-content-end align-items-center">
+
+                <!-- Tìm kiếm -->
+                <div class="form-inline ml-auto">
+                  <button type="button" class="btn btn-primary"
+                          data-toggle="modal" data-target="#searchModal"
+                          onclick="focusInput()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Tìm kiếm
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+
+                        <div class="modal-body">
+
+                          <form th:action="@{/orders}"
+                                method="GET"
+                                onsubmit="searchContent(event, this); closeModal()"
+                                class="d-flex search-form">
+                            <input type="text"
+                                   class="search-input"
+                                   placeholder="Tìm kiếm..."
+                                   name="keyword"
+                                   th:value="${keyword}"
+                                   aria-label="Search">
+                            <button id="search-submit" type="submit">
+                              <i class="fa-solid fa-magnifying-glass" style="font-size: 30px"></i>
+                            </button>
+                          </form>
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- Tìm kiếm -->
+
+              </div>
+
+            </div>
+
+            <!-- Bảng danh sách sản phẩm -->
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Mã <br>hoá đơn </th>
+                  <th>Ngày lập <br> hoá đơn</th>
+                  <th>Khách hàng</th>
+                  <th>Trạng thái</th>
+                  <th>Tổng tiên</th>
+                  <th>Phương thức <br> thanh toán</th>
+                  <th>Người lập</th>
+                  <th>Hành động</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                  <td th:text="${order.orderId}"></td>
+                  <td th:text="${order.orderDate}"></td>
+                  <td th:text="${order.customer.name}"></td>
+                  <td>
+                    <div class="status-dropdown">
+                      <select id="orderStatus_${order.orderId}"
+                              th:class="'status-select ' + ${order.orderStatus.name().toLowerCase()}"
+                              th:data-target="@{/orders/edit/{id}(id=${order.orderId})}"
+                              onchange="updateOrderStatus(event, this); updateUIOrderStatus(event,this)">
+                        <option value="Processing"
+                                th:selected="${order.orderStatus.name() == 'Processing'}"
+                                class="status-option processing">
+                          Processing
+                        </option>
+                        <option value="Delivering"
+                                th:selected="${order.orderStatus.name() == 'Delivering'}"
+                                class="status-option delivering">
+                          Delivering
+                        </option>
+                        <option value="Completed"
+                                th:selected="${order.orderStatus.name() == 'Completed'}"
+                                class="status-option completed">
+                          Completed
+                        </option>
+                        <option value="Cancelled"
+                                th:selected="${order.orderStatus.name() == 'Cancelled'}"
+                                class="status-option cancelled">
+                          Cancelled
+                        </option>
+                      </select>
+                    </div>
+                  </td>
+                  <td th:text="${order.totalAmount}"></td>
+                  <td th:text="${order.paymentMethod}"></td>
+                  <td th:text="${order.employee.name}"></td>
+                  <td>
+                    <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
+                       th:href="@{/orders/detail/{id}(id=${order.orderId})}"
+                       onclick="getContent(event, this.href)">
+                      Detail
+                    </a>
+
+                    <form th:action="@{/orders/delete/{id}(id=${order.orderId})}"
+                          method="post" style="display:inline;"
+                          onsubmit="postContent(event, this)">
+                      <input type="hidden" name="_method" value="DELETE" />
+                      <button type="submit" class="btn btn-outline-danger border-0 btn-sm">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Phân trang -->
+            <nav class="d-flex justify-content-end">
+              <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                  <a class="page-link"
+                     onclick="getContent(event, this.href)" th:href="@{/orders(page=${currentPage - 1})}">Previous</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                  <a class="page-link"
+                     onclick="getContent(event, this.href)" th:href="@{/orders(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                  <a class="page-link"
+                     onclick="getContent(event, this.href)" th:href="@{/orders(page=${currentPage + 1})}">Next</a>
+                </li>
+              </ul>
+            </nav>
+            <!-- Phân trang -->
+
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <div th:replace="~{fragments/fragment :: footer}"></div>
       </div>
-
     </div>
   </div>
-
-  <!-- footer -->
-  <div th:replace="~{fragments/fragment :: footer}"></div>
 
 </div>
 </body>

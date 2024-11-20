@@ -6,6 +6,7 @@ import com.application.salesmanagementsystem.repository.ImageRepository;
 import com.application.salesmanagementsystem.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
@@ -60,6 +61,17 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findTopByOrderByProductIDDesc();
         return product.getProductID() + 1;
     }
+
+    @Override
+    public double totalProducts() {
+        return productRepository.getTotalQuantity();
+    }
+
+    @Override
+    public List<Object[]> getBestSellingProduct(int topN) {
+        return productRepository.getTopSellingProducts(topN);
+    }
+
     @Override
     public void saveProduct(Product product) {
         productRepository.save(product);
@@ -68,4 +80,5 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
     }
+
 }

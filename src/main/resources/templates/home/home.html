@@ -32,111 +32,90 @@
                     <!-- Nội dung dashboard -->
                     <!-- dashboard -->
                     <div class="row">
+                        <!-- Đơn hàng -->
                         <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="info-box ">
-                                <span class="info-box-icon fa-2x bg-primary"><i
-                                        class="fas fa-file-invoice-dollar "></i></span>
-
+                            <div class="info-box">
+                                <span class="info-box-icon fa-2x bg-primary"><i class="fas fa-file-invoice-dollar"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Đơn hàng</span>
-                                    <span class="info-box-number">760</span>
+                                    <span class="info-box-number" th:text="${totalOrders}"></span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
+
+                        <!-- Tồn kho -->
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="info-box">
                                 <span class="info-box-icon fa-2x bg-danger"><i class="fas fa-boxes"></i></span>
-
                                 <div class="info-box-content">
                                     <span class="info-box-text">Tồn kho</span>
-                                    <span class="info-box-number">60<small>%</small></span>
+                                    <span class="info-box-number" th:text="${totalProducts}"></span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
-                        <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="info-box ">
-                                <span class="info-box-icon fa-2x bg-success"><i class="fas fa-chart-line "></i></span>
 
+                        <!-- Doanh thu -->
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="info-box">
+                                <span class="info-box-icon fa-2x bg-success"><i class="fas fa-chart-line"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Doanh thu</span>
-                                    <span class="info-box-number">41,410,312 <small>VND</small></span>
+                                    <span class="info-box-number"  th:text="${totalRevenue}"></span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
 
-
-
+                        <!-- Khách hàng -->
                         <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="info-box ">
-                                <span class="info-box-icon fa-2x "><i class="fas fa-users "></i></span>
-
+                            <div class="info-box">
+                                <span class="info-box-icon fa-2x"><i class="fas fa-users"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Khách hàng</span>
-                                    <span class="info-box-number">2,000</span>
+                                    <span class="info-box-number" th:text="${totalCustomers}"></span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
                     </div>
+
 
                     <div class="row m-0 p-0">
 
-                        <div class="col-md-6 col-sm-12 new-customers my-2">
-                            <h3 class="mt-2 ">Khách hàng mới nhất</h3>
-                            <ul class="new-customers-list">
-
+                        <!-- Khách hàng chi tiêu nhiều nhất -->
+                        <div class="col-md-6 col-sm-12 my-2 statistical-component mr-2">
+                            <h3 class="mt-2">Khách hàng chi tiêu nhiều nhất</h3>
+                            <ul class="statistical-list" th:each="customer : ${topSpendingCustomers}">
                                 <li>
-                                    <img src="https://via.placeholder.com/100" alt="User Image">
-                                    <a class="new-customers-list-name" href="#">User 95</a>
-                                </li>
-                                <li>
-                                    <img src="https://via.placeholder.com/100" alt="User Image">
-                                    <a class="new-customers-list-name" href="#">User 94</a>
-                                </li>
-                                <li>
-                                    <img src="https://via.placeholder.com/100" alt="User Image">
-                                    <a class="new-customers-list-name" href="#">User 93</a>
-                                </li>
-                                <li>
-                                    <img src="https://via.placeholder.com/100" alt="User Image">
-                                    <a class="new-customers-list-name" href="#">User 92</a>
+                                    <div class="statistical-list-info">
+                                        <span th:text="${customer.name}">Khách hàng A</span>
+                                    </div>
+                                    <span class="statistical-list-number" th:text="${customer.totalSpend} + ' VND'">500,000 VNĐ</span>
                                 </li>
                             </ul>
+
                             <div class="footer-list-box text-center">
-                                <a href="#">Xem tất cả khách hàng</a>
+                                <a href="/customers" onclick="getContent(event, this.href)">Xem tất cả khách hàng</a>
                             </div>
                         </div>
 
-                        <!-- Mục sản phẩm mới nhất -->
-                        <div class="col-md-6 col-sm-12 new-products my-2">
+                        <!-- Sản phẩm mới nhất -->
+                        <div class="col-md-6 col-sm-12 my-2 statistical-component ml-auto">
                             <h3 class="mt-2">Sản phẩm mới nhất</h3>
-                            <ul class="new-products-list" th:each="product : ${lastestProducts}">
+                            <ul class="statistical-list" th:each="product : ${lastestProducts}">
                                 <li>
-                                    <div class="new-products-list-info">
+                                    <div class="statistical-list-info">
                                         <img class="img-fluid rounded-3"
                                              th:src="${#lists.isEmpty(product.images) ? '/images/logoSmartSeller.png'
                                                                                         : '/products/display?id=' + product.getImages().getFirst().getId()}"
-                                             th:onerror="if (!this.onerror) { this.src='@{/image/noimage.jpg}'; }"
+                                             th:onerror="if(!this.onerror) { this.src='@{/image/noimage.jpg}'; }"
 
                                              style="width: 40px; height: 40px; object-fit: cover;">
-                                        <a class="new-products-list-name"
+                                        <a class="statistical-list-name"
                                            th:text="${product.getProductName()}"
                                            th:href="@{/products/detail/{id}(id=${product.productID})}"
                                            onclick="getContent(event, this.href)">Samsung Galaxy note 2024</a>
                                     </div>
-                                    <span class="new-products-list-price "
-                                          th:text="${product.getPrice()}">$2800</span>
+                                    <span class="statistical-list-number"
+                                          th:text="${product.getPrice()} + ' VND'">$2800</span>
                                 </li>
                             </ul>
 
@@ -144,55 +123,53 @@
                                 <a href="/products" onclick="getContent(event, this.href)">Xem tất cả sản phẩm</a>
                             </div>
                         </div>
-                        <!--./new-product-list-->
+
+                        <!--Sản phẩm bán chạy nhất-->
+                        <div class="col-md-6 col-sm-12 my-2">
+
+                        </div>
 
                         <!-- Đơn hàng gần đây -->
                         <div class="col-md-12 col-sm-12 my-2 new-orders">
                             <h3 class="mt-2">Đơn hàng mới nhất</h3>
                             <div class="table-responsive new-orders-list">
-                                <table class="table table-hover ">
+                                <table class="table table-hover">
                                     <thead>
-                                    <tr>
-                                        <th>Mã đơn hàng</th>
-                                        <th>Tên sản phẩm</th>
-                                        <th>Số lượng</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Tình trạng</th>
-                                        <th>Tổng giá</th>
-                                    </tr>
+                                        <tr>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Khách hàng</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng giá</th>
+                                            <th>Tình trạng</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>#1009</td>
-                                        <td>Sản phẩm A</td>
-                                        <td>2</td>
-                                        <td>11/11/2024</td>
-                                        <td><span class="btn btn-sm btn-outline-danger">Chưa xử lý</span></td>
-                                        <td>200,000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#1008</td>
-                                        <td>Sản phẩm B</td>
-                                        <td>1</td>
-                                        <td>06/11/2024</td>
-                                        <td><span class="btn btn-sm btn-outline-warning">Đang xử lý</span></td>
-                                        <td>150,000 VNĐ</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#1007</td>
-                                        <td>Sản phẩm C</td>
-                                        <td>3</td>
-                                        <td>12/10/2024</td>
-                                        <td><span class="btn btn-sm btn-outline-success">Đã giao</span></td>
-                                        <td>450,000 VNĐ</td>
+                                    <tr th:each="order : ${recentOrders}">
+                                        <td th:text="'#' + ${order.orderId}"></td>
+                                        <td th:text="${order.customer.name}"></td>
+                                        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${order.formattedTotalAmount} + ' VND'"></td>
+                                        <td>
+                                            <span class="btn2"
+                                                  th:classappend="${order.orderStatus.name() == 'Processing' ? 'btn2-warning' :
+                                                                   (order.orderStatus.name() == 'Delivering' ? 'btn2-info' :
+                                                                   (order.orderStatus.name() == 'Completed' ? 'btn2-success' :
+                                                                   (order.orderStatus.name() == 'Cancelled' ? 'btn2-danger' : '')))}"
+                                                  th:text="${order.orderStatus}">
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a class="recentOrderDetail" th:href="@{/orders/detail/{id}(id=${order.orderId})}"
+                                               onclick="getContent(event, this.href)">Xem chi tiết</a>
+                                        </td>
                                     </tr>
                                     </tbody>
+
                                 </table>
                             </div>
-                            <div class="footer-list-box text-center">
-                                <a href="#">Xem tất cả đơn hàng</a>
-                            </div>
                         </div>
+
                     </div>
 
 

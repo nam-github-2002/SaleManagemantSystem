@@ -3,46 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng Nhập</title>
-  <link rel="stylesheet" th:href="@{/css/login.css}">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-<div class="container">
-  <div class="screen">
-    <div class="screen__content">
-      <form class="login" method="post" th:action="@{/login}">
-        <div class="login__field">
-          <i class="login__icon fas fa-user"></i>
-          <label>
-            <input required type="text" class="login__input" th:name="username" placeholder="User name / Email">
-          </label>
-        </div>
-        <div class="login__field">
-          <i class="login__icon fas fa-lock"></i>
-          <label>
-            <input required type="password" class="login__input" th:name="password" placeholder="Password">
-          </label>
-        </div>
-        <button type="submit" class="button login__submit">
-          <span class="button__text">Log In Now</span>
-          <i class="button__icon fas fa-chevron-right"></i>
-        </button>
-      </form>
-      <div class="social-login">
-        <h3>log in via</h3>
-        <div class="social-icons">
-          <a href="#" class="social-login__icon fab fa-instagram"></a>
-          <a href="#" class="social-login__icon fab fa-facebook"></a>
-          <a href="#" class="social-login__icon fab fa-twitter"></a>
-        </div>
-      </div>
+<div class="login-card">
+  <h2>Login</h2>
+  <form id="form-login" th:action="@{/login}" method="post">
+    <div class="form-group">
+      <input type="text" name="username" class="form-control" placeholder="Username" required>
     </div>
-    <div class="screen__background">
-      <span class="screen__background__shape screen__background__shape4"></span>
-      <span class="screen__background__shape screen__background__shape3"></span>
-      <span class="screen__background__shape screen__background__shape2"></span>
-      <span class="screen__background__shape screen__background__shape1"></span>
+    <div class="form-group">
+      <input type="password" name="password" class="form-control" placeholder="Password" required>
     </div>
+    <button type="submit" class="btn btn-login">LOGIN</button>
+  </form>
+  <div class="social-login">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+    <a href="#"><i class="fab fa-google"></i></a>
+  </div>
+  <div class="text-right mt-3">
+    <a href="#">Forgot password?</a>
   </div>
 </div>
 </body>

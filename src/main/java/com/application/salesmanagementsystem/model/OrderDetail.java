@@ -1,5 +1,4 @@
 package com.application.salesmanagementsystem.model;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -7,45 +6,42 @@ import jakarta.persistence.*;
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="order_detail_id")
-    private int orderDetailId;
+    private Integer orderDetailId;
+
+    private Integer quantity;
+    private Double unitPrice;
+    private Double totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private Orders orderId;
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private Short quantity;
-
-    @Column(name="unit_price")
-    private Double unitPrice;
-
-    // Getters và Setters
-
-    public Orders getOrder() {
-        return orderId;
-    }
-
-    public void setOrder(Orders order) {
-        this.orderId = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
+    //Constructor
+    public OrderDetail(Product product) {
         this.product = product;
     }
 
-    public Short getQuantity() {
+    public OrderDetail() {
+
+    }
+
+    public Integer getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(Integer orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
+
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Short quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
@@ -57,11 +53,38 @@ public class OrderDetail {
         this.unitPrice = unitPrice;
     }
 
-    public int getOrderdetailid() {
-        return orderDetailId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderdetailid(int orderdetailid) {
-        this.orderDetailId = orderdetailid;
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDetail{" +
+                "orderDetailId=" + orderDetailId +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", orderID=" + order.getOrderId() +
+                ", productID=" + product.getProductID() +
+                '}';
     }
 }

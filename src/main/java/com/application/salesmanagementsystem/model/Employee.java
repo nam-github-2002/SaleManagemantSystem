@@ -1,8 +1,7 @@
 package com.application.salesmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -165,5 +164,16 @@ public class Employee {
 
     public LocalDate getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", department='" + department + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

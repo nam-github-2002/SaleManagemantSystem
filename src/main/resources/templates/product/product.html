@@ -39,40 +39,69 @@
                                         onclick="exportTableToExcel()">Xuất ra Excel</button>
                             </div>
 
-                            <div class="col-md-6 d-flex justify-content-end flex-column">
+                            <div class="col-md-6 d-flex justify-content-end align-items-center">
                                 <!-- lọc theo danh mục -->
-                                <div class="form-inline ml-auto">
-                                    <label for="categoryFilter" class="mr-2">Lọc theo danh mục:</label>
+                                <div class="form-inline">
+                                    <label for="categoryFilter" class="mr-2">Danh mục:</label>
                                     <select id="categoryFilter" class="form-control form-control-sm"
                                             th:value="${category}"
-                                            onchange="filterProductByCategory(event, this.value)">
+                                            onchange="filterProductByCategory(event, this.value)"
+                                            style="height: 40px">
                                         <option value="">Tất cả</option>
                                         <option value="Laptops" th:selected="${category == 'Laptops'}">Laptops</option>
                                         <option value="Smartphones" th:selected="${category == 'Smartphones'}">Smartphones</option>
                                         <option value="Tablets" th:selected="${category == 'Tablets'}">Tablets</option>
-                                        <option value="Desktops" th:selected="${category == 'Desktops'}">Desktops</option>
-                                        <option value="Giày dép" th:selected="${category == 'Giày dép'}">Giày dép</option>
-                                        <option value="Mỹ phẩm" th:selected="${category == 'Mỹ phẩm'}">Mỹ phẩm</option>
-                                        <option value="Sức khỏe" th:selected="${category == 'Sức khỏe'}">Sức khỏe</option>
-                                        <option value="Gia dụng" th:selected="${category == 'Gia dụng'}">Gia dụng</option>
-                                        <option value="Nhà cửa" th:selected="${category == 'Nhà cửa'}">Nhà cửa</option>
-                                        <option value="Oto xe máy" th:selected="${category == 'Oto xe máy'}">Oto xe máy</option>
+                                        <option value="Smartwatches" th:selected="${category == 'Smartwatches'}">Smartwatches</option>
+                                        <option value="Headphones" th:selected="${category == 'Headphones'}">Headphones</option>
+                                        <option value="Televisions" th:selected="${category == 'Televisions'}">Televisions</option>
+                                        <option value="Cameras" th:selected="${category == 'Cameras'}">Cameras</option>
+                                        <option value="Game Consoles" th:selected="${category == 'Game Consoles'}">Game Consoles</option>
+                                        <option value="Home Appliances" th:selected="${category == 'Home Appliances'}">Home Appliances</option>
+                                        <option value="PC Components" th:selected="${category == 'PC Components'}">PC Components</option>
                                     </select>
 
                                 </div>
 
                                 <!-- Tìm kiếm -->
-                                <div class="form-inline ml-auto mt-4">
-                                    <form th:action="@{/products/search}"
-                                          method="POST"
-                                          onsubmit="postContent(event, this)"
-                                          class="d-flex search-form">
-                                        <input  type="text" class="form-control" placeholder="Tìm kiếm..." name="keyword" aria-label="Search">
-                                        <button type="submit" class="btn btn-primary ml-2">
-                                            Tìm kiếm
-                                        </button>
-                                    </form>
+                                <div class="form-inline ml-auto">
+                                    <button type="button" class="btn btn-primary"
+                                            data-toggle="modal" data-target="#searchModal"
+                                            onclick="focusInput()">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        Tìm kiếm
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+
+                                                <div class="modal-body">
+
+                                                    <form th:action="@{/products}"
+                                                          method="GET"
+                                                          onsubmit="searchContent(event, this); closeModal()"
+                                                          class="d-flex search-form">
+                                                        <input type="text"
+                                                               class="search-input"
+                                                               placeholder="Tìm kiếm..."
+                                                               name="keyword"
+                                                               th:value="${keyword}"
+                                                               aria-label="Search">
+                                                        <button id="search-submit" type="submit">
+                                                            <i class="fa-solid fa-magnifying-glass" style="font-size: 30px"></i>
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+                                <!-- Tìm kiếm -->
+
                             </div>
 
                         </div>
@@ -129,8 +158,8 @@
                             <ul class="pagination justify-content-center">
                                 <li th:class="'page-item ' + ${currentPage == 0 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       th:href="@{'/products?page=0&category=' + ${category}}"
-                                       aria-label="Previous" o
+                                       th:href="@{'/products?page=0&category=' + ${category} + '&keyword=' + keyword}"
+                                       aria-label="Previous"
                                        onclick="getContent(event, this.href)">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
@@ -140,7 +169,7 @@
                                 <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                                     th:class="'page-item ' + ${i == currentPage ? 'active' : ''}">
                                     <a class="page-link"
-                                       th:href="@{'/products?page=' + ${i} + '&category=' + ${category}}"
+                                       th:href="@{'/products?page=' + ${i} + '&category=' + ${category} + '&keyword=' + ${keyword}}"
                                         onclick="getContent(event, this.href)">
                                         <span th:text="${i + 1}"></span>
                                     </a>
@@ -148,7 +177,7 @@
 
                                 <li th:class="'page-item ' + ${currentPage == totalPages - 1 ? 'disabled' : ''}">
                                     <a class="page-link"
-                                       th:href="@{'/products?page=' + ${totalPages - 1} + '&category=' + ${category}}"
+                                       th:href="@{'/products?page=' + ${totalPages - 1} + '&category=' + ${category} + '&keyword=' + ${keyword}}"
                                        aria-label="Next"
                                         onclick="getContent(event, this.href)">
                                         <span aria-hidden="true">&raquo;</span>

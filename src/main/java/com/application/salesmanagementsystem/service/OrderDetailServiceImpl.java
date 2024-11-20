@@ -14,29 +14,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
 
-    // Lấy tất cả chi tiết đơn hàng
-    @Override
-    public List<OrderDetail> getAllOrderDetails() {
-        return orderDetailRepository.findAll();
+    public List<OrderDetail> getOrderDetailsByOrderId(Integer orderId) {
+        return orderDetailRepository.findByOrderOrderId(orderId);
     }
 
-    // Lấy chi tiết đơn hàng theo ID
-    @Override
-    public Optional<OrderDetail> getOrderDetailById(Integer id) {
-        return orderDetailRepository.findById(id);
-    }
 
-    // Lưu chi tiết đơn hàng mới hoặc cập nhật chi tiết đơn hàng hiện có
-    @Override
-    public OrderDetail saveOrderDetail(OrderDetail orderDetail) {
-        return orderDetailRepository.save(orderDetail);
-    }
-
-    // Xóa chi tiết đơn hàng theo ID
-    @Override
-    public void deleteOrderDetail(Integer id) {
-        orderDetailRepository.deleteById(id);
-    }
-
-    // Các phương thức khác có thể thêm ở đây
 }

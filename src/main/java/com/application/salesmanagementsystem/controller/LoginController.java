@@ -25,15 +25,18 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password,
-                        RedirectAttributes redirectAttributes, HttpSession session) {
+                        RedirectAttributes redirectAttributes, HttpSession session)
+    {
+        System.out.println(username);
         Employee employee = employeeService.findByUsername(username);
         if (employee != null && employeeService.checkPassword(employee, password)) {
+            System.out.println(employee);
             session.setAttribute("loggedInUser", employee);
             redirectAttributes.addFlashAttribute("success", true);
             return "redirect:/";
         } else {
             redirectAttributes.addFlashAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
-            return "login";
+            return "redirect:/login";
         }
     }
 
@@ -49,7 +52,7 @@ public class LoginController {
 
     public static boolean isAuthenticated(HttpSession session, Model model) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        return loggedInUser == null;
+        return loggedInUser != null;
     }
 
 

@@ -3,9 +3,11 @@ package com.application.salesmanagementsystem.service;
 import com.application.salesmanagementsystem.model.Image;
 import com.application.salesmanagementsystem.model.Product;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public interface ProductService {
@@ -17,7 +19,10 @@ public interface ProductService {
     Optional<Product> findById(int id);
     List<Product> getTop10NewestProducts();
     List<Integer> findImagesByProductID(Integer id);
-    int generateNewProductId();
     void saveProduct(Product product);
     void deleteProduct(Integer id);
+
+    int generateNewProductId();
+    double totalProducts();
+    List<Object[]> getBestSellingProduct(int topN);
 }

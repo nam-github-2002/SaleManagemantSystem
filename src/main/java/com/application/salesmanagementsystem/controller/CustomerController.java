@@ -1,6 +1,7 @@
 package com.application.salesmanagementsystem.controller;
 
 import com.application.salesmanagementsystem.model.Employee;
+import com.application.salesmanagementsystem.repository.CustomerRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -26,22 +28,28 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private CustomerRepository customerRepository;
 
     // Hiển thị danh sách khách hàng
     @GetMapping
     public String showCustomer(Model model, @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(required = false) String keyword,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
 
         int pageSize = 8;
+        page = Math.max(page, 0);
         Page<Customer> customers;
+        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("null");
 
-        if (model.containsAttribute("customers")) {
+        if (validKeword) {
 
-            customers = (Page<Customer>) model.getAttribute("customers");;
+            customers = customerService.searchCustomers(keyword, PageRequest.of(page, pageSize));
         } else {
 
             customers = customerService.getAllCustomers(PageRequest.of(page, pageSize));
@@ -50,23 +58,13 @@ public class CustomerController {
         model.addAttribute("customers", customers.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", customers.getTotalPages());
-
-        if (model.containsAttribute("error")) {
-            model.addAttribute("error", model.getAttribute("error"));
-        } else {
-            model.addAttribute("error", false);
-        }
-
-        if (!model.containsAttribute("keyword")) {
-            model.addAttribute("keyword", null);
-        }
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("error", model.getAttribute("error"));
+        model.addAttribute("currentUser", loggedInUser);
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "customer/customer :: customerPage";
         }
-
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        model.addAttribute("currentUser", loggedInUser);
 
         return "customer/customer";
     }
@@ -77,7 +75,7 @@ public class CustomerController {
     public String showDetailForm(@PathVariable String id, Model model,
                                 HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -105,7 +103,7 @@ public class CustomerController {
     public String showCreateForm(Model model,
                                  HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -132,7 +130,7 @@ public class CustomerController {
     public String showEditForm(@PathVariable String id, Model model,
                                HttpSession session, HttpServletRequest request)
     {
-        if (LoginController.isAuthenticated(session, model)) {
+        if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
 
@@ -183,21 +181,12 @@ public class CustomerController {
         return "redirect:/customers";
     }
 
+
     // Tìm kiếm khách hàng
-    @PostMapping("/search")
-    public String searchCustomers(@RequestParam("keyword") String keyword, @RequestParam(defaultValue = "0") int page, RedirectAttributes redirectAttributes) {
-        int pageSize = 8;
-        Page<Customer> searchResults = customerService.searchCustomers(keyword, PageRequest.of(page, pageSize));
-
-        if (searchResults.isEmpty()) {
-
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy khách hàng nào với từ khóa '" + keyword + "'.");
-        } else {
-
-            redirectAttributes.addFlashAttribute("customers", searchResults);
-        }
-
-        redirectAttributes.addFlashAttribute("keyword", keyword);
-        return "redirect:/customers";
+    @GetMapping("/searchProductName")
+    @ResponseBody
+    public List<Customer> searchCustomers(@RequestParam String query) {
+        return customerRepository.findByNameContainingIgnoreCase(query);
     }
+
 }
