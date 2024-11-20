@@ -25,7 +25,7 @@ public interface CustomerService {
 
     public Optional<Customer> findByEmail(String email);
 
-    double countTotalCustomers();
+    Integer countTotalCustomers();
 
     List<Customer> getTopSpendingCustomers(int topN);
 

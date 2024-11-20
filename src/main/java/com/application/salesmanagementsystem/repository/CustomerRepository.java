@@ -31,7 +31,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     Page<Customer> findAllByKeyword(String keyword, Pageable pageable);
 
     @Query("SELECT COUNT(c) FROM Customer c")
-    Long countTotalCustomers();
+    Integer countTotalCustomers();
 
     // Thống kê khách hàng theo loại (type)
     @Query("SELECT c.type, COUNT(c) FROM Customer c GROUP BY c.type")

@@ -422,9 +422,13 @@ a:hover {
     color: var(--text-color);
 }
 
-
+.statistical-chart {
+    padding: 10px 5px;
+    color: #333333;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
 .statistical-component {
-    max-width: 540px;
     background-color: var(--sub-color);
     padding: 20px;
     border-radius: 8px;
@@ -525,6 +529,10 @@ a:hover {
     .statistical-list-info {
         margin-bottom: 10px;
     }
+}
+
+.w-120 {
+    max-width: 120px;
 }
 
 

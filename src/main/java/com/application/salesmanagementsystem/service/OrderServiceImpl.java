@@ -75,22 +75,22 @@ public class OrderServiceImpl implements OrderService {
 
     // Thống kê
     @Override
-    public double countTotalOrders() {
-        return orderRepository.count();
+    public Integer countTotalOrders() {
+        return orderRepository.countAllOrder();
     }
 
     @Override
-    public double countCompletedOrders() {
+    public Integer countCompletedOrders() {
         return orderRepository.countByOrderStatus(OrderStatus.Completed);
     }
 
     @Override
-    public double countProcessingOrders() {
+    public Integer countProcessingOrders() {
         return orderRepository.countByOrderStatus(OrderStatus.Processing);
     }
 
     @Override
-    public double countCancelledOrders() {
+    public Integer countCancelledOrders() {
         return orderRepository.countByOrderStatus(OrderStatus.Cancelled);
     }
 
@@ -137,5 +137,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getRecentOrders() {
         return orderRepository.findTop5RecentOrders(PageRequest.of(0,5));
+    }
+
+    public List<Map<String, Object>> getCustomerAndRevenueStatsForLast5Days() {
+        List<Object[]> stats = orderRepository.getCustomerAndRevenueStatisticsForLast5Days();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Object[] stat : stats) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", stat[0]); // Date
+            map.put("customerCount", ((Number) stat[1]).intValue()); // Count of customers
+            map.put("revenue", ((Number) stat[2]).doubleValue()); // Total revenue
+            result.add(map);
+        }
+        return result;
     }
 }

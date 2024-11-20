@@ -4,10 +4,13 @@ import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Order;
 import com.application.salesmanagementsystem.model.Product;
+import com.application.salesmanagementsystem.repository.OrderRepository;
 import com.application.salesmanagementsystem.service.CustomerService;
 import com.application.salesmanagementsystem.service.EmployeeService;
 import com.application.salesmanagementsystem.service.OrderService;
 import com.application.salesmanagementsystem.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +20,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping
@@ -33,9 +40,11 @@ public class HomeController {
     private ProductService productService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @GetMapping("/")
-    public String body(HttpSession session, HttpServletRequest request, Model model) {
+    public String body(HttpSession session, HttpServletRequest request, Model model) throws JsonProcessingException {
         if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
@@ -44,35 +53,54 @@ public class HomeController {
         // Lấy các sản phẩm mới nhất
         List<Product> latestProducts = productService.getTop10NewestProducts()
                 .stream().limit(5).collect(Collectors.toList());
-        double totalProducts = productService.totalProducts();
+        Integer totalProducts = productService.totalProducts();
 
         // Thống kê đơn hàng
-        double totalOrders = orderService.countTotalOrders();
+        Integer totalOrders = orderService.countTotalOrders();
         double totalRevenue = orderService.calculateTotalRevenue();
         String formattedRevenue = decimalFormat.format(totalRevenue);
         Map<String, Long> ordersByStatus = orderService.countOrdersByStatus();
 
         // Số lượng khách hàng
-        double totalCustomers = customerService.countTotalCustomers();
+        Integer totalCustomers = (Integer) customerService.countTotalCustomers();
 
         //Khách VIP
         List<Customer> topSpendingCustomers = customerService.getTopSpendingCustomers(5);
 
         // Sản phẩm bán chạy nhất
-        List<Object[]> bestSellingProduct = productService.getBestSellingProduct(5);
+        List<Object[]> bestSellingProducts = productService.getBestSellingProduct(5);
+
+        //Hoá đơn mới nhất
         List<Order> recentOrders = orderService.getRecentOrders();
 
-        for (Order order : recentOrders) {
-            String formattedTotalAmount = decimalFormat.format(order.getTotalAmount()); // Định dạng tổng tiền
-            order.setFormattedTotalAmount(formattedTotalAmount); // Giả sử bạn có một phương thức setter cho trường này
-        }
+        //Doanh thu và lượng khách hàng trong 5 ngày trước
+        List<Object[]> stats = orderRepository.getCustomerAndRevenueStatisticsForLast5Days();
+
+        // Chuyển Object[] thành một danh sách các Map với tên khóa là các trường bạn cần
+        List<Map<String, Object>> statistics = stats.stream()
+                .map(row -> {
+                    Map<String, Object> stat = new HashMap<>();
+                    stat.put("orderDate", row[0]);  // row[0] là orderDate
+                    stat.put("customerCount", row[1]);  // row[1] là customerCount
+                    stat.put("totalRevenue", row[2]);  // row[2] là totalRevenue
+                    return stat;
+                })
+                .collect(Collectors.toList());
+
+        // Chuyển List thành JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonStats = objectMapper.writeValueAsString(statistics);
+
+        System.out.println("==================================================="+ jsonStats);
+        model.addAttribute("statisticsJson", jsonStats);
+
 
         model.addAttribute("lastestProducts", latestProducts);
         model.addAttribute("totalOrders", totalOrders);
         model.addAttribute("totalProducts", totalProducts);
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("totalCustomers", totalCustomers);
-        model.addAttribute("bestSellingProduct", bestSellingProduct);
+        model.addAttribute("bestSellingProduct", bestSellingProducts);
         model.addAttribute("ordersByStatus", ordersByStatus);
         model.addAttribute("recentOrders", recentOrders);
         model.addAttribute("topSpendingCustomers", topSpendingCustomers);

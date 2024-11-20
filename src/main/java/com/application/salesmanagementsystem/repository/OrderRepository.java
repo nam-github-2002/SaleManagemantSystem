@@ -17,7 +17,12 @@ import java.util.Map;
 @Repository
 public interface OrderRepository  extends JpaRepository<Order, Integer> {
     Order findTopByOrderByOrderIdDesc();
-    long countByOrderStatus(OrderStatus status);
+    Integer countByOrderStatus(OrderStatus status);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.orderStatus = :orderStatus WHERE o.orderId = :orderId")
+    int updateOrderStatus(Integer orderId, OrderStatus orderStatus);
 
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderStatus = 'Completed'")
     Double calculateTotalRevenue();
@@ -34,11 +39,18 @@ public interface OrderRepository  extends JpaRepository<Order, Integer> {
     @Query("SELECT o.orderStatus, COUNT(o) FROM Order o GROUP BY o.orderStatus")
     List<Object[]> countOrdersByStatus();
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Order o SET o.orderStatus = :orderStatus WHERE o.orderId = :orderId")
-    int updateOrderStatus(Integer orderId, OrderStatus orderStatus);
-
     @Query("SELECT o FROM Order o ORDER BY o.orderDate DESC")
     List<Order> findTop5RecentOrders(Pageable pageable);
+
+    @Query("SELECT COUNT(*) FROM Order ")
+    Integer countAllOrder();
+
+    @Query(value = "SELECT DATE(o.order_date) as orderDate, COUNT(DISTINCT o.customer_id) as customerCount, SUM(o.total_amount) as totalRevenue " +
+            "FROM orders o " +
+            "WHERE o.order_date >= CURRENT_DATE - INTERVAL 5 DAY " +
+            "GROUP BY DATE(o.order_date) " +
+            "ORDER BY DATE(o.order_date) ASC",
+            nativeQuery = true)
+    List<Object[]> getCustomerAndRevenueStatisticsForLast5Days();
+
 }

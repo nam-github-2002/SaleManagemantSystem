@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public double totalProducts() {
+    public Integer totalProducts() {
         return productRepository.getTotalQuantity();
     }
 

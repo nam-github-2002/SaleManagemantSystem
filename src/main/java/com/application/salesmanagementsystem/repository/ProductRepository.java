@@ -34,16 +34,17 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     // Tổng số lượng hàng hóa
     @Query("SELECT SUM(p.quantity) FROM Product p")
-    Long getTotalQuantity();
+    Integer getTotalQuantity();
 
-    // Danh sách sản phẩm bán chạy nhất (top N)
-    @Query("SELECT p.productName, SUM(od.quantity) as totalSold " +
+    @Query("SELECT p, SUM(od.quantity) as totalSold " +
             "FROM OrderDetail od " +
-            "JOIN Product p ON od.orderDetailId = p.productID " +
-            "GROUP BY p.productName " +
+            "JOIN Product p ON od.product.productID = p.productID " +
+            "GROUP BY p.productID " +
             "ORDER BY totalSold DESC " +
             "LIMIT :topN")
     List<Object[]> getTopSellingProducts(int topN);
+
+
 
     // Tổng giá trị hàng hóa tồn kho
     @Query("SELECT SUM(p.price * p.quantity) FROM Product p")
