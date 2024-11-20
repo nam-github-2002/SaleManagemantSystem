@@ -36,4 +36,11 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     // Thống kê khách hàng theo loại (type)
     @Query("SELECT c.type, COUNT(c) FROM Customer c GROUP BY c.type")
     List<Object[]> countCustomersByType();
+
+    @Query("SELECT o.customer, SUM(od.totalPrice) FROM Order o " +
+            "JOIN o.orderDetails od " +
+            "GROUP BY o.customer ORDER BY SUM(od.totalPrice) DESC")
+    List<Object[]> findTopSpendingCustomers(Pageable pageable);
+
+
 }

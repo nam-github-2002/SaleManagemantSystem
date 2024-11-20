@@ -68,8 +68,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getBestSellingProduct() {
-        return productRepository.getTopSellingProducts(4);
+    public List<Object[]> getBestSellingProduct(int topN) {
+        return productRepository.getTopSellingProducts(topN);
     }
 
     @Override

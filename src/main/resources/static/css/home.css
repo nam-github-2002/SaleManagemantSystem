@@ -11,7 +11,7 @@ body {
     --background-color: rgba(0,0,0,0.1);
     --primary-color: rgba(0,0,0,0.3);
     --secondary-color: rgba(0,0,0,0.5);
-    --sub-color: rgba(0,0,0,0.3);
+    --sub-color: rgba(0, 0, 0, 0.21);
     --dark-color: rgba(0, 0, 0, 0.76);
     --text-color: #ffffff;
 
@@ -422,7 +422,8 @@ a:hover {
 }
 
 
-.new-products {
+.statistical-component {
+    max-width: 540px;
     background-color: var(--sub-color);
     padding: 20px;
     border-radius: 8px;
@@ -430,20 +431,20 @@ a:hover {
 }
 
 /* Title styling */
-.new-products h3 {
+.statistical-component h3 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
 }
 
 /* List styling */
-.new-products-list {
+.statistical-list {
     list-style-type: none;
     padding: 0;
 }
 
 /* List item styling */
-.new-products-list li {
+.statistical-list li {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -453,18 +454,18 @@ a:hover {
 }
 
 /* Hover effect for list item */
-.new-products-list li:hover {
+.statistical-list li:hover {
     background-color: var(--secondary-color);
 }
 
 /* Product image styling */
-.new-products-list-info img {
+.statistical-list-info img {
     border-radius: 50%;
     margin-right: 15px;
 }
 
 /* Product name link styling */
-.new-products-list-name {
+.statistical-list-name {
     text-decoration: none;
     font-weight: bold;
     color: var(--secondary-color);
@@ -472,13 +473,13 @@ a:hover {
 }
 
 /* Hover effect for product name */
-.new-products-list-name:hover {
+.statistical-list-name:hover {
     color: var(--text-color);
 
 }
 
 /* Price styling */
-.new-products-list-price {
+.statistical-list-number {
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 5px;
@@ -502,18 +503,25 @@ a:hover {
     text-decoration: underline;
 }
 
+.recentOrderDetail {
+    cursor: pointer;
+    color: var(--text-color);
+}
+.recentOrderDetail:hover {
+    font-weight: bold;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
-    .new-products {
+    .statistical-component {
         padding: 15px;
     }
 
-    .new-products-list li {
+    .statistical-list li {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .new-products-list-info {
+    .statistical-list-info {
         margin-bottom: 10px;
     }
 }
@@ -837,6 +845,39 @@ input[readonly] {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.btn2 {
+    width: 100px;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    border: 1px solid var(--btn-color);
+    border-radius: 20px;
+    color: var(--btn-color);
+    background-color: var(--sub-color);
+}
+
+/* Các nút với màu sắc riêng biệt */
+.btn2-danger {
+    --btn-color: rgb(255, 101, 101);
+}
+
+.btn2-info {
+    --btn-color: rgba(122, 255, 225, 0.87);
+}
+
+.btn2-warning {
+    --btn-color: rgba(248, 255, 99, 0.87);
+}
+
+.btn2-success {
+    --btn-color: rgba(117, 255, 80, 0.87);
+}
+
+.btn2-primary {
+    --btn-color: rgba(114, 217, 255, 0.76);
+}
+
 
 input {
     background-color: var(--background-color);

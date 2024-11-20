@@ -1,5 +1,6 @@
 package com.application.salesmanagementsystem.controller;
 
+import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Order;
 import com.application.salesmanagementsystem.model.Product;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,23 +39,33 @@ public class HomeController {
         if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
         // Lấy các sản phẩm mới nhất
         List<Product> latestProducts = productService.getTop10NewestProducts()
-                .stream().limit(4).collect(Collectors.toList());
+                .stream().limit(5).collect(Collectors.toList());
         double totalProducts = productService.totalProducts();
 
         // Thống kê đơn hàng
         double totalOrders = orderService.countTotalOrders();
         double totalRevenue = orderService.calculateTotalRevenue();
+        String formattedRevenue = decimalFormat.format(totalRevenue);
         Map<String, Long> ordersByStatus = orderService.countOrdersByStatus();
 
         // Số lượng khách hàng
         double totalCustomers = customerService.countTotalCustomers();
 
+        //Khách VIP
+        List<Customer> topSpendingCustomers = customerService.getTopSpendingCustomers(5);
+
         // Sản phẩm bán chạy nhất
-        Product bestSellingProduct = productService.getBestSellingProduct();
+        List<Object[]> bestSellingProduct = productService.getBestSellingProduct(5);
         List<Order> recentOrders = orderService.getRecentOrders();
+
+        for (Order order : recentOrders) {
+            String formattedTotalAmount = decimalFormat.format(order.getTotalAmount()); // Định dạng tổng tiền
+            order.setFormattedTotalAmount(formattedTotalAmount); // Giả sử bạn có một phương thức setter cho trường này
+        }
 
         model.addAttribute("lastestProducts", latestProducts);
         model.addAttribute("totalOrders", totalOrders);
@@ -63,6 +75,8 @@ public class HomeController {
         model.addAttribute("bestSellingProduct", bestSellingProduct);
         model.addAttribute("ordersByStatus", ordersByStatus);
         model.addAttribute("recentOrders", recentOrders);
+        model.addAttribute("topSpendingCustomers", topSpendingCustomers);
+
 
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return "home/home :: dashboard";

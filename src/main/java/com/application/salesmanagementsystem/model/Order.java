@@ -26,6 +26,7 @@ public class Order {
     private Date orderDate;
 
     private Double totalAmount;
+    private String formattedTotalAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -102,6 +103,14 @@ public class Order {
 
     public void setOrderDetails(List<OrderDetail> orderDetails) {
         this.orderDetails = orderDetails;
+    }
+
+    public String getFormattedTotalAmount() {
+        return formattedTotalAmount;
+    }
+
+    public void setFormattedTotalAmount(String formattedTotalAmount) {
+        this.formattedTotalAmount = formattedTotalAmount;
     }
 
     @Override

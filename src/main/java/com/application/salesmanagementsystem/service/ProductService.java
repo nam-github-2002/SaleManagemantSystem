@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public interface ProductService {
@@ -23,5 +24,5 @@ public interface ProductService {
 
     int generateNewProductId();
     double totalProducts();
-    Product getBestSellingProduct();
+    List<Object[]> getBestSellingProduct(int topN);
 }

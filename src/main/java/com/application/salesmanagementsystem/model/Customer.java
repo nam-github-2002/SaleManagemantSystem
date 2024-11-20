@@ -23,6 +23,8 @@ public class Customer {
     @Column(name="type")
     private String type;
 
+    @Column(name="total_spend")
+    private Double totalSpend = 0.0;
 
     public String getCustomerID() {
         return customerID;
@@ -70,6 +72,14 @@ public class Customer {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Double getTotalSpend() {
+        return totalSpend;
+    }
+
+    public void setTotalSpend(Double totalSpend) {
+        this.totalSpend = totalSpend;
     }
 
     @Override
