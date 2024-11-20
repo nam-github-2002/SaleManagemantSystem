@@ -350,49 +350,119 @@ public class ProductController {
         return "redirect:/products";
     }
 
+//    @GetMapping("/shop")
+//    public String showShopPage(Model model){
+//        // Lấy tất cả sản phẩm
+//        List<Product> products;
+//        products = productService.getAllProducts();
+//
+//        // Tạo map lưu ID của hình ảnh đầu tiên liên quan đến từng sản phẩm
+//        Map<Integer, Integer> productImages = new HashMap<>();
+//        for (Product product : products) {
+//            List<Integer> imageIds = productService.findImagesByProductID(product.getProductID());
+//            if (imageIds != null && !imageIds.isEmpty()) {
+//                productImages.put(product.getProductID(), imageIds.get(0)); // Lấy ID đầu tiên
+//            }
+//        }
+//        // Đưa dữ liệu vào model
+//        model.addAttribute("products", products);
+//        model.addAttribute("productImages", productImages);
+//        return "shop/html/shoppe"; // Trả về view shoppe
+//    }
+
+//    @GetMapping("/shop")
+//    public String showShopPage(
+//            @RequestParam(value = "page", defaultValue = "0") int page, // Trang hiện tại
+//            Model model) {
+//
+//        int pageSize = 12; // Số sản phẩm trên mỗi trang
+//        List<Product> allProducts = productService.getAllProducts(); // Lấy tất cả sản phẩm từ DB
+//        int totalProducts = allProducts.size(); // Tổng số sản phẩm
+//        int totalPages = (int) Math.ceil((double) totalProducts / pageSize); // Tổng số trang
+//
+//        // Kiểm tra giới hạn của `page`
+//        if (page < 0) page = 0;
+//        if (page >= totalPages) page = totalPages - 1;
+//
+//        // Tính toán phạm vi sản phẩm của trang hiện tại
+//        int start = page * pageSize;
+//        int end = Math.min(start + pageSize, totalProducts);
+//
+//        // Lấy danh sách sản phẩm cho trang hiện tại
+//        List<Product> products = allProducts.subList(start, end);
+//
+//        // Tạo map chứa ID của hình ảnh đầu tiên liên quan đến sản phẩm
+//        Map<Integer, Integer> productImages = new HashMap<>();
+//        for (Product product : products) {
+//            List<Integer> imageIds = productService.findImagesByProductID(product.getProductID());
+//            if (imageIds != null && !imageIds.isEmpty()) {
+//                productImages.put(product.getProductID(), imageIds.get(0)); // Lấy ID ảnh đầu tiên
+//            }
+//        }
+//
+//        // Truyền dữ liệu vào model
+//        model.addAttribute("products", products); // Sản phẩm của trang hiện tại
+//        model.addAttribute("productImages", productImages); // Hình ảnh sản phẩm
+//        model.addAttribute("currentPage", page); // Trang hiện tại
+//        model.addAttribute("totalPages", totalPages); // Tổng số trang
+//
+//        return "shop/html/shoppe"; // Trả về view
+//    }
 
     @GetMapping("/shop")
-    public String showShopPage(Model model,
-                               @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(required = false) String category) {
-        int pageSize = 8; // Số sản phẩm trên mỗi trang
-        page = Math.max(page, 0); // Đảm bảo không có giá trị âm
+    public String showShopPage(
+            @RequestParam(value = "page", defaultValue = "0") int page, // Trang hiện tại
+            HttpSession session, // Để lấy thông tin người dùng từ session
+            Model model) {
 
-        Page<Product> products;
-        if (category != null && !category.isBlank() && !category.equals("null")) {
-            // Lấy sản phẩm theo danh mục nếu có
-            products = productService.getProductsByCategory(category, PageRequest.of(page, pageSize));
-        } else {
-            // Lấy tất cả sản phẩm
-            products = productService.getAllProducts(PageRequest.of(page, pageSize));
+        if (LoginController.isAuthenticated(session, model)) {
+            return "redirect:/login";
         }
-//        // Tạo map lưu hình ảnh đầu tiên của từng sản phẩm
-//        Map<Integer, String> productImages = new HashMap<>();
-//        for (Product product : products.getContent()) {
-//            String imageUrl = productService.findImagesByProductID(product.getProductID()).toString();
-//            productImages.put(product.getProductID(), imageUrl);
-//        }
-        // Tạo map lưu ID của hình ảnh đầu tiên liên quan đến từng sản phẩm
+
+        int pageSize = 12; // Số sản phẩm trên mỗi trang
+        List<Product> allProducts = productService.getAllProducts(); // Lấy tất cả sản phẩm từ DB
+        int totalProducts = allProducts.size(); // Tổng số sản phẩm
+        int totalPages = (int) Math.ceil((double) totalProducts / pageSize); // Tổng số trang
+
+        // Kiểm tra giới hạn của `page`
+        if (page < 0) page = 0;
+        if (page >= totalPages) page = totalPages - 1;
+
+        // Tính toán phạm vi sản phẩm của trang hiện tại
+        int start = page * pageSize;
+        int end = Math.min(start + pageSize, totalProducts);
+
+        // Lấy danh sách sản phẩm cho trang hiện tại
+        List<Product> products = allProducts.subList(start, end);
+
+        // Tạo map chứa ID của hình ảnh đầu tiên liên quan đến sản phẩm
         Map<Integer, Integer> productImages = new HashMap<>();
-        for (Product product : products.getContent()) {
+        for (Product product : products) {
             List<Integer> imageIds = productService.findImagesByProductID(product.getProductID());
             if (imageIds != null && !imageIds.isEmpty()) {
-                productImages.put(product.getProductID(), imageIds.get(0)); // Lấy ID đầu tiên
+                productImages.put(product.getProductID(), imageIds.get(0)); // Lấy ID ảnh đầu tiên
             }
         }
 
+        // Lấy thông tin người dùng từ session
+        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            model.addAttribute("currentUser", loggedInUser); // Thêm thông tin người dùng vào model
+        } else {
+            model.addAttribute("currentUser", null); // Nếu không có người dùng đăng nhập
+        }
 
-        // Đưa dữ liệu vào model
-        model.addAttribute("products", products.getContent());
-        model.addAttribute("productImages", productImages); // Truyền map hình ảnh
-        model.addAttribute("category", category);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", products.getTotalPages());
+        // Truyền dữ liệu vào model
+        model.addAttribute("products", products); // Sản phẩm của trang hiện tại
+        model.addAttribute("productImages", productImages); // Hình ảnh sản phẩm
+        model.addAttribute("currentPage", page); // Trang hiện tại
+        model.addAttribute("totalPages", totalPages); // Tổng số trang
 
-
-        return "shop/html/shoppe"; // Trả về view shoppe
+        return "shop/html/shoppe"; // Trả về view đúng
     }
 
 
 
 }
+
+
