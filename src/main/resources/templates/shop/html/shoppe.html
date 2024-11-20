@@ -37,62 +37,8 @@
     <!-- <link rel="stylesheet" th:href="@{/css/home.css}">
     <script th:src="@{/js/home.js}"></script> -->
     <link rel="stylesheet" th:href="@{/css/shopping.css}">
+    <script th:src="@{/js/shopping.js}"></script>
 
-    <script>
-        $(document).ready(function () {
-            // Cập nhật thời gian hiện tại
-            const updateDateTime = () => {
-                const now = new Date();
-                const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-                const formattedDate = now.toLocaleDateString('vi-VN', optionsDate);
-                const formattedTime = now.toLocaleTimeString('vi-VN', optionsTime);
-                $("#current-date").text(`${formattedDate}, ${formattedTime}`);
-            };
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            // Lắng nghe sự kiện khi nhấn vào nút "Xem chi tiết"
-            document.querySelectorAll('.view-details').forEach(button => {
-                button.addEventListener('click', function () {
-                    const name = this.dataset.name;
-                    const image = this.dataset.image;
-                    const price = this.dataset.price;
-
-                    // Cập nhật nội dung modal
-                    document.getElementById('productModalLabel').textContent = name;
-                    document.getElementById('modalProductName').textContent = name;
-                    document.getElementById('modalProductImage').src = image;
-                    document.getElementById('modalProductPrice').textContent = price;
-                });
-            });
-            // Lắng nghe sự kiện click nút giảm số lượng
-            const btnMinus = document.querySelector('.btn-minus');
-            const btnPlus = document.querySelector('.btn-plus');
-            const quantityInput = document.querySelector('.product-quantity');
-
-            // Lắng nghe sự kiện click nút giảm số lượng
-            if (btnMinus && quantityInput) {
-                btnMinus.addEventListener('click', function () {
-                    let quantity = parseInt(quantityInput.value);
-                    if (quantity > 1) {
-                        quantityInput.value = quantity - 1;
-                    }
-                });
-            }
-
-            // Lắng nghe sự kiện click nút tăng số lượng
-            if (btnPlus && quantityInput) {
-                btnPlus.addEventListener('click', function () {
-                    let quantity = parseInt(quantityInput.value);
-                    quantityInput.value = quantity + 1;
-                });
-            }
-        });
-
-
-    </script>
 </head>
 <body>
 <div class="container-fluid">
@@ -153,16 +99,16 @@
                     <!-- Danh mục sản phẩm -->
                     <select name="" id="select-product-category" class="custom-select col-3">
                         <option value="">Tất cả</option>
-                        <option value="Laptops">Laptops</option>
-                        <option value="Smartphones">Smartphones</option>
-                        <option value="Tablets">Tablets</option>
-                        <option value="Desktops">Desktops</option>
-                        <option value="Giày dép">Giày dép</option>
-                        <option value="Mỹ phẩm">Mỹ phẩm</option>
-                        <option value="Sức khỏe">Sức khỏe</option>
-                        <option value="Gia dụng">Gia dụng</option>
-                        <option value="Nhà cửa">Nhà cửa</option>
-                        <option value="Oto xe máy">Oto xe máy</option>
+                        <option value="Laptops" th:selected="${category == 'Laptops'}">Laptops</option>
+                        <option value="Smartphones" th:selected="${category == 'Smartphones'}">Smartphones</option>
+                        <option value="Tablets" th:selected="${category == 'Tablets'}">Tablets</option>
+                        <option value="Desktops" th:selected="${category == 'Desktops'}">Desktops</option>
+                        <option value="Giày dép" th:selected="${category == 'Giày dép'}">Giày dép</option>
+                        <option value="Mỹ phẩm" th:selected="${category == 'Mỹ phẩm'}">Mỹ phẩm</option>
+                        <option value="Sức khỏe" th:selected="${category == 'Sức khỏe'}">Sức khỏe</option>
+                        <option value="Gia dụng" th:selected="${category == 'Gia dụng'}">Gia dụng</option>
+                        <option value="Nhà cửa" th:selected="${category == 'Nhà cửa'}">Nhà cửa</option>
+                        <option value="Oto xe máy" th:selected="${category == 'Oto xe máy'}">Oto xe máy</option>
                     </select>
 
                     <!-- Ô tìm kiếm -->
@@ -215,24 +161,29 @@
         </div>
     </div>
 
+    
+
 
     <h1 class="mb-4 text-center">Shop</h1>
     <!-- Hiển thị sản phẩm -->
     <!-- Hiển thị sản phẩm -->
     <div class="row">
         <div class="col-md-2 col-sm-3 col-6" th:each="product : ${products}">
-            <div class="card mb-4">
+            <div class="card product-card mb-4">
                 <img th:src="@{'/products/display?id=' + ${productImages[product.productID]}}"
-                     class="card-img-top" alt="Product Image">
+                    th:alt="${product.productName}"
+                    class="card-img-top" alt="Hình ảnh sản phẩm">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${product.productName}">Tên sản phẩm</h5>
                     <p class="card-text" th:text="'ID: '+ ${product.productID}">Mã sản phẩm</p>
-                    <p class="card-text" th:text="${product.price} + ' VND'">Giá</p>
-                    <a th:href="@{/products/detail/{id}(id=${product.productID})}" class="btn btn-primary">Xem chi tiết</a>
+                    <p class="card-text text-danger font-weight-bold" th:text="${product.price} + ' VND'">Giá</p>
+                    <a th:href="@{/products/shop/productDetail/{id}(id=${product.productID})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                    <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-cart-plus"></i></a>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Kiểm tra nếu danh sách sản phẩm trống -->
     <div class="text-center" th:if="${#lists.isEmpty(products)}">
@@ -263,7 +214,9 @@
             </li>
         </ul>
     </nav>
-
+    <footer class="footer row bg-success text-white font-weight-bold justify-content-center ">
+        <p class="footer-text m-0 p-3">&copy; 2024 SMART SELLER. All Rights Reserved.</p>
+    </footer>
 
 </div>
 </body>

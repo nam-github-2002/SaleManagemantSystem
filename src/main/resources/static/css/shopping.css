@@ -254,7 +254,7 @@
 .product-card:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    border: 0.5px solid #f97a7ac8;
+    border: 0.5px solid orangered;
 }
 
 .card-img-top {
@@ -277,4 +277,56 @@
 .card-text {
     font-size: 12px;
     margin-bottom: 15px;
+}
+
+
+/*trang chi tiết sản phamraa ở shopping*/
+/* CSS cho phần hình ảnh */
+/* Cải tiến phần hiển thị bộ sưu tập */
+.product-gallery {
+    text-align: center;
+    border: 1px solid #ddd;
+    /* Khung viền xung quanh khu vực ảnh */
+    padding: 15px;
+    border-radius: 15px;
+    /* Bo góc cho khung */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Thêm bóng đổ nhẹ cho phần bộ sưu tập */
+    background-color: #f9f9f9;
+    /* Màu nền sáng cho bộ sưu tập */
+}
+
+/* Định dạng cho hình ảnh chính */
+.product-gallery img {
+    border-radius: 10px;
+    height: 250px;
+    width: 250px;
+    object-fit: contain;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Hiệu ứng mượt mà khi hover */
+    border: 5px solid transparent;
+    /* Border mặc định là trong suốt */
+}
+
+.product-thumbnails {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.product-thumbnail {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.product-thumbnail:hover {
+    transform: scale(1.1);
+    border-color: #007bff;
+}
+
+.product-thumbnail.active {
+    border-color: #28a745;
 }
