@@ -37,20 +37,21 @@ public class SupplierController {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
 
         int pageSize = 6;
-        Page<Supplier> Suppliers;
-        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("keyword");
+        page = Math.max(page, 0);
+        Page<Supplier> suppliers;
+        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("null");
 
         if (validKeword) {
 
-            Suppliers = supplierService.findAllField(keyword, PageRequest.of(page, pageSize));
+            suppliers = supplierService.findAllField(keyword, PageRequest.of(page, pageSize));
         } else {
 
-            Suppliers = supplierService.getAllSuppliers(PageRequest.of(page, pageSize));
+            suppliers = supplierService.getAllSuppliers(PageRequest.of(page, pageSize));
         }
 
-        model.addAttribute("suppliers", Suppliers.getContent());
+        model.addAttribute("suppliers", suppliers.getContent());
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", Suppliers.getTotalPages());
+        model.addAttribute("totalPages", suppliers.getTotalPages());
         model.addAttribute("keyword", keyword);
         model.addAttribute("error", model.getAttribute("error"));
         model.addAttribute("currentUser", loggedInUser);

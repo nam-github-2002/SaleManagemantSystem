@@ -15,6 +15,12 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
+    Page<Customer> findAll(@Nullable Pageable pageable);
+    Optional<Customer> findByEmail(String email);
+    Customer findByNameAndPhone(String name, String phone);
+    List<Customer> findByNameContainingIgnoreCase(String query);
+    Customer findByCustomerID(String customerID);
+
     @Query("SELECT c FROM Customer c WHERE " +
             "LOWER(c.customerID) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
@@ -24,9 +30,10 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             "LOWER(c.type) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Customer> findAllByKeyword(String keyword, Pageable pageable);
 
-    Page<Customer> findAll(@Nullable Pageable pageable);
-    Optional<Customer> findByEmail(String email);
+    @Query("SELECT COUNT(c) FROM Customer c")
+    Long countTotalCustomers();
 
-    List<Customer> findByNameContainingIgnoreCase(String query);
-
+    // Thống kê khách hàng theo loại (type)
+    @Query("SELECT c.type, COUNT(c) FROM Customer c GROUP BY c.type")
+    List<Object[]> countCustomersByType();
 }

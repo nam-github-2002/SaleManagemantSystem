@@ -24,4 +24,6 @@ public interface CustomerService {
     public Page<Customer> searchCustomers(String keyword,  Pageable pageable);
 
     public Optional<Customer> findByEmail(String email);
+
+    double countTotalCustomers();
 }

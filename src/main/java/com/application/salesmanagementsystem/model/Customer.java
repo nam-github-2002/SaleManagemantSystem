@@ -36,7 +36,7 @@ public class Customer {
         return name;
     }
 
-    public void setName(String Name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -72,4 +72,13 @@ public class Customer {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", name='" + name + '\'' +
+                ", customerID='" + customerID + '\'' +
+                '}';
+    }
 }

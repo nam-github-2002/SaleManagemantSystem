@@ -1,7 +1,6 @@
 package com.application.salesmanagementsystem.repository;
 
 
-import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Order;
 import com.application.salesmanagementsystem.model.OrderStatus;
 import jakarta.transaction.Transactional;
@@ -12,8 +11,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
+
 @Repository
 public interface OrderRepository  extends JpaRepository<Order, Integer> {
+    Order findTopByOrderByOrderIdDesc();
+    long countByOrderStatus(OrderStatus status);
+
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderStatus = 'Completed'")
     Double calculateTotalRevenue();
 
@@ -26,12 +31,14 @@ public interface OrderRepository  extends JpaRepository<Order, Integer> {
             "CAST(o.totalAmount AS string) LIKE CONCAT('%', :keyword, '%')")
     Page<Order> findAllOrdersByKeyword(String keyword, Pageable pageable);
 
+    @Query("SELECT o.orderStatus, COUNT(o) FROM Order o GROUP BY o.orderStatus")
+    List<Object[]> countOrdersByStatus();
+
     @Modifying
     @Transactional
     @Query("UPDATE Order o SET o.orderStatus = :orderStatus WHERE o.orderId = :orderId")
     int updateOrderStatus(Integer orderId, OrderStatus orderStatus);
-    Order findTopByOrderByOrderIdDesc();
-    long countByOrderStatus(OrderStatus status);
 
-
+    @Query("SELECT o FROM Order o ORDER BY o.orderDate DESC")
+    List<Order> findTop5RecentOrders(Pageable pageable);
 }

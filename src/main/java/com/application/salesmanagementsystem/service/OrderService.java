@@ -20,10 +20,12 @@ public interface OrderService {
     int generateOrderId();
 
     // Thống kê
-    long countTotalOrders();
-    long countCompletedOrders();
-    long countProcessingOrders();
-    long countCancelledOrders();
+    double countTotalOrders();
+    double countCompletedOrders();
+    double countProcessingOrders();
+    double countCancelledOrders();
     double calculateTotalRevenue();
     List<Map<String, Object>> getTopSellingProducts(int limit);
+    Map<String,Long> countOrdersByStatus();
+    List<Order> getRecentOrders();
 }

@@ -43,8 +43,9 @@ public class CustomerController {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
 
         int pageSize = 8;
+        page = Math.max(page, 0);
         Page<Customer> customers;
-        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("keyword");
+        boolean validKeword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("null");
 
         if (validKeword) {
 

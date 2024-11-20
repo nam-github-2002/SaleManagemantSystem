@@ -67,7 +67,7 @@ $(document).ready(function() {
 });
 
 //---------------------------------------------------GENERAL----------------------------------------------------
-// Hàm get
+// Gửi request get
 window.getContent = function(event, url) {
     event.preventDefault();
 
@@ -122,7 +122,7 @@ window.getContent = function(event, url) {
     });
 };
 
-// Hàm post
+// Gửi request post
 window.postContent = function(event, form) {
     event.preventDefault();
     $('#searchModal').modal('hide');
@@ -139,6 +139,11 @@ window.postContent = function(event, form) {
 
     const url = form.action;
     const formData = new FormData(form);
+
+    formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+    });
+
 
     $.ajax({
         url: url,
@@ -167,7 +172,7 @@ window.postContent = function(event, form) {
     });
 };
 
-// search
+// Tìm kiếm
 window.searchContent = function(event, form) {
     event.preventDefault();
     $('#searchModal').modal('hide');
@@ -204,11 +209,11 @@ window.searchContent = function(event, form) {
 };
 
 
-
 //Xoá cookie khi đóng trang
 window.onbeforeunload = function() {
     document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 };
+
 
 function closeModal() {
     $('#searchModal').modal('hide');
@@ -220,20 +225,31 @@ function handleEnter(event) {
     }
 }
 
+//Tự động focus form tìm kiếm
 function focusInput() {
     $('#searchModal').on('shown.bs.modal', function () {
         $('.search-input').trigger('focus'); // This will focus the input element
     });
 }
 
-function updateUIOrderStatus(event, selectElement) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    selectElement.className = 'status-select ' + selectedOption.value.toLowerCase();
+//Bật popup báo lôi
+window.onload = function () {
+    const errorPopup = document.getElementById('errorPopup');
+    if (errorPopup) {
+        errorPopup.style.display = 'block'; // Hiển thị popup
+    }
+};
+
+// Đóng popup báo lôi
+function closePopup() {
+    const errorPopup = document.getElementById('errorPopup');
+    if (errorPopup) {
+        errorPopup.style.display = 'none'; // Ẩn popup
+    }
 }
 
-
 //---------------------------------------------------ORDER----------------------------------------------------
-//Cập nhật trạng thái hoa đơn
+//Cập nhật trạng thái hoá đơn
 function updateOrderStatus(event, selectElement) {
     event.preventDefault();
 
@@ -267,6 +283,11 @@ function updateOrderStatus(event, selectElement) {
     });
 }
 
+// Cập nhật giao diện trạng thái hoá đơn
+function updateUIOrderStatus(event, selectElement) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    selectElement.className = 'status-select ' + selectedOption.value.toLowerCase();
+}
 
 // Hàm tìm kiếm khách hàng
 function searchCustomer(input) {
@@ -317,13 +338,14 @@ function searchCustomer(input) {
 
 // Hàm điền thông tin khách hàng khi chọn
 function selectCustomer(customer) {
+    $('#customerID').val(customer.customerID)
     $('#customerName').val(customer.name);
     $('#customerAddress').val(customer.address);
     $('#customerPhone').val(customer.phone);
     $('#customerSuggestions').empty();
 }
 
-// Hàm tìm kiếm sản phẩm
+// Hàm tìm kiếm gợi ý sản phẩm khi nhâp
 function searchProduct(input) {
     let query = $(input).val().trim(); // Lấy giá trị input và loại bỏ khoảng trắng
     let $suggestionBox = $(input).siblings('.product-suggestions'); // Tìm sibling là product-suggestions
@@ -353,6 +375,7 @@ function searchProduct(input) {
                         const $row = $(input).closest('.row'); // Tìm dòng cha
 
                         // Gán giá trị vào các ô liên quan
+                        $row.find(".orderDetail-productID").val(product.productID)
                         $(input).val(product.productName);
                         $row.find(".product-price").val(product.price); // Điền đơn giá
                         updateTotal($row.find(".product-quantity")); // Cập nhật tổng tiền của dòng hiện tại
@@ -375,37 +398,60 @@ function searchProduct(input) {
     });
 }
 
+//Tạo thêm hàng cho sản phẩm trong hoá đơn
 function addProductRow() {
+    const index = $('#productList .product-item').length; // Đếm số hàng hiện tại
+    // Giả sử bạn đã có biến orderId từ phía backend (ví dụ: ${newOrder.orderId} được chuyển thành biến JS)
+    const orderId = newOrderOrderId;  // Bạn có thể thay đổi từ `newOrderOrderId` thành giá trị thực tế
+
     const newRow = `
     <div class="row mb-2 product-item">
+        <input type="hidden" name="orderDetails[${index}].order.orderId" value="${orderId}">
+
+        <input type="hidden" class="orderDetail-productID" name="orderDetails[${index}].product.productID">
+        
+        <!-- Input tên sản phẩm -->
         <div class="col-md-4 order-product">
-            <input type="text" class="form-control product-name" name="query"
+            <input type="text" class="form-control product-name" name="orderDetails[${index}].product.name"
                    placeholder="Nhập tên sản phẩm" oninput="searchProduct(this)">
             <div class="product-suggestions list-group"></div>
         </div>
+        
+        <!-- Input đơn giá -->
         <div class="col-md-2">
-            <input type="number" class="form-control product-price" placeholder="Đơn giá" min="0" value="0" oninput="updateTotal(this)">
+            <input type="number" class="form-control product-price" step="0.01" name="orderDetails[${index}].unitPrice"
+                   placeholder="Đơn giá" min="0" value="0" oninput="updateTotal(this)">
         </div>
+        
+        <!-- Input số lượng -->
         <div class="col-md-2">
-            <input type="number" class="form-control product-quantity" placeholder="Số lượng" min="1" value="1" oninput="updateTotal(this)">
+            <input type="number" class="form-control product-quantity" name="orderDetails[${index}].quantity"
+                   placeholder="Số lượng" min="1" value="1" oninput="updateTotal(this)">
         </div>
+        
+        <!-- Input tổng tiền -->
         <div class="col-md-2">
-            <input type="text" class="form-control product-total" placeholder="Tổng tiền" readonly>
+            <input type="text" class="form-control product-total" name="orderDetails[${index}].totalPrice"
+                   placeholder="Tổng tiền" readonly>
         </div>
+        
+        <!-- Nút xóa dòng -->
         <div class="col-md-2">
             <button type="button" class="btn btn-success" onclick="addProductRow()">+</button>
             <button type="button" class="btn btn-danger" onclick="removeProductRow(this)">-</button>
         </div>
-    </div>
-    `;
-    $('#productList').append(newRow);
+    </div>`;
+
+    $('#productList').append(newRow); // Thêm dòng mới vào danh sách
 }
 
+//Xoá hàng
 function removeProductRow(button) {
+    // Xóa dòng hiện tại
     $(button).closest('.product-item').remove();
-    calculateGrandTotal();
 }
 
+//Tinh tôổng tiên một hàng
 function updateTotal(input) {
     const $row = $(input).closest('.product-item');
     const price = parseFloat($row.find('.product-price').val()) || 0;
@@ -416,6 +462,7 @@ function updateTotal(input) {
     calculateGrandTotal(); // Cập nhật tổng tiền tất cả sản phẩm
 }
 
+//Tính tổng tiền hoá đơn
 function calculateGrandTotal() {
     let grandTotal = 0;
     $('.product-total').each(function () {
@@ -423,11 +470,19 @@ function calculateGrandTotal() {
     });
     $('.grand-total').val(grandTotal.toFixed(2)); // Hiển thị tổng tiền tất cả sản phẩm
 }
-// Hàm xóa hàng hóa
-function removeProductRow(button) {
-    $(button).closest('.product-item').remove();
-}
 
+//Đóng hộp gợi ý
+$(document).on("click", function (event) {
+    // Kiểm tra nếu nhấp ra ngoài hộp gợi ý
+    if (!$(event.target).closest("#customerSuggestions").length) {
+        $("#customerSuggestions").hide(); // Ẩn hộp gợi ý
+    }
+});
+
+// Hàm hiển thị hộp gợi ý (gọi khi cần, ví dụ khi nhập liệu)
+function showSuggestions() {
+    $("#customerSuggestions").show();
+}
 
 //------------------------------------------------------PRODUCT-------------------------------------------------
 
@@ -471,46 +526,6 @@ function changeMainImage(thumbnail) {
     let imageId = newSrc.split('=')[1];
     $('#main-image').attr('src', '/products/display?id=' + imageId);
     $('.delete-img-btn').attr('href', '/products/image/' + imageId);
-}
-
-//Xuất dữ liệu ra file excel
-document.getElementById('exportExcelBtn').addEventListener('click', function() {
-    exportTableToExcel('dataTable', 'DanhSachSanPham');
-});
-function exportTableToExcel(filename = '') {
-    // Lấy bảng dữ liệu bằng jQuery
-    const $table = $('table');
-    if ($table.length === 0) {
-        alert("Không tìm thấy bảng dữ liệu!");
-        return;
-    }
-
-    // Chuyển đổi bảng thành mảng 2D
-    const tableData = [];
-    const $rows = $table.find('tr');
-
-    // Duyệt qua từng hàng
-    $rows.each(function() {
-        const rowData = [];
-        const $cells = $(this).find('td, th');
-
-        $cells.each(function() {
-            rowData.push($(this).text().trim());
-        });
-
-        tableData.push(rowData);
-    });
-
-    // Tạo một workbook mới và thêm dữ liệu vào sheet
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(tableData);
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-    // Tạo tên file
-    filename = filename ? filename + '.xlsx' : 'export.xlsx';
-
-    // Xuất file Excel
-    XLSX.writeFile(wb, filename);
 }
 
 // Hàm xóa ảnh

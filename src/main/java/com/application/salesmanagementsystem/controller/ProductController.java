@@ -69,7 +69,7 @@ public class ProductController {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
         Page<Product> products;
 
-        boolean validKeyword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("keyword");
+        boolean validKeyword = keyword != null && !keyword.isEmpty() && !keyword.equalsIgnoreCase("null");
         boolean validCategory = category != null && !category.isEmpty() && !category.equalsIgnoreCase("null");
 
        if (validKeyword) {

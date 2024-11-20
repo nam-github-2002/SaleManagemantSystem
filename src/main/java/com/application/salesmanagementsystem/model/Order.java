@@ -36,10 +36,9 @@ public class Order {
     private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<OrderDetail> orderDetails = new ArrayList<>();
+    private List<OrderDetail> orderDetails;
 
-    public Order() {
-    }
+    public Order() {}
 
     public Integer getOrderId() {
         return orderId;

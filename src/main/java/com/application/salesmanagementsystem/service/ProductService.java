@@ -18,7 +18,10 @@ public interface ProductService {
     Optional<Product> findById(int id);
     List<Product> getTop10NewestProducts();
     List<Integer> findImagesByProductID(Integer id);
-    int generateNewProductId();
     void saveProduct(Product product);
     void deleteProduct(Integer id);
+
+    int generateNewProductId();
+    double totalProducts();
+    Product getBestSellingProduct();
 }

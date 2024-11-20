@@ -7,12 +7,14 @@ import com.application.salesmanagementsystem.repository.OrderDetailRepository;
 import com.application.salesmanagementsystem.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -49,13 +51,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order createOrder(Order order) {
-        // Tính tổng giá trị đơn hàng
-        double totalAmount = 0;
-        for (OrderDetail detail : order.getOrderDetails()) {
-            totalAmount += detail.getUnitPrice() * detail.getQuantity();
-        }
 
-        order.setTotalAmount(totalAmount);
         return orderRepository.save(order);
     }
 
@@ -79,22 +75,22 @@ public class OrderServiceImpl implements OrderService {
 
     // Thống kê
     @Override
-    public long countTotalOrders() {
+    public double countTotalOrders() {
         return orderRepository.count();
     }
 
     @Override
-    public long countCompletedOrders() {
+    public double countCompletedOrders() {
         return orderRepository.countByOrderStatus(OrderStatus.Completed);
     }
 
     @Override
-    public long countProcessingOrders() {
+    public double countProcessingOrders() {
         return orderRepository.countByOrderStatus(OrderStatus.Processing);
     }
 
     @Override
-    public long countCancelledOrders() {
+    public double countCancelledOrders() {
         return orderRepository.countByOrderStatus(OrderStatus.Cancelled);
     }
 
@@ -126,5 +122,20 @@ public class OrderServiceImpl implements OrderService {
                         "totalQuantity", result[1]
                 ))
                 .toList();
+    }
+
+    @Override
+    public Map<String, Long> countOrdersByStatus() {
+        List<Object[]> result = orderRepository.countOrdersByStatus();
+        return result.stream()
+                .collect(Collectors.toMap(
+                        obj -> obj[0].toString(), // orderStatus (key)
+                        obj -> (Long) obj[1]      // count (value)
+                ));
+    }
+
+    @Override
+    public List<Order> getRecentOrders() {
+        return orderRepository.findTop5RecentOrders(PageRequest.of(0,5));
     }
 }

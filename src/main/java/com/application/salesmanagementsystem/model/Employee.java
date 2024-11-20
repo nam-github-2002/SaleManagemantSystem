@@ -165,4 +165,15 @@ public class Employee {
     public LocalDate getUpdatedAt() {
         return updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", department='" + department + '\'' +
+                ", role='" + role + '\'' +
+                '}';
+    }
 }

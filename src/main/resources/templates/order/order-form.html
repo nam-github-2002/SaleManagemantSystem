@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="~{fragments/fragment :: head}"></div>
+    <script>
+        var newOrderOrderId = [[${newOrder.orderId}]];
+    </script>
 </head>
 <body>
 <div class="container-fluid">
@@ -62,23 +65,32 @@
                         <div class="main-card mb-3 card">
                             <div class="card-body">
 
+                                <div th:if="${error != null}" id="errorPopup" class="error-popup">
+                                    <p th:text="${error}"></p>
+                                    <button class="close-btn" onclick="closePopup()">Đóng</button>
+                                </div>
+
                                 <!--HOÁ ĐƠN-->
                                 <form id="invoiceForm"
                                       onsubmit="postContent(event, this)"
-                                      th:action="@{/order/new}"
+                                      th:action="@{/orders/new}"
                                       th:object="${newOrder}"
                                       method="post">
                                     <div class="row form-group mb-3">
 
                                         <!-- Thông tin Khách hàng -->
-                                        <div class="col-md-6">
+                                        <div th:class="col-md-4">
+                                            <h3 style="max-width: 200px; margin: 0 auto 10px">KHÁCH HÀNG</h3>
+                                            <input type="hidden" th:if="${editMode}" th:value="${newOrder.customer.customerID}"
+                                                   id="customerID" name="customer.customerID">
+
                                             <div class="position-relative row form-group">
                                                 <label for="customerName" class="col-md-4 col-form-label font-weight-bold">Tên Khách Hàng:</label>
                                                 <div class="col-md-8">
                                                     <div th:if="${editMode}" class=order-customer>
                                                         <input type="text" id="customerName"
                                                                class="form-control"
-                                                               name="query"
+                                                               name="customer.name"
                                                                style="width: 100%"
                                                                placeholder="Nhập tên khách hàng"
                                                                oninput="searchCustomer(this)">
@@ -91,7 +103,8 @@
                                             <div class="position-relative row form-group">
                                                 <label for="customerAddress" class="col-md-4 col-form-label font-weight-bold">Địa Chỉ:</label>
                                                 <div class="col-md-8">
-                                                    <input th:if="${editMode}" type="text" name="address" id="customerAddress" class="form-control" placeholder="Địa chỉ" readonly>
+                                                    <input th:if="${editMode}" type="text"  name="customer.address"
+                                                           id="customerAddress" class="form-control" placeholder="Địa chỉ">
                                                     <p th:if="${viewMode}" class="text-md-left form-control-plaintext" th:text="${newOrder.customer.address}"></p>
                                                 </div>
                                             </div>
@@ -99,20 +112,24 @@
                                             <div class="position-relative row form-group">
                                                 <label for="customerPhone" class="col-md-4 col-form-label font-weight-bold">Số Điện Thoại:</label>
                                                 <div class="col-md-8">
-                                                    <input th:if="${editMode}" type="text" name="phone" id="customerPhone" class="form-control" placeholder="Số điện thoại" readonly>
+                                                    <input th:if="${editMode}" type="text"  name="customer.phone"
+                                                           id="customerPhone" class="form-control" placeholder="Số điện thoại">
                                                     <p th:if="${viewMode}"  class="text-md-left form-control-plaintext" th:text="${newOrder.customer.phone}"></p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!--Thông tin Nhân viên-->
-                                        <div class="col-md-6">
+                                        <div th:class="col-md-4">
+                                            <h3 style="max-width: 200px; margin: 0 auto 10px">NGƯỜI LẬP HOÁ ĐƠN</h3>
                                             <div class="position-relative row form-group">
                                                 <label for="employeeId" class="col-md-4 col-form-label font-weight-bold">ID Nhân Viên:</label>
                                                 <div class="col-md-8">
-                                                    <input th:if="${editMode}" type="text" id="employeeId" class="form-control"
-                                                            readonly th:value="${employee.employeeId}">
-                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                    <input th:if="${editMode}" name="employee.employeeId"
+                                                           type="text"  id="employeeId" class="form-control"
+                                                           th:value="${employee.employeeId}"
+                                                            readonly>
+                                                    <p th:if="${viewMode}" class="text-md-left form-control-plaintext"
                                                        th:text="${newOrder.employee.employeeId}"></p>
                                                 </div>
                                             </div>
@@ -120,9 +137,9 @@
                                             <div class="position-relative row form-group">
                                                 <label for="employeeName" class="col-md-4 col-form-label font-weight-bold">Tên Nhân Viên:</label>
                                                 <div class="col-md-8">
-                                                    <input th:if="${editMode}" type="text" id="employeeName" class="form-control"
+                                                    <input th:if="${editMode}" name="employee.name" type="text" id="employeeName" class="form-control"
                                                             readonly th:value="${employee.name}">
-                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                    <p  th:if="${viewMode}"  class="text-md-left form-control-plaintext"
                                                        th:text="${newOrder.employee.name}"></p>
                                                 </div>
                                             </div>
@@ -130,9 +147,9 @@
                                             <div class="position-relative row form-group">
                                                 <label for="employeeDepartment" class="col-md-4 col-form-label font-weight-bold">Phòng Ban:</label>
                                                 <div class="col-md-8">
-                                                    <input th:if="${editMode}" type="text" id="employeeDepartment" class="form-control"
+                                                    <input th:if="${editMode}" name="employee.department" type="text" id="employeeDepartment" class="form-control"
                                                            readonly th:value="${employee.department}">
-                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                    <p  th:if="${viewMode}"  class="text-md-left form-control-plaintext"
                                                        th:text="${newOrder.employee.department}"></p>
                                                 </div>
                                             </div>
@@ -140,20 +157,73 @@
                                             <div class="position-relative row form-group">
                                                 <label for="employeeRole" class="col-md-4 col-form-label font-weight-bold">Chức Vụ:</label>
                                                 <div class="col-md-8">
-                                                    <input th:if="${editMode}" type="text" id="employeeRole" class="form-control"
+                                                    <input th:if="${editMode}" name="employee.role"
+                                                           type="text" id="employeeRole" class="form-control"
                                                            readonly th:value="${employee.role}">
-                                                    <p th:if="${viewMode}"  class="text-md-left form-control-plaintext"
+                                                    <p  th:if="${viewMode}"  class="text-md-left form-control-plaintext"
                                                        th:text="${newOrder.employee.role}"></p>
                                                 </div>
                                             </div>
                                         </div>
 
+                                        <!--Thông tin đơn hàng-->
+                                        <div class="col-md-4">
+                                            <h3 style="max-width: 200px; margin: 0 auto 10px">THÔNG TIN HOÁ ĐƠN</h3>
+                                            <div class="position-relative row form-group">
+                                                <label th:if="${viewMode}" for="employeeId" class="col-md-4 col-form-label font-weight-bold">Ngày tạo:</label>
+                                                <div class="col-md-8">
+                                                    <p  th:if="${viewMode}" class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.orderDate}"></p>
+                                                </div>
+                                            </div>
 
+                                            <div class="position-relative row form-group">
+                                                <label for="orderStatus" class="col-md-4 col-form-label font-weight-bold">Trạng thái:</label>
+                                                <div class="col-md-8">
+                                                    <!-- Chế độ chỉnh sửa -->
+                                                    <select th:if="${editMode}" id="orderStatus" class="form-control" name="orderStatus">
+                                                        <option value="Processing" th:selected="${newOrder.orderStatus == 'Processing'}">Processing</option>
+                                                        <option value="Delivering" th:selected="${newOrder.orderStatus == 'Delivering'}">Delivering</option>
+                                                        <option value="Completed" th:selected="${newOrder.orderStatus == 'Completed'}">Completed</option>
+                                                        <option value="Cancelled" th:selected="${newOrder.orderStatus == 'Cancelled'}">Cancelled</option>
+                                                    </select>
+
+                                                    <!-- Chế độ xem -->
+                                                    <p th:if="${viewMode}" class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.orderStatus}"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="position-relative row form-group">
+                                                <label for="paymentMethod" class="col-md-4 col-form-label font-weight-bold">Phương thức <br> thanh toán:</label>
+                                                <div class="col-md-8">
+                                                    <!-- Chế độ chỉnh sửa -->
+                                                    <select th:if="${editMode}" id="paymentMethod" class="form-control" name="paymentMethod">
+                                                        <option value="CASH" th:selected="${newOrder.paymentMethod == 'CASH'}">CASH</option>
+                                                        <option value="CREDIT_CARD" th:selected="${newOrder.paymentMethod == 'CREDIT_CARD'}">CREDIT CARD</option>
+                                                        <option value="DEBIT_CARD" th:selected="${newOrder.paymentMethod == 'DEBIT_CARD'}">DEBIT CARD</option>
+                                                        <option value="BANK_TRANSFER" th:selected="${newOrder.paymentMethod == 'BANK_TRANSFER'}">BANK TRANSFER</option>
+                                                        <option value="PAYPAL" th:selected="${newOrder.paymentMethod == 'PAYPAL'}">PAYPAL</option>
+                                                        <option value="COD" th:selected="${newOrder.paymentMethod == 'COD'}">COD</option>
+                                                    </select>
+
+                                                    <!-- Chế độ xem -->
+                                                    <p th:if="${viewMode}" class="text-md-left form-control-plaintext"
+                                                       th:text="${newOrder.paymentMethod}"></p>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                     <hr>
 
-                                    <h5>Chi Tiết Hàng Hóa</h5>
+                                    <h5 class="text-center"
+                                        style="border-bottom: 1px solid white;
+                                                max-width: 200px;
+                                                margin: 0 auto 10px">
+                                        Chi Tiết Hoá Đơn
+                                    </h5>
                                     <div id="productHeader" class="row mb-2">
                                         <div class="col-md-4">
                                             <strong>Tên sản phẩm</strong>
@@ -167,44 +237,84 @@
                                         <div class="col-md-2">
                                             <strong>Thành tiền</strong>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div th:if="${editMode}" class="col-md-2">
                                             <strong>Hành động</strong>
                                         </div>
                                     </div>
-                                    <div id="productList">
+                                    <div th:if="${editMode}" id="productList">
                                         <div class="row mb-2 product-item">
+                                            <!-- Giữ lại orderDetails với index = 0 -->
+                                            <input type="hidden" th:value="${newOrder.orderId}" name="orderDetails[0].order.orderId">
+
+                                            <input type="hidden" class="orderDetail-productID" name="orderDetails[0].product.productID">
+
+                                            <!-- Input tên sản phẩm -->
                                             <div class="col-md-4 order-product">
-                                                <input type="text" class="form-control product-name" name="query"
+                                                <input type="text" class="form-control product-name" name="orderDetails[0].product.name"
                                                        placeholder="Nhập tên sản phẩm" oninput="searchProduct(this)">
                                                 <div class="product-suggestions list-group"></div>
                                             </div>
+
+                                            <!-- Input đơn giá -->
                                             <div class="col-md-2">
-                                                <input type="number" class="form-control product-price" placeholder="Đơn giá"
-                                                       min="0" value="0" id="product-unitPrice">
+                                                <input type="number" class="form-control product-price" step="0.01" name="orderDetails[0].unitPrice"
+                                                       placeholder="Đơn giá" min="0" value="0" oninput="updateTotal(this)">
                                             </div>
+
+                                            <!-- Input số lượng -->
                                             <div class="col-md-2">
-                                                <input type="number" class="form-control product-quantity" placeholder="Số lượng" min="1" value="1" oninput="updateTotal(this)">
+                                                <input type="number" class="form-control product-quantity" name="orderDetails[0].quantity"
+                                                       placeholder="Số lượng" min="1" value="1" oninput="updateTotal(this)">
                                             </div>
+
+                                            <!-- Input tổng tiền -->
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control product-total" placeholder="Tổng tiền" readonly>
+                                                <input type="text" class="form-control product-total" name="orderDetails[0].totalPrice"
+                                                       placeholder="Tổng tiền" readonly>
                                             </div>
+
+                                            <!-- Nút thêm sản phẩm -->
                                             <div class="col-md-2">
                                                 <button type="button" class="btn btn-success" onclick="addProductRow()">+</button>
-                                                <button type="button" class="btn btn-danger" onclick="removeProductRow(this)">-</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mt-3">
-                                        <div class="col-md-10 text-end">
-                                            <h5>Tổng tiền:</h5>
+
+                                    <div th:if="${viewMode}" id="productList"
+                                         th:each="OrderDetail : ${newOrder.getOrderDetails()}">
+                                        <div class="row mb-2 product-item">
+                                            <div class="col-md-4 order-product">
+                                                <p  class="text-md-left form-control-plaintext"
+                                                    th:text="${OrderDetail.product.productName}"></p>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <p  class="text-md-left form-control-plaintext"
+                                                    th:text="${OrderDetail.product.price}"></p>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <p  class="text-md-left form-control-plaintext"
+                                                    th:text="${OrderDetail.quantity}"></p>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <p  class="text-md-left form-control-plaintext"
+                                                    th:text="${OrderDetail.totalPrice}"></p>
+                                            </div>
+
                                         </div>
-                                        <div class="col-md-2">
-                                            <input type="text" class="form-control grand-total" placeholder="Tổng cộng" readonly>
+                                    </div>
+                                    <div class="row mt-3 d-flex align-items-center">
+                                        <div class="col-md-8 text-end">
+                                            <h3>Tổng tiền:</h3>
+                                        </div>
+                                        <div class="col-md-4 d-flex justify-content-start">
+                                            <input th:if="${editMode}" type="text" name="totalAmount" class="form-control grand-total" placeholder="Tổng cộng" readonly>
+                                            <h3 th:if="${viewMode}"
+                                               th:text="${newOrder.totalAmount}"></h3>
                                         </div>
                                     </div>
 
 
-                                    <button type="submit" class="btn btn-primary mt-3">Lưu Hóa Đơn</button>
+                                    <button th:if="${editMode}" type="submit" class="btn btn-primary mt-3">Lưu Hóa Đơn</button>
                                 </form>
                                 <!--HOÁ ĐƠN-->
 

@@ -10,6 +10,7 @@ public class OrderDetail {
 
     private Integer quantity;
     private Double unitPrice;
+    private Double totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
@@ -18,6 +19,15 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    //Constructor
+    public OrderDetail(Product product) {
+        this.product = product;
+    }
+
+    public OrderDetail() {
+
+    }
 
     public Integer getOrderDetailId() {
         return orderDetailId;
@@ -59,14 +69,22 @@ public class OrderDetail {
         this.product = product;
     }
 
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     @Override
     public String toString() {
         return "OrderDetail{" +
                 "orderDetailId=" + orderDetailId +
                 ", quantity=" + quantity +
                 ", unitPrice=" + unitPrice +
-                ", order=" + order +
-                ", product=" + product.getProductName() +
+                ", orderID=" + order.getOrderId() +
+                ", productID=" + product.getProductID() +
                 '}';
     }
 }

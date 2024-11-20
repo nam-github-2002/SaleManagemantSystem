@@ -58,13 +58,12 @@
                                                 <form th:action="@{/suppliers}"
                                                       method="GET"
                                                       onsubmit="searchContent(event, this); closeModal()"
-                                                      class="d-flex search-form"
-                                                      style="width: 100%; padding-left: 10px">
+                                                      class="d-flex search-form">
                                                     <input type="text"
                                                            class="search-input"
                                                            placeholder="Tìm kiếm..."
                                                            name="keyword"
-                                                           th:value="${keyword}"
+                                                           th:value="${keyword != null ? keyword : ''}"
                                                            aria-label="Search">
                                                     <button id="search-submit" type="submit">
                                                         <i class="fa-solid fa-magnifying-glass" style="font-size: 30px"></i>

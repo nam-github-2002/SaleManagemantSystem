@@ -61,6 +61,17 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findTopByOrderByProductIDDesc();
         return product.getProductID() + 1;
     }
+
+    @Override
+    public double totalProducts() {
+        return productRepository.getTotalQuantity();
+    }
+
+    @Override
+    public Product getBestSellingProduct() {
+        return productRepository.getTopSellingProducts(4);
+    }
+
     @Override
     public void saveProduct(Product product) {
         productRepository.save(product);
