@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -207,7 +208,8 @@ public class OrderController {
 
             // Kiểm tra tồn kho
             if (product.getQuantity() < detail.getQuantity()) {
-                redirectAttributes.addFlashAttribute("error", "Không đủ hàng cho sản phẩm: " + product.getProductName());
+                redirectAttributes.addFlashAttribute("error",
+                        "Không đủ hàng cho sản phẩm: " + product.getProductName() + ", còn lại: " + product.getQuantity());
                 return "redirect:/orders/new";
             }
 
@@ -220,9 +222,9 @@ public class OrderController {
             detail.setOrder(newOrder);
             detail.setTotalPrice(detail.getQuantity() * detail.getUnitPrice());
         }
-
+        System.out.println("==============total amount: " + newOrder.getTotalAmount());
         // Lưu hóa đơn
-        newOrder.setOrderDate(new Date());
+        newOrder.setOrderDate(LocalDate.now());
         ordersService.createOrder(newOrder);
 
         return "redirect:/orders";

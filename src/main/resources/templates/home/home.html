@@ -60,7 +60,7 @@
                                 <span class="info-box-icon fa-2x bg-success"><i class="fas fa-chart-line"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Doanh thu</span>
-                                    <span class="info-box-number"  th:text="${totalRevenue}"></span>
+                                    <span class="info-box-number"  th:text="${totalRevenue} + ' VND'"></span>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                         <!-- Khách hàng -->
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="info-box">
-                                <span class="info-box-icon fa-2x"><i class="fas fa-users"></i></span>
+                                <span class="info-box-icon fa-2x bg-info"><i class="fas fa-users"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Khách hàng</span>
                                     <span class="info-box-number" th:text="${totalCustomers}"></span>
@@ -80,8 +80,13 @@
 
                     <div class="row m-0 p-0">
 
+                        <div class="col-md-12 col-sm-12 my-2 statistical-chart">
+                            <h3 class="text-center">Thống kê Khách hàng và Doanh thu (5 ngày gần nhất)</h3>
+                            <canvas id="customerRevenueChart" width="400" height="200"></canvas>
+                        </div>
+
                         <!-- Khách hàng chi tiêu nhiều nhất -->
-                        <div class="col-md-6 col-sm-12 my-2 statistical-component mr-2">
+                        <div style="max-width: 540px;" class="col-md-6 col-sm-12 my-2 statistical-component mx-auto">
                             <h3 class="mt-2">Khách hàng chi tiêu nhiều nhất</h3>
                             <ul class="statistical-list" th:each="customer : ${topSpendingCustomers}">
                                 <li>
@@ -98,7 +103,7 @@
                         </div>
 
                         <!-- Sản phẩm mới nhất -->
-                        <div class="col-md-6 col-sm-12 my-2 statistical-component ml-auto">
+                        <div style="max-width: 540px;" class="col-md-6 col-sm-12 my-2 statistical-component mx-auto">
                             <h3 class="mt-2">Sản phẩm mới nhất</h3>
                             <ul class="statistical-list" th:each="product : ${lastestProducts}">
                                 <li>
@@ -124,9 +129,38 @@
                             </div>
                         </div>
 
-                        <!--Sản phẩm bán chạy nhất-->
-                        <div class="col-md-6 col-sm-12 my-2">
+                        <!-- Sản phẩm bán chạy nhất -->
+                        <div class="col-md-10 col-sm-12 my-2 mx-auto statistical-component">
+                            <h3 class="mt-2">Sản phẩm bán chạy nhất</h3>
 
+                            <ul class="statistical-list list-unstyled">
+                                <!-- Tiêu đề các cột căn phải với padding -->
+                                <li class="d-flex justify-content-start border-bottom pb-2 mb-2">
+                                    <span class="col-md-4 font-weight-bold text-end mr-2">Mặt hàng</span>
+                                    <span class="col-md-3 font-weight-bold text-end mr-2">Lượng bán ra</span>
+                                    <span class="col-md-2 font-weight-bold text-end mr-2">Tồn kho</span>
+                                    <span class="col-md-2 font-weight-bold text-end mr-2">Đánh giá</span>
+                                </li>
+
+                                <!-- Dữ liệu các sản phẩm với padding -->
+                                <li  class="d-flex justify-content-start border-bottom pb-2 mb-2"
+                                     th:each="product : ${bestSellingProduct}">
+                                    <div class="col-md-4 font-weight-bold text-end mr-2">
+                                        <img class="img-fluid rounded-3"
+                                             th:src="${#lists.isEmpty(product[0].images) ? '/images/logoSmartSeller.png'
+                                                        : '/products/display?id=' + product[0].images[0].id}"
+                                             th:onerror="if(!this.onerror) { this.src='@{/image/noimage.jpg}'; }"
+                                             style="width: 40px; height: 40px; object-fit: cover;">
+                                        <a class="statistical-list-name ml-2"
+                                           th:href="@{/products/detail/{id}(id=${product[0].productID})}"
+                                           onclick="getContent(event, this.href)"
+                                           th:text="${product[0].productName}">Tên sản phẩm</a>
+                                    </div>
+                                    <span class="col-md-3 font-weight-bold text-end mr-2" th:text="${product[1]} + ' Unit'"></span>
+                                    <span class="col-md-2 font-weight-bold text-end mr-2" th:text="${product[0].quantity} + ' Unit'"></span>
+                                    <span class="col-md-2 font-weight-bold text-end mr-2" th:text="${product[0].rating} + '/5'"></span>
+                                </li>
+                            </ul>
                         </div>
 
                         <!-- Đơn hàng gần đây -->
@@ -148,8 +182,8 @@
                                     <tr th:each="order : ${recentOrders}">
                                         <td th:text="'#' + ${order.orderId}"></td>
                                         <td th:text="${order.customer.name}"></td>
-                                        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td>
-                                        <td th:text="${order.formattedTotalAmount} + ' VND'"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${order.totalAmount} + ' VND'"></td>
                                         <td>
                                             <span class="btn2"
                                                   th:classappend="${order.orderStatus.name() == 'Processing' ? 'btn2-warning' :
@@ -185,5 +219,82 @@
     <!-- section -->
 
 </div>
+<div id="data-container" th:data-stats=${statisticsJson}></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var stats = JSON.parse(document.getElementById('data-container').getAttribute('data-stats'));
+        console.log(stats)
+        const labels = stats.map(stat => new Date(stat.orderDate).toLocaleDateString());
+        const customerCounts = stats.map(stat => stat.customerCount);
+        const revenues = stats.map(stat => stat.totalRevenue);
+        const ctx = document.getElementById('customerRevenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Số lượng khách hàng',
+                        data: customerCounts,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgb(75,192,192)',
+                        borderWidth: 1,
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Doanh thu (VND)',
+                        data: revenues,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgb(255,99,132)',
+                        borderWidth: 1,
+                        yAxisID: 'y1',
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Số lượng khách hàng',
+                            color: 'black',
+                            font: {size: 18}
+                        },
+                        ticks: {
+                            stepSize: 10,
+                            min: 0,
+                            max: 50,
+                            font: {size: 18},
+                            color: 'black'
+                        },
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu (VND)',
+                            color: 'black',
+                            font: {size: 18}
+                        },
+                        ticks: {
+                            stepSize: 2000000,
+                            min: 0,
+                            max: 10000000,
+                            font: {size: 18},
+                            color: 'black'
+                        }
+                    },
+                    color: 'black'
+                },
+                responsive: true
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

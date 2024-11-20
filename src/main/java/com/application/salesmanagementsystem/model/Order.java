@@ -1,6 +1,8 @@
 package com.application.salesmanagementsystem.model;
 import jakarta.persistence.*;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +25,7 @@ public class Order {
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date orderDate;
+    private LocalDate orderDate;
 
     private Double totalAmount;
     private String formattedTotalAmount;
@@ -65,18 +67,18 @@ public class Order {
         this.employee = employee;
     }
 
-    public Date getOrderDate() {
+    public LocalDate getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDate orderDate) {
         this.orderDate = orderDate;
     }
 
     public Double getTotalAmount() {
-        return totalAmount;
+        DecimalFormat df = new DecimalFormat("#.00"); // Định dạng 2 chữ số sau dấu phẩy
+        return Double.valueOf(df.format(totalAmount));
     }
-
     public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }

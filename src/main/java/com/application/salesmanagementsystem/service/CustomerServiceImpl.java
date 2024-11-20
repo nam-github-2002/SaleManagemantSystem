@@ -71,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public double countTotalCustomers() {
+    public Integer countTotalCustomers() {
         return customerRepository.countTotalCustomers();
     }
 

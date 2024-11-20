@@ -23,6 +23,6 @@ public interface ProductService {
     void deleteProduct(Integer id);
 
     int generateNewProductId();
-    double totalProducts();
+    Integer totalProducts();
     List<Object[]> getBestSellingProduct(int topN);
 }
