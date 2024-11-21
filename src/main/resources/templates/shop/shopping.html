@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" th:href="@{/image/logoSmartSeller.png}" type="image/x-icon">
-    <link rel="shortcut icon" href="../img/logoSmartSeller.png" type="image/x-icon">
+    <link rel="shortcut icon" href="img/logoSmartSeller.png" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -79,8 +79,8 @@
                 </div>
                 <!-- User Info Text -->
                 <div class="user-text">
-                    <p class="m-0 " th:text="'Xin Chào ' + ${currentUser.name}">
-                        Xin chào, Phúc Lâm
+                    <p class="m-0 " th:text="${currentUser != null ? 'Xin Chào ' + currentUser.name : 'Xin Chào Khách'}">
+                        Xin chào, Khách
                     </p>
                 </div>
             </div>
@@ -138,14 +138,14 @@
                     <!-- Nếu có sản phẩm -->
                     <ul class="cart-items">
                         <li class="cart-item d-flex align-items-center">
-                            <img src="../img/desktop.jpg" alt="Sản phẩm 1" class="cart-item-img">
+                            <img src="img/desktop.jpg" alt="Sản phẩm 1" class="cart-item-img">
                             <div class="cart-item-info">
                                 <p class="cart-item-name">Sản phẩm 1</p>
                                 <p class="cart-item-price">100.000₫</p>
                             </div>
                         </li>
                         <li class="cart-item d-flex align-items-center">
-                            <img src="../img/laptop.jpg" alt="Sản phẩm 2" class="cart-item-img">
+                            <img src="img/laptop.jpg" alt="Sản phẩm 2" class="cart-item-img">
                             <div class="cart-item-info">
                                 <p class="cart-item-name">Sản phẩm 2</p>
                                 <p class="cart-item-price">200.000₫</p>
@@ -177,7 +177,7 @@
                     <h5 class="card-title" th:text="${product.productName}">Tên sản phẩm</h5>
                     <p class="card-text" th:text="'ID: '+ ${product.productID}">Mã sản phẩm</p>
                     <p class="card-text text-danger font-weight-bold" th:text="${product.price} + ' VND'">Giá</p>
-                    <a th:href="@{/products/shop/productDetail/{id}(id=${product.productID})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                    <a th:href="@{/shop/productDetail/{id}(id=${product.productID})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
                     <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-cart-plus"></i></a>
                 </div>
             </div>
@@ -195,7 +195,7 @@
         <ul class="pagination justify-content-center">
             <!-- Nút lùi trang -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/products/shop(page=${currentPage - 1})}" aria-label="Previous">
+                <a class="page-link" th:href="@{/shop(page=${currentPage - 1})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -203,12 +203,12 @@
             <!-- Số trang -->
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/products/shop(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/shop(page=${i})}" th:text="${i + 1}"></a>
             </li>
 
             <!-- Nút tới trang -->
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/products/shop(page=${currentPage + 1})}" aria-label="Next">
+                <a class="page-link" th:href="@{/shop(page=${currentPage + 1})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
