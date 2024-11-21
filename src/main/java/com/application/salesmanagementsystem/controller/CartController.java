@@ -7,55 +7,96 @@ import com.application.salesmanagementsystem.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Controller
+@RequestMapping("/cart")
 public class CartController {
 
     @Autowired
-    private CartService cartService; // Service xử lý logic giỏ hàng
+    private CartService cartService;
 
-    @PostMapping("/cart/add")
-    @ResponseBody
-    public List<Cart> addToCart(@RequestParam("productId") int productId, HttpSession session) {
-        // Lấy người dùng đang đăng nhập
+    @GetMapping
+    public String viewCart(HttpSession session, Model model) {
         Object currentUser = session.getAttribute("loggedInUser");
 
         if (currentUser == null) {
-            throw new RuntimeException("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng."); // Chuyển hướng đến trang login nếu cần
+            return "redirect:/login"; // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
         }
 
-        // Xác định ID của người dùng (có thể là nhân viên hoặc khách hàng)
-        String userId = null;
+        String customerId = null;
+
+        // Kiểm tra loại người dùng
         if (currentUser instanceof Customer) {
-            userId = ((Customer) currentUser).getCustomerID(); // Lấy ID khách hàng (String)
+            customerId = ((Customer) currentUser).getCustomerID(); // Lấy ID khách hàng
         } else if (currentUser instanceof Employee) {
-            userId = String.valueOf(((Employee) currentUser).getEmployeeId()); // Chuyển ID nhân viên (int) sang String
+            customerId = ((Employee) currentUser).getUsername(); // Lấy Username hoặc ID nhân viên
         }
 
-        if (userId == null) {
-            throw new RuntimeException("Không thể xác định ID người dùng.");
+        if (customerId != null) {
+            List<Cart> cartItems = cartService.getCartItems(customerId);
+            model.addAttribute("cartItems", cartItems);
         }
 
-        // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
-        Cart existingCart = cartService.findCartByUserIdAndProductId(userId, productId);
-        if (existingCart != null) {
-            // Nếu sản phẩm đã tồn tại, tăng số lượng
-            existingCart.setQuantity(existingCart.getQuantity() + 1);
-            cartService.addToCart(existingCart);
-        } else {
-            // Nếu sản phẩm chưa tồn tại, thêm mới
+        return "shop/cart"; // Trả về trang cart.html
+    }
+
+    @PostMapping("/add")
+    public String addToCart(@RequestParam int productId, HttpSession session) {
+        Object currentUser = session.getAttribute("loggedInUser");
+
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        String customerId = null;
+
+        if (currentUser instanceof Customer) {
+            customerId = ((Customer) currentUser).getCustomerID();
+        } else if (currentUser instanceof Employee) {
+            customerId = ((Employee) currentUser).getUsername();
+        }
+
+        if (customerId != null) {
             Cart cart = new Cart();
-            cart.setUserId(userId);
+            cart.setCustomerId(customerId);
             cart.setProductId(productId);
             cart.setQuantity(1); // Mặc định số lượng là 1
             cartService.addToCart(cart);
         }
 
-        // Trả về danh sách giỏ hàng hiện tại
-        return cartService.getCartItems(userId);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/remove")
+    public String removeFromCart(@RequestParam int cartId) {
+        cartService.removeCartItem(cartId);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/checkout")
+    public String checkout(HttpSession session) {
+        Object currentUser = session.getAttribute("loggedInUser");
+
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        String customerId = null;
+
+        if (currentUser instanceof Customer) {
+            customerId = ((Customer) currentUser).getCustomerID();
+        } else if (currentUser instanceof Employee) {
+            customerId = ((Employee) currentUser).getUsername();
+        }
+
+        if (customerId != null) {
+            cartService.clearCart(customerId);
+        }
+
+        return "redirect:/checkout";
     }
 }
