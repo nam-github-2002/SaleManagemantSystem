@@ -12,19 +12,23 @@ public class CartService {
     @Autowired
     private CartRepository cartRepository;
 
-    public List<Cart> getCartItems(String customerId) {
-        return cartRepository.findByCustomerId(customerId);
+    public List<Cart> getCartItems(String userId) {
+        return cartRepository.findByUserId(userId); // Lấy danh sách giỏ hàng theo user_id
     }
 
     public void addToCart(Cart cart) {
-        cartRepository.save(cart);
+        cartRepository.save(cart); // Lưu hoặc cập nhật giỏ hàng
+    }
+
+    public Cart findCartByUserIdAndProductId(String userId, int productId) {
+        return cartRepository.findByUserIdAndProductId(userId, productId); // Tìm sản phẩm trong giỏ hàng
     }
 
     public void removeCartItem(int cartId) {
-        cartRepository.deleteById(cartId);
+        cartRepository.deleteById(cartId); // Xóa sản phẩm khỏi giỏ hàng
     }
 
-    public void clearCart(String customerId) {
-        cartRepository.deleteByCustomerId(customerId);
+    public void clearCart(String userId) {
+        cartRepository.deleteByUserId(userId); // Xóa toàn bộ giỏ hàng của người dùng
     }
 }
