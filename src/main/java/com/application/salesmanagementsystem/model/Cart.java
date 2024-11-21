@@ -10,8 +10,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "customer_id", nullable = false)
-    private String customerId;
+    @Column(name = "user_id", nullable = false) // Lưu ID của nhân viên hoặc khách hàng
+    private String userId;
 
     @Column(name = "product_id", nullable = false)
     private int productId;
@@ -26,8 +26,8 @@ public class Cart {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public int getProductId() { return productId; }
     public void setProductId(int productId) { this.productId = productId; }
