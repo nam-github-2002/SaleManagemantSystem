@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" th:href="@{/image/logoSmartSeller.png}" type="image/x-icon">
-    <link rel="shortcut icon" href="../img/logoSmartSeller.png" type="image/x-icon">
+    <link rel="shortcut icon" href="img/logoSmartSeller.png" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -79,8 +79,8 @@
                 </div>
                 <!-- User Info Text -->
                 <div class="user-text">
-                    <p class="m-0 " th:text="'Xin Chào ' + ${currentUser.name}">
-                        Xin chào, Phúc Lâm
+                    <p class="m-0 " th:text="${currentUser != null ? 'Xin Chào ' + currentUser.name : 'Xin Chào Khách'}">
+                        Xin chào, Khách
                     </p>
                 </div>
             </div>
@@ -130,33 +130,17 @@
                 <!-- Nút giỏ hàng -->
                 <a class="nav-link d-flex align-items-center justify-content-center text-white" href="#">
                     <i class="fas fa-shopping-cart fa-lg"></i>
-                    <span class="badge badge-pill badge-danger ml-2" id="cart-count">2</span>
+                    <span class="badge badge-pill badge-danger ml-2" id="cart-count">0</span>
                 </a>
-
                 <!-- Danh sách sản phẩm (dropdown) -->
-                <div class="cart-dropdown p-3">
-                    <!-- Nếu có sản phẩm -->
-                    <ul class="cart-items">
-                        <li class="cart-item d-flex align-items-center">
-                            <img src="../img/desktop.jpg" alt="Sản phẩm 1" class="cart-item-img">
-                            <div class="cart-item-info">
-                                <p class="cart-item-name">Sản phẩm 1</p>
-                                <p class="cart-item-price">100.000₫</p>
-                            </div>
-                        </li>
-                        <li class="cart-item d-flex align-items-center">
-                            <img src="../img/laptop.jpg" alt="Sản phẩm 2" class="cart-item-img">
-                            <div class="cart-item-info">
-                                <p class="cart-item-name">Sản phẩm 2</p>
-                                <p class="cart-item-price">200.000₫</p>
-                            </div>
-                        </li>
+                <div class="cart-dropdown p-3" id="cart-dropdown">
+                    <ul class="cart-items" id="cart-items">
+                        <!-- Sản phẩm trong giỏ hàng sẽ được hiển thị ở đây -->
                     </ul>
-
-                    <!-- Nếu không có sản phẩm -->
-                    <p class="cart-empty">Chưa có sản phẩm nào</p>
-                    <button class="btn btn-danger">Xem Giỏ Hàng</button>
+                    <p class="cart-empty" id="cart-empty">Chưa có sản phẩm nào</p>
+                    <button class="btn btn-danger" id="view-cart-btn">Xem Giỏ Hàng</button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -177,8 +161,12 @@
                     <h5 class="card-title" th:text="${product.productName}">Tên sản phẩm</h5>
                     <p class="card-text" th:text="'ID: '+ ${product.productID}">Mã sản phẩm</p>
                     <p class="card-text text-danger font-weight-bold" th:text="${product.price} + ' VND'">Giá</p>
-                    <a th:href="@{/products/shop/productDetail/{id}(id=${product.productID})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                    <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-cart-plus"></i></a>
+                    <a th:href="@{/shop/productDetail/{id}(id=${product.productID})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                    <!-- Nút thêm vào giỏ hàng -->
+                    <a href="#" class="btn btn-warning btn-sm" th:onclick="|addToCart(${product.productID})|">
+                        <i class="fas fa-cart-plus"></i>
+                    </a>
+
                 </div>
             </div>
         </div>
@@ -195,7 +183,7 @@
         <ul class="pagination justify-content-center">
             <!-- Nút lùi trang -->
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/products/shop(page=${currentPage - 1})}" aria-label="Previous">
+                <a class="page-link" th:href="@{/shop(page=${currentPage - 1})}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -203,12 +191,12 @@
             <!-- Số trang -->
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/products/shop(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/shop(page=${i})}" th:text="${i + 1}"></a>
             </li>
 
             <!-- Nút tới trang -->
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/products/shop(page=${currentPage + 1})}" aria-label="Next">
+                <a class="page-link" th:href="@{/shop(page=${currentPage + 1})}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -217,7 +205,62 @@
     <footer class="footer row bg-success text-white font-weight-bold justify-content-center ">
         <p class="footer-text m-0 p-3">&copy; 2024 SMART SELLER. All Rights Reserved.</p>
     </footer>
+    <script>
+        function addToCart(productId) {
+            $.ajax({
+                url: '/cart/add',
+                type: 'POST',
+                data: { productId: productId }, // Gửi ID sản phẩm
+                success: function(cartItems) {
+                    updateCartDropdown(cartItems); // Cập nhật giao diện dropdown giỏ hàng
+                    updateCartCount(cartItems); // Cập nhật số lượng sản phẩm
+                    console.log(cartItems);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:");
+                    console.error("Status: " + xhr.status); // Mã trạng thái HTTP (ví dụ: 400, 500)
+                    console.error("Message: " + error); // Thông báo lỗi
+                    console.error("Response: " + xhr.responseText); // Nội dung trả về từ server (nếu có)
 
+                    // Hiển thị lỗi cho người dùng
+                    alert("Có lỗi xảy ra: " + xhr.responseText || "Không thể thêm sản phẩm vào giỏ hàng.");
+                }
+            });
+        }
+
+
+
+        function updateCartDropdown(cartItems) {
+            var cartItemsList = $('#cart-items');
+            var cartEmpty = $('#cart-empty');
+
+            // Xóa nội dung cũ
+            cartItemsList.empty();
+
+            if (cartItems.length > 0) {
+                cartEmpty.hide();
+                cartItems.forEach(function(item) {
+                    cartItemsList.append(`
+                <li class="cart-item d-flex align-items-center">
+                    <img src="${item.productImage}" alt="${item.productName}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <p class="cart-item-name">${item.productName}</p>
+                        <p class="cart-item-price">${item.price} VND</p>
+                    </div>
+                </li>
+            `);
+                });
+            } else {
+                cartEmpty.show(); // Hiển thị nếu giỏ hàng trống
+            }
+        }
+
+
+        function updateCartCount(cartItems) {
+            $('#cart-count').text(cartItems.length);
+        }
+
+    </script>
 </div>
 </body>
 </html>
