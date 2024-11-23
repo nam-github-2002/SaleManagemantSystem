@@ -31,9 +31,15 @@ public class CartController {
     @Autowired
     private OrderService ordersService;
 
+
+
+
     @PostMapping("/cart/add")
     @ResponseBody
-    public String addToCart(@RequestParam int productId, @RequestParam(defaultValue = "1") int quantity, HttpSession session) {
+    public Integer addToCart(@RequestParam int productId,
+                             @RequestParam(defaultValue = "1") int quantity,
+                             HttpSession session)
+    {
         // Lấy giỏ hàng từ session
         Map<Product, Integer> cart = (Map<Product, Integer>) session.getAttribute("cart");
         if (cart == null) {
@@ -44,24 +50,37 @@ public class CartController {
         Optional<Product> product = productService.getProductById(productId);
         if (product.isPresent()) {
             Product p = product.get();
+
             if (cart.containsKey(p)) {
-                cart.put(p, cart.get(p) + quantity);  // Cập nhật số lượng nếu sản phẩm đã tồn tại trong giỏ hàng
+                cart.put(p, cart.get(p) + quantity);  // Cập nhật số lượng
             } else {
-                cart.put(p, quantity);  // Thêm mới sản phẩm vào giỏ hàng
+                cart.put(p, quantity);  // Thêm sản phẩm mới vào giỏ hàng
             }
 
+            for (Map.Entry<Product, Integer> entry : cart.entrySet()) {
+                Product pr = entry.getKey();
+                Integer qu = entry.getValue();
+
+                // In thông tin sản phẩm và số lượng
+                System.out.println("Product: " + pr.getProductName() + ", Quantity: " + qu);
+
+            }
             // Cập nhật giỏ hàng trong session
             session.setAttribute("cart", cart);
 
-            return "Sản phẩm đã được thêm vào giỏ hàng!";
+            int totalQuantity = cart.values().stream()
+                    .mapToInt(Integer::intValue) // Chuyển Integer sang int
+                    .sum();
+            return totalQuantity;
         }
 
-        return "Sản phẩm không tồn tại!";
+        return 0;
     }
 
 
     @GetMapping("/cart")
-    public String viewCart(HttpSession session, Model model) {
+    public String viewCart(HttpSession session, Model model)
+    {
         // Lấy giỏ hàng từ session
         @SuppressWarnings("unchecked")
         Map<Product, Integer> cart = (Map<Product, Integer>) session.getAttribute("cart");
@@ -110,20 +129,33 @@ public class CartController {
 
     @PostMapping("/cart/remove")
     @ResponseBody
-    public ResponseEntity<?> removeFromCart(@RequestParam int productId, HttpSession session) {
-        // Giỏ hàng lưu trữ sản phẩm theo Product ID
-        Map<Integer, Integer> cart = (Map<Integer, Integer>) session.getAttribute("cart");
+    public ResponseEntity<?> removeFromCart(@RequestParam int productId, HttpSession session)
+    {
+        // Lấy giỏ hàng từ session
+        Map<Product, Integer> cart = (Map<Product, Integer>) session.getAttribute("cart");
 
         if (cart != null) {
-            // Kiểm tra nếu sản phẩm có trong giỏ hàng
-            if (cart.containsKey(productId)) {
-                cart.remove(productId);  // Xóa sản phẩm theo Product ID
-                session.setAttribute("cart", cart);  // Cập nhật lại giỏ hàng trong session
-                return ResponseEntity.ok(Map.of("message", "Sản phẩm đã được xóa!"));
+            // Tìm sản phẩm trong cơ sở dữ liệu dựa trên productId
+            Optional<Product> product = productService.getProductById(productId);
+            if (product.isPresent()) {
+                Product p = product.get();
+                System.out.println("==================product: " + p.toString());
+                // Kiểm tra nếu sản phẩm có trong giỏ hàng
+                if (cart.containsKey(p)) {
+                    cart.remove(p);  // Xóa sản phẩm theo đối tượng Product
+                    session.setAttribute("cart", cart);  // Cập nhật lại giỏ hàng trong session
+                    return ResponseEntity.ok(Map.of("message", "Sản phẩm đã được xóa!"));
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Sản phẩm không tồn tại trong giỏ hàng!"));
+                }
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("message", "Sản phẩm không tồn tại trong cơ sở dữ liệu!"));
             }
         }
-        return ResponseEntity.badRequest().body(Map.of("message", "Sản phẩm không tồn tại trong giỏ hàng!"));
+
+        return ResponseEntity.badRequest().body(Map.of("message", "Giỏ hàng trống!"));
     }
+
 
     @PostMapping("/cart/process")
     public String saveOrder(@ModelAttribute("newOrder") Order newOrder, Model model,
@@ -138,12 +170,18 @@ public class CartController {
         Customer customer = customerRepository.findByNameAndPhone(customerName, phone);
         if (customer == null) {
             customer = new Customer();
-            customer.setCustomerID(customerID);
+            customer.setCustomerID(customerService.generateCustomerID());
             customer.setName(customerName);
             customer.setAddress(address);
             customer.setPhone(phone);
             customerService.saveCustomer(customer);
+        } else {
+
+            customer.setName(customerName);
+            customer.setPhone(phone);
+            customer.setAddress(address);
         }
+
         newOrder.setCustomer(customer);
 
 

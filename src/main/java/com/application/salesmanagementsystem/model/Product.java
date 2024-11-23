@@ -2,9 +2,13 @@ package com.application.salesmanagementsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "product")
@@ -147,10 +151,38 @@ public class Product {
         return updateDate;
     }
 
+    public BigDecimal getDiscountedPrice() {
+        if (discount != null && discount > 0) {
+            return BigDecimal.valueOf(price * (1 - discount / 100))
+                    .setScale(2, RoundingMode.HALF_UP); // Làm tròn 2 chữ số
+        }
+        return BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP); // Trả về giá gốc nếu không giảm
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "productName='" + productName + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Product p = (Product) obj;
+        if (this.productID == p.productID) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Product other = (Product) obj;
+        return Objects.equals(productID, other.productID);  // So sánh theo productId
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productID);  // Tạo mã băm dựa trên productId
+    }
+
+
 }

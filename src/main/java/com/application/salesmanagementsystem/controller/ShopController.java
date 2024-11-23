@@ -68,6 +68,14 @@ public class ShopController {
             return "shop/shopping";
         }
 
+        @SuppressWarnings("unchecked")
+        Map<Product, Integer> cart = (Map<Product, Integer>) session.getAttribute("cart");
+        if (cart == null) {
+            model.addAttribute("cartCount", 0);
+        } else {
+            model.addAttribute("cartCount", cart.values().stream().mapToInt(Integer::intValue).sum());
+        }
+
         Customer loggedInCustomer = (Customer) session.getAttribute("loggedInCustomer");
         model.addAttribute("loggedInCustomer", loggedInCustomer);
 
@@ -76,7 +84,7 @@ public class ShopController {
 
     @GetMapping("/productDetail/{id}")
     public String showProductDetail(@PathVariable("id") int id, Model model, HttpSession session) {
-
+        System.out.println("================================id:" + id );
         // Lấy thông tin sản phẩm và hình ảnh từ service
         Optional<Product> productOptional = productService.getProductById(id);
         List<Integer> images = productService.findImagesByProductID(id);

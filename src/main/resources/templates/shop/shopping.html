@@ -70,7 +70,8 @@
                             <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle text-warning"></i> Hỗ trợ</a></li>
                             <li>
                                 <form th:action="@{/logout}" method="post">
-                                    <button class="dropdown-item border-0" type="submit">
+                                    <button class="dropdown-item border-0" type="submit"
+                                            onclick="localStorage.setItem('cartCount', 0); updateCartCount(0)">
                                         <i class="fas fa-sign-out-alt text-secondary"></i> Đăng xuất
                                     </button>
                                 </form>
@@ -125,7 +126,8 @@
         </div>
 
         <!-- giỏ hàng -->
-        <div th:classappend="${loggedInCustomer != null ? '' : 'd-none'}" class="col-md-3 col-sm-2 my-1 text-center justify-content-center align-items-center">
+        <div th:classappend="${loggedInCustomer != null ? '' : 'd-none'}"
+             class="col-md-3 col-sm-2 my-1 text-center justify-content-center align-items-center">
             <div class="header-top-main-cart position-relative p-0" style="width: 30px;margin: 10px auto;">
                 <!-- Nút giỏ hàng -->
                 <a class="nav-link d-flex align-items-center justify-content-center text-white position-relative"
@@ -147,16 +149,23 @@
         <div class="col-md-2 col-sm-3 col-6" th:each="product : ${products}">
             <div class="card product-card mb-4">
             <!-- Hình ảnh sản phẩm -->
-            <img th:src="@{'/products/display?id=' + ${productImages[product.productID]}}"
-                 th:alt="${product.productName}"
+                <img th:src="${#lists.isEmpty(product.images)
+                               ? '/image/noimage.jpg'
+                               : '/products/display?id=' + productImages[product.productID]}"
                  class="card-img-top" alt="Hình ảnh sản phẩm">
             <div class="card-body">
                 <!-- Tên sản phẩm -->
                 <h5 class="card-title" th:text="${product.productName}">Tên sản phẩm</h5>
-                <!-- Mã sản phẩm -->
-                <p class="card-text" th:text="'ID: ' + ${product.productID}">Mã sản phẩm</p>
-                <!-- Giá sản phẩm -->
-                <p class="card-text text-danger font-weight-bold" th:text="${product.price} + ' VND'">Giá</p>
+                <!-- Giảm giá -->
+                <p class="card-text" th:text="'Giảm giá: ' + ${product.discount} + '%'">Giảm giá</p>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <!-- Giá sản phẩm gốc -->
+                    <p class="card-text text-muted my-auto" style="text-decoration: line-through;"
+                       th:text="${product.price} + ' VND'">Giá gốc</p>
+                    <!-- Giá hiện tại -->
+                    <p class="card-text text-danger font-weight-bold my-auto"
+                       th:text="${product.getDiscountedPrice() + ' VND'}">Giá hiện tại</p>
+                </div>
                 <!-- Nút xem chi tiết -->
                 <a th:href="@{/productDetail/{id}(id=${product.productID})}"
                    class="btn btn-primary btn-sm">Xem chi tiết</a>
@@ -207,6 +216,16 @@
 
     <script>
 
+        // var cartCount = /*[[${cartCount}]]*/
+        //     localStorage.setItem("cartCount", cartCount)
+
+        var cartCount = localStorage.getItem("cartCount");
+        cartCount = cartCount !== null ? parseInt(cartCount) : 0;
+        if (isNaN(cartCount)) {
+            cartCount = 0;
+        }
+        updateCartCount(cartCount);
+
         // Thêm sản phẩm vào giỏ hàng
         function addToCart(productId) {
             $.ajax({
@@ -214,25 +233,60 @@
                 method: 'POST',
                 data: { productId: productId },
                 success: function (response) {
-                    updateCartCount(response.cartItems); // Cập nhật số lượng sản phẩm
+                    notifyOrder("Sản phẩm đã được thêm vào giỏ hàng!");
+                    localStorage.setItem("cartCount", response);
+                    updateCartCount(response);
                 },
                 error: function (xhr) {
                     console.error('Lỗi khi thêm vào giỏ hàng:', xhr.responseText);
-                    alert('Không thể thêm sản phẩm vào giỏ hàng!');
+                    notifyOrder("Không thể thêm sản phẩm vào giỏ hàng!", true); // Hiển thị lỗi
                 }
             });
         }
 
-        // Cập nhật số lượng sản phẩm trong giỏ
-        function updateCartCount(cartItems) {
-            const $cartCountBadge = $("#cartCountBadge");
-            const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        //Thông báo khi nhấn nút đặt hàng
+        function notifyOrder(message, isError = false) {
+            // Tạo popup
+            const popup = document.createElement("div");
+            popup.className = "order-notify";
+            popup.textContent = message;
 
-            if (totalCount > 0) {
-                $cartCountBadge.text(totalCount).show();
-            } else {
-                $cartCountBadge.hide();
+            // Nếu là thông báo lỗi, thêm class lỗi
+            if (isError) {
+                popup.classList.add("error");
             }
+
+            // Thêm popup vào body
+            document.body.appendChild(popup);
+
+            // Đặt vị trí dựa trên số lượng popup hiện có
+            const existingPopups = document.querySelectorAll(".order-notify");
+            const offset = 50; // Khoảng cách từ mép trên
+            const popupHeight = 60; // Chiều cao giả định của mỗi popup (bao gồm margin)
+            const topPosition = offset + existingPopups.length * popupHeight;
+
+            popup.style.top = `${topPosition}px`;
+
+            // Tự động ẩn popup sau 2 giây
+            setTimeout(() => {
+                popup.remove();
+                adjustPopups(); // Điều chỉnh vị trí popup sau khi xóa
+            }, 2000);
+
+        }
+
+        // Điều chỉnh vị trí của các popup còn lại
+        function adjustPopups() {
+            const remainingPopups = document.querySelectorAll(".order-notify");
+            const offset = 50;
+            remainingPopups.forEach((popup, index) => {
+                popup.style.top = `${offset + index * 60}px`;
+            });
+        }
+
+        // Cập nhật số lượng sản phẩm trong giỏ
+        function updateCartCount(quantity) {
+            $('#cartCountBadge').text(quantity)
         }
 
     </script>

@@ -144,21 +144,22 @@
                 <h4>Thông tin khách hàng</h4>
                 <div class="form-group">
                     <label for="fullName">Họ và tên</label>
-                    <input type="text" class="form-control" id="fullName" name="customer.name"
+                    <input required type="text" class="form-control" id="fullName" name="customer.name"
                            th:value="${newOrder.customer.name != null ? newOrder.customer.name : ''}"
                            placeholder="Nhập họ và tên">
                 </div>
                 <div class="form-group">
                     <label for="phoneNumber">Số điện thoại</label>
-                    <input type="tel" class="form-control" id="phoneNumber" name="customer.phone"
+                    <input required type="tel" class="form-control" id="phoneNumber" name="customer.phone"
                            th:value="${newOrder.customer.phone != null ? newOrder.customer.phone : ''}"
                            placeholder="Nhập số điện thoại">
                 </div>
                 <div class="form-group">
                     <label for="address">Địa chỉ</label>
-                    <textarea class="form-control" id="address" name="customer.address" rows="3"
+                    <input required class="form-control"
+                              id="address" name="customer.address"
                               th:value="${newOrder.customer.address != null ? newOrder.customer.address : ''}"
-                              placeholder="Nhập địa chỉ"></textarea>
+                              placeholder="Nhập địa chỉ"></input>
                 </div>
 
                 <!-- Tóm tắt đơn hàng -->
@@ -174,7 +175,7 @@
                     <input type="hidden" name="orderStatus" th:value="${orderStatus}">
 
                     <p><strong>Tổng thanh toán:</strong>
-                        <input type="number" readonly name="totalAmount" id="totalAmount">
+                        <input type="number" readonly th:value="${newOrder.totalAmount}" name="totalAmount" id="totalAmount">
                     </p>
                 </div>
 
@@ -197,25 +198,6 @@
 
 
 <script th:inline="javascript"  >
-    $(document).ready(function () {
-        // Xóa sản phẩm khỏi giỏ hàng
-        $('.remove-item').on('click', function () {
-            const productId = $(this).data('index'); // Lấy productId từ thuộc tính data-index
-            $.ajax({
-                url: '/cart/remove',
-                method: 'POST',
-                data: { productId: productId }, // Gửi productId thay vì index
-                success: function (response) {
-                    alert(response.message);
-                    location.reload(); // Tải lại trang để cập nhật giỏ hàng
-                },
-                error: function () {
-                    alert('Không thể xóa sản phẩm!');
-                }
-            });
-        });
-
-    });
 
     let index = 0;
 
@@ -248,11 +230,11 @@
             </td>
        </tr>
     `;
-        console.log(row);
+
+        addEventForRemovingItem();
         tableBody.append(row);
         index++;
     }
-
 
     var newOrder = /*[[${newOrder}]]*/ [[]]
     newOrder.orderDetails.forEach(detail => {
@@ -284,6 +266,71 @@
         $('#totalAmount').val(totalAmount.toFixed(2));
     }
 
+    function addEventForRemovingItem() {
+        $(document).on('click', '.remove-item', function () {
+            const index = $(this).data('index');  // Lấy index của sản phẩm từ thuộc tính data-index
+            const productId = $(`input[name="orderDetails[${index}].product.productID"]`).val();  // Lấy productID từ hidden input
+
+            // Gửi yêu cầu AJAX để xóa sản phẩm khỏi giỏ hàng
+            $.ajax({
+                url: '/cart/remove',  // URL xử lý xóa
+                method: 'POST',
+                data: { productId: productId },  // Gửi productId cần xóa
+                success: function (response) {
+                    notifyOrder(response.message);  // Hiển thị thông báo thành công
+
+                    // Xóa dòng sản phẩm khỏi bảng (tr)
+                    $(`.rowProductOrder[data-index="${index}"]`).remove();
+                    updateTotalAmount();
+                    window.location.href = '/cart';
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    const errorMessage = jqXHR.responseJSON?.message || "Có lỗi xảy ra. Vui lòng thử lại!";
+                    notifyOrder(errorMessage, true);
+                }
+            });
+        });
+    }
+
+    //Thông báo khi nhấn nút đặt hàng
+    function notifyOrder(message, isError = false) {
+        // Tạo popup
+        const popup = document.createElement("div");
+        popup.className = "order-notify";
+        popup.textContent = message;
+
+        // Nếu là thông báo lỗi, thêm class lỗi
+        if (isError) {
+            popup.classList.add("error");
+        }
+
+        // Thêm popup vào body
+        document.body.appendChild(popup);
+
+        // Đặt vị trí dựa trên số lượng popup hiện có
+        const existingPopups = document.querySelectorAll(".order-notify");
+        const offset = 50; // Khoảng cách từ mép trên
+        const popupHeight = 60; // Chiều cao giả định của mỗi popup (bao gồm margin)
+        const topPosition = offset + existingPopups.length * popupHeight;
+
+        popup.style.top = `${topPosition}px`;
+
+        // Tự động ẩn popup sau 2 giây
+        setTimeout(() => {
+            popup.remove();
+            adjustPopups(); // Điều chỉnh vị trí popup sau khi xóa
+        }, 2000);
+
+    }
+
+    // Điều chỉnh vị trí của các popup còn lại
+    function adjustPopups() {
+        const remainingPopups = document.querySelectorAll(".order-notify");
+        const offset = 50;
+        remainingPopups.forEach((popup, index) => {
+            popup.style.top = `${offset + index * 60}px`;
+        });
+    }
 
 </script>
 </body>
