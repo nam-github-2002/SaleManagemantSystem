@@ -1,18 +1,21 @@
 package com.application.salesmanagementsystem.controller;
 
+import com.application.salesmanagementsystem.model.Category;
+import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.model.Employee;
 import com.application.salesmanagementsystem.model.Product;
 import com.application.salesmanagementsystem.repository.ImageRepository;
 import com.application.salesmanagementsystem.repository.ProductRepository;
+import com.application.salesmanagementsystem.service.CategoryServiceImpl;
+import com.application.salesmanagementsystem.service.CustomerService;
 import com.application.salesmanagementsystem.service.ImageService;
 import com.application.salesmanagementsystem.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,67 +28,53 @@ public class ShopController {
     private ProductService productService;
 
     @Autowired
-    private ProductRepository productRepository;
+    private CustomerService customerService;
 
-    @Autowired
-    private ImageService imageService;
 
-    @Autowired
-    private ImageRepository imageRepository;
-
-    @GetMapping("/shop")
+    @GetMapping("/")
     public String showShopPage(
-            @RequestParam(value = "page", defaultValue = "0") int page, // Trang hiện tại
-            HttpSession session, // Để lấy thông tin người dùng từ session
-            Model model) {
+            @RequestParam(defaultValue = "0") int page,
+            HttpSession session,
+            Model model)
+    {
 
-//        if (LoginController.isAuthenticated(session, model)) {
-//            return "redirect:/login";
-//        }
+        int pageSize = 12;
+        List<Product> allProducts = productService.getAllProducts();
+        int totalProducts = allProducts.size();
+        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
 
-        int pageSize = 12; // Số sản phẩm trên mỗi trang
-        List<Product> allProducts = productService.getAllProducts(); // Lấy tất cả sản phẩm từ DB
-        int totalProducts = allProducts.size(); // Tổng số sản phẩm
-        int totalPages = (int) Math.ceil((double) totalProducts / pageSize); // Tổng số trang
-
-        // Kiểm tra giới hạn của `page`
         if (page < 0) page = 0;
         if (page >= totalPages) page = totalPages - 1;
 
-        // Tính toán phạm vi sản phẩm của trang hiện tại
         int start = page * pageSize;
         int end = Math.min(start + pageSize, totalProducts);
 
-        // Lấy danh sách sản phẩm cho trang hiện tại
         List<Product> products = allProducts.subList(start, end);
 
-        // Tạo map chứa ID của hình ảnh đầu tiên liên quan đến sản phẩm
         Map<Integer, Integer> productImages = new HashMap<>();
         for (Product product : products) {
             List<Integer> imageIds = productService.findImagesByProductID(product.getProductID());
             if (imageIds != null && !imageIds.isEmpty()) {
-                productImages.put(product.getProductID(), imageIds.get(0)); // Lấy ID ảnh đầu tiên
+                productImages.put(product.getProductID(), imageIds.get(0));
             }
         }
 
-        // Lấy thông tin người dùng từ session
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        if (loggedInUser != null) {
-            model.addAttribute("currentUser", loggedInUser); // Thêm thông tin người dùng vào model
-        } else {
-            model.addAttribute("currentUser", null); // Nếu không có người dùng đăng nhập
+        model.addAttribute("products", products);
+        model.addAttribute("productImages", productImages);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
+        if (!LoginController.isAuthenticated(session, model)) {
+            return "shop/shopping";
         }
 
-        // Truyền dữ liệu vào model
-        model.addAttribute("products", products); // Sản phẩm của trang hiện tại
-        model.addAttribute("productImages", productImages); // Hình ảnh sản phẩm
-        model.addAttribute("currentPage", page); // Trang hiện tại
-        model.addAttribute("totalPages", totalPages); // Tổng số trang
+        Customer loggedInCustomer = (Customer) session.getAttribute("loggedInCustomer");
+        model.addAttribute("loggedInCustomer", loggedInCustomer);
 
-        return "shop/shopping"; // Trả về view đúng
+        return "shop/shopping";
     }
 
-    @GetMapping("/shop/productDetail/{id}")
+    @GetMapping("/productDetail/{id}")
     public String showProductDetail(@PathVariable("id") int id, Model model, HttpSession session) {
 
         // Lấy thông tin sản phẩm và hình ảnh từ service
@@ -102,17 +91,46 @@ public class ShopController {
         }
 
         // Lấy thông tin người dùng đang đăng nhập từ session
-        Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
+        Customer loggedInCustomer = (Customer) session.getAttribute("loggedInUser");
 
         // Nếu người dùng đang đăng nhập, thêm vào model
-        if (loggedInUser != null) {
-            model.addAttribute("currentUser", loggedInUser);
+        if (loggedInCustomer != null) {
+            model.addAttribute("loggedInCustomer", loggedInCustomer);
         } else {
-            model.addAttribute("currentUser", null); // Trường hợp không có người dùng đăng nhập
+            model.addAttribute("loggedInCustomer", null); // Trường hợp không có người dùng đăng nhập
         }
 
         // Trả về view chi tiết sản phẩm
         return "shop/shoppingDetail";
     }
 
+    @GetMapping("/register")
+    public String showRegisterForm(Model model) {
+        Customer customer = new Customer();
+        model.addAttribute("customer", customer);
+
+        return "shop/register";
+    }
+
+    // Xử lý đăng ký
+    @PostMapping("/register")
+    public String registerCustomer(@ModelAttribute("customer") Customer customer,
+                                   BindingResult bindingResult,
+                                   Model model) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/register";
+        }
+
+        try {
+            customer.setCustomerID(customerService.generateCustomerID());
+            customerService.registerCustomer(customer);
+        } catch (RuntimeException e) {
+
+            model.addAttribute("customer", customer);
+            model.addAttribute("error", e.getMessage());
+            return "shop/register";
+        }
+
+        return "redirect:/login";
+    }
 }

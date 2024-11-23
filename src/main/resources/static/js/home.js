@@ -8,19 +8,19 @@ $(document).ready(function() {
         $('a.navbar-brand').toggle()
     });
 
-    //Active nav-item
-    let activeMenu = localStorage.getItem('activeMenu');
-    if (activeMenu) {
-        $('.nav-item').removeClass('active');
-        $('a.nav-link').each(function() {
-            if (activeMenu === $(this).attr('href')) {
-                    $(this).closest('.nav-item').addClass('active');
-            }
-        });
-    } else {
-        $('.nav-item').removeClass('active');
-        $('a.nav-link[href="/"]').closest('.nav-item').addClass('active');
-    }
+    // //Active nav-item
+    // let activeMenu = localStorage.getItem('activeMenu');
+    // if (activeMenu) {
+    //     $('.nav-item').removeClass('active');
+    //     $('a.nav-link').each(function() {
+    //         if (activeMenu === $(this).attr('href')) {
+    //                 $(this).closest('.nav-item').addClass('active');
+    //         }
+    //     });
+    // } else {
+    //     $('.nav-item').removeClass('active');
+    //     $('a.nav-link[href="/"]').closest('.nav-item').addClass('active');
+    // }
 
     // Sự kiện khi sử dụng nút quay lại
     $(window).on('popstate', function(event) {
@@ -64,6 +64,7 @@ $(document).ready(function() {
         "info": true,
         "paging": false
     });
+
 });
 
 //---------------------------------------------------GENERAL----------------------------------------------------
@@ -84,6 +85,8 @@ window.getContent = function(event, url) {
             if ($('#mainArea').length) {
 
                 $('#mainArea').html(response);
+
+                initializeComponents();
 
                 $('table').DataTable({
                     "columnDefs": [
@@ -399,7 +402,7 @@ function searchProduct(input) {
 }
 
 //Tạo thêm hàng cho sản phẩm trong hoá đơn
-function addProductRow() {
+window.addProductRow = function () {
     const index = $('#productList .product-item').length; // Đếm số hàng hiện tại
     // Giả sử bạn đã có biến orderId từ phía backend (ví dụ: ${newOrder.orderId} được chuyển thành biến JS)
     const orderId = newOrderOrderId;  // Bạn có thể thay đổi từ `newOrderOrderId` thành giá trị thực tế
@@ -409,35 +412,35 @@ function addProductRow() {
         <input type="hidden" name="orderDetails[${index}].order.orderId" value="${orderId}">
 
         <input type="hidden" class="orderDetail-productID" name="orderDetails[${index}].product.productID">
-        
+
         <!-- Input tên sản phẩm -->
         <div class="col-md-4 order-product">
             <input type="text" class="form-control product-name" name="orderDetails[${index}].product.name"
                    placeholder="Nhập tên sản phẩm" oninput="searchProduct(this)">
             <div class="product-suggestions list-group"></div>
         </div>
-        
+
         <!-- Input đơn giá -->
         <div class="col-md-2">
             <input type="number" class="form-control product-price" step="0.01" name="orderDetails[${index}].unitPrice"
                    placeholder="Đơn giá" min="0" value="0" oninput="updateTotal(this)">
         </div>
-        
+
         <!-- Input số lượng -->
         <div class="col-md-2">
             <input type="number" class="form-control product-quantity" name="orderDetails[${index}].quantity"
                    placeholder="Số lượng" min="1" value="1" oninput="updateTotal(this)">
         </div>
-        
+
         <!-- Input tổng tiền -->
         <div class="col-md-2">
             <input type="text" class="form-control product-total" name="orderDetails[${index}].totalPrice"
                    placeholder="Tổng tiền" readonly>
         </div>
-        
+
         <!-- Nút xóa dòng -->
         <div class="col-md-2">
-            <button type="button" class="btn btn-success" onclick="addProductRow()">+</button>
+            <button type="button" class="btn btn-success"  id="addProductOnOrderBtn"  onclick="addProductRow()">+</button>
             <button type="button" class="btn btn-danger" onclick="removeProductRow(this)">-</button>
         </div>
     </div>`;
@@ -575,4 +578,3 @@ function filterProductByCategory(event, category) {
 }
 
 //------------------------------------------------------Customer-------------------------------------------------
-

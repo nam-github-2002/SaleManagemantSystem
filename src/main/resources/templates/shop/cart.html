@@ -1,42 +1,290 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Giỏ Hàng</title>
+    <title>Smart Seller | Cửa Hàng - Chi tiết sản phẩm</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/image/logoSmartSeller.png}" type="image/x-icon">
+    <link rel="shortcut icon" href="../img/logoSmartSeller.png" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery đầy đủ -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!--Fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" th:href="@{/css/shopping.css}">
+    <script th:src="@{/js/shopping.js}"></script>
+
 </head>
 <body>
-<div class="container">
-    <h1>Giỏ Hàng</h1>
-    <div th:if="${cartItems.isEmpty()}">
-        <p>Giỏ hàng của bạn đang trống!</p>
+<div class="container-fluid">
+    <div class="row header-shop-top bg-success text-white p-2 sticky-top">
+        <div class="col-md-4 col-sm-6 my-1 d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-calendar-days mr-2"> </i>
+            <span id="current-date"> 16/11/2024</span>
+        </div>
+        <div class="col-md-4 my-1 col"></div>
+        <div class="col-md-4 my-1 col-sm-5">
+            <div class="user-info d-flex align-items-center justify-content-center">
+                <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                <div th:if="${loggedInCustomer == null}">
+                    <!-- Nếu chưa đăng nhập, hiển thị nút đăng nhập và đăng ký -->
+                    <a href="/login" class="btn btn-primary mx-2">Đăng nhập</a>
+                    <a href="/register" class="btn btn-success mx-2">Đăng ký</a>
+                </div>
+
+                <div th:if="${loggedInCustomer != null}" class="d-flex">
+                    <!-- Nếu đã đăng nhập, hiển thị avatar và menu -->
+                    <div class="dropdown">
+                        <img tsrc="/images/noimage.jpg"
+                             class="rounded-circle"
+                             style="width: 20px; height: 20px;"
+                             id="user-avatar" data-toggle="dropdown" aria-expanded="false">
+
+                        <ul class="dropdown-menu" aria-labelledby="user-avatar">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user text-primary"></i> Tài khoản của tôi</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-clipboard-list text-info"></i> Đơn mua</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-bell text-warning"></i> Thông báo</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle text-warning"></i> Hỗ trợ</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="dropdown-item border-0" type="submit">
+                                        <i class="fas fa-sign-out-alt text-secondary"></i> Đăng xuất
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="user-text">
+                        <p class="m-0" th:text="${loggedInCustomer != null ? 'Xin Chào ' + loggedInCustomer.name : ' '}">Xin chào,</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logo và thương hiệu -->
+        <div class="col-md-3 col-sm-3 my-1 text-center">
+            <a class="navbar-brand d-flex align-items-center justify-content-center" href="#">
+                <!-- <img src="logoSmartSeller.png" alt="logo" style="width:75px;" class="mr-2"> -->
+                <span class="font-weight-bold text-white">SMART SELLER</span>
+            </a>
+        </div>
+        <!-- Form tìm kiếm -->
+        <div class="col-md-6 col-sm-7 my-1">
+            <form id="nav-form-search" class="form-inline">
+                <div class="input-group w-100  justify-content-center">
+                    <!-- Danh mục sản phẩm -->
+                    <select name="" id="select-product-category" class="custom-select col-3">
+                        <option value="">Tất cả</option>
+                        <option value="Laptops">Laptops</option>
+                        <option value="Smartphones">Smartphones</option>
+                        <option value="Tablets">Tablets</option>
+                        <option value="Desktops">Desktops</option>
+                        <option value="Giày dép">Giày dép</option>
+                        <option value="Mỹ phẩm">Mỹ phẩm</option>
+                        <option value="Sức khỏe">Sức khỏe</option>
+                        <option value="Gia dụng">Gia dụng</option>
+                        <option value="Nhà cửa">Nhà cửa</option>
+                        <option value="Oto xe máy">Oto xe máy</option>
+
+                    </select>
+
+                    <!-- Ô tìm kiếm -->
+                    <input type="text" class="form-control col-7" placeholder="Tìm sản phẩm, thương hiệu,...">
+
+                    <!-- Nút tìm kiếm -->
+                    <div class="input-group-append">
+                        <button class="btn btn-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
     </div>
-    <div th:if="${!cartItems.isEmpty()}">
-        <table>
-            <thead>
-            <tr>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
-                <th>Thao tác</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${cartItems}">
-                <td th:text="${item.productId}">Sản phẩm</td>
-                <td th:text="${item.quantity}">1</td>
-                <td>-- Giá ở đây --</td>
-                <td>
-                    <form th:action="@{/cart/remove}" method="post">
-                        <input type="hidden" name="cartId" th:value="${item.id}"/>
-                        <button type="submit">Xóa</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <form th:action="@{/cart/checkout}" method="post">
-            <button type="submit">Mua Hàng</button>
+
+    <div class="container mt-4">
+        <h2>Giỏ Hàng</h2>
+        <div th:if="${#lists.isEmpty(cart)}">
+            <p>Giỏ hàng trống!</p>
+        </div>
+        <!-- Form giỏ hàng -->
+        <form th:if="${loggedInCustomer != null}" action="/cart/process" th:object="${newOrder}" method="post">
+            <div class="container mt-5">
+                <h3 class="mb-4">Giỏ Hàng & Thanh Toán</h3>
+
+                <!-- Giỏ Hàng -->
+                <table class="table table-striped" th:if="${newOrder != null && !#lists.isEmpty(newOrder.orderDetails)}">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="productOrderTableBody">
+                    </tbody>
+
+                </table>
+
+                <!-- Thông tin người nhận -->
+                <h4>Thông tin khách hàng</h4>
+                <div class="form-group">
+                    <label for="fullName">Họ và tên</label>
+                    <input type="text" class="form-control" id="fullName" name="customer.name"
+                           th:value="${newOrder.customer.name != null ? newOrder.customer.name : ''}"
+                           placeholder="Nhập họ và tên">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Số điện thoại</label>
+                    <input type="tel" class="form-control" id="phoneNumber" name="customer.phone"
+                           th:value="${newOrder.customer.phone != null ? newOrder.customer.phone : ''}"
+                           placeholder="Nhập số điện thoại">
+                </div>
+                <div class="form-group">
+                    <label for="address">Địa chỉ</label>
+                    <textarea class="form-control" id="address" name="customer.address" rows="3"
+                              th:value="${newOrder.customer.address != null ? newOrder.customer.address : ''}"
+                              placeholder="Nhập địa chỉ"></textarea>
+                </div>
+
+                <!-- Tóm tắt đơn hàng -->
+                <div class="border-top pt-4 mt-4 text-right">
+                    <div class="form-group">
+                        <label for="paymentMethod">Chọn phương thức thanh toán:</label>
+                        <select id="paymentMethod" name="paymentMethod" class="form-control">
+                            <option th:each="method : ${paymentMethods}"
+                                    th:value="${method}"
+                                    th:text="${method}"></option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="orderStatus" th:value="${orderStatus}">
+
+                    <p><strong>Tổng thanh toán:</strong>
+                        <input type="number" readonly name="totalAmount" id="totalAmount">
+                    </p>
+                </div>
+
+                <!-- Điều khoản và nút đặt hàng -->
+                <div class="mt-4 d-flex align-items-center justify-content-between">
+                    <p class="m-0 text-muted">
+                        Nhấn "Thanh toán" đồng nghĩa với việc bạn đồng ý tuân theo
+                        <a href="#" class="text-primary">Điều khoản SmartSeller</a>.
+                    </p>
+                    <div th:if="${newOrder != null && !#lists.isEmpty(newOrder.orderDetails)}" class="text-right mb-4">
+                        <button class="btn btn-success btn-lg" type="submit" id="checkoutBtn">Thanh toán</button>
+                    </div>
+                </div>
+            </div>
         </form>
+
     </div>
 </div>
+
+
+
+<script th:inline="javascript"  >
+    $(document).ready(function () {
+        // Xóa sản phẩm khỏi giỏ hàng
+        $('.remove-item').on('click', function () {
+            const productId = $(this).data('index'); // Lấy productId từ thuộc tính data-index
+            $.ajax({
+                url: '/cart/remove',
+                method: 'POST',
+                data: { productId: productId }, // Gửi productId thay vì index
+                success: function (response) {
+                    alert(response.message);
+                    location.reload(); // Tải lại trang để cập nhật giỏ hàng
+                },
+                error: function () {
+                    alert('Không thể xóa sản phẩm!');
+                }
+            });
+        });
+
+    });
+
+    let index = 0;
+
+    function renderProductOrder(detail) {
+        const tableBody = $('#productOrderTableBody');
+
+        let row = `
+       <tr class="rowProductOrder">
+            <input type="hidden" name="orderDetails[${index}].product.productID" value="${detail.product.productID}"/>
+
+            <td>${detail.product.productName}</td>
+
+            <td>
+                <input readonly name="orderDetails[${index}].unitPrice" value="${detail.unitPrice}" class="unitPrice"/>
+            </td>
+
+            <td>
+                <input type="number" min="1" name="orderDetails[${index}].quantity" value="${detail.quantity}"
+                       class="form-control quantity" data-index="${index}" oninput="updateTotalPrice(${index})"/>
+            </td>
+
+            <td>
+                <input readonly name="orderDetails[${index}].totalPrice" value="${detail.totalPrice}" class="totalPrice"/>
+            </td>
+
+            <td>
+                <button type="button" class="btn btn-danger btn-sm remove-item" data-index="${index}">
+                    Xóa
+                </button>
+            </td>
+       </tr>
+    `;
+        console.log(row);
+        tableBody.append(row);
+        index++;
+    }
+
+
+    var newOrder = /*[[${newOrder}]]*/ [[]]
+    newOrder.orderDetails.forEach(detail => {
+       renderProductOrder(detail)
+    });
+
+    function updateTotalPrice(index) {
+        const row = $(`.rowProductOrder:eq(${index})`);
+        const unitPrice = parseFloat(row.find('.unitPrice').val());
+        const quantity = parseInt(row.find('.quantity').val()) || 0; // Lấy giá trị quantity hoặc mặc định 0 nếu rỗng
+
+        // Tính totalPrice
+        const totalPrice = (unitPrice * quantity).toFixed(2);
+        row.find('.totalPrice').val(totalPrice);
+
+        // Cập nhật totalAmount
+        updateTotalAmount();
+    }
+
+    function updateTotalAmount() {
+        let totalAmount = 0;
+
+        $('.totalPrice').each(function () {
+            const value = parseFloat($(this).val()) || 0; // Nếu không hợp lệ thì mặc định là 0
+            totalAmount += value;
+        });
+
+        // Hiển thị tổng giá trị trong một phần tử khác (ví dụ: #totalAmount)
+        $('#totalAmount').val(totalAmount.toFixed(2));
+    }
+
+
+</script>
 </body>
 </html>

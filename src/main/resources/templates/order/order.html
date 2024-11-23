@@ -21,7 +21,7 @@
         <section class="content-header">
           <h1>Quản lý sản phẩm</h1>
           <ol class="breadcrumb">
-            <li><a href="/" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="/internal" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
             <li class="active"><i class="fas fa-box"></i>Order</li>
           </ol>
         </section>
@@ -137,7 +137,7 @@
                   </td>
                   <td th:text="${order.totalAmount}"></td>
                   <td th:text="${order.paymentMethod}"></td>
-                  <td th:text="${order.employee.name}"></td>
+                  <td th:text="${order.employee != null ? order.employee.name : ''}"></td>
                   <td>
                     <a class="btn btn-hover-shine btn-outline-primary border-0 btn-sm"
                        th:href="@{/orders/detail/{id}(id=${order.orderId})}"

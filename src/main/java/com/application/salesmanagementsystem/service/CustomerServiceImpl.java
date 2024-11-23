@@ -66,8 +66,8 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAllByKeyword(keyword, pageable);
     }
 
-    public Optional<Customer> findByEmail(String email) {
-        return customerRepository.findByEmail(email);
+    public Customer findByEmail(String email) {
+        return customerRepository.findByEmail(email).get();
     }
 
     @Override
@@ -89,6 +89,41 @@ public class CustomerServiceImpl implements CustomerService {
             topCustomers.add(customer);
         }
         return topCustomers;
+    }
+
+    @Override
+    public Customer findByAccount(String account) {
+        return null;
+    }
+
+    // Phương thức đăng ký
+    public Customer registerCustomer(Customer newCustomer) {
+        // Kiểm tra nếu account hoặc email đã tồn tại
+        if (customerRepository.findByAccount(newCustomer.getAccount()) != null) {
+            throw new RuntimeException("Tên tài khoản đã tồn tại");
+        }
+        if (customerRepository.findByEmail(newCustomer.getEmail()).isPresent()) {
+            throw new RuntimeException("Email đã tồn tại");
+        }
+
+        // Lưu customer vào cơ sở dữ liệu mà không mã hóa mật khẩu
+        return customerRepository.save(newCustomer);
+    }
+
+    // Phương thức đăng nhập
+    public Customer loginCustomer(String account, String password) {
+        // Tìm customer theo account
+        Customer customer = customerRepository.findByAccount(account);
+        if (customer == null) {
+            throw new RuntimeException("Account does not exist");
+        }
+
+        // Kiểm tra mật khẩu, không cần so sánh với mã hóa
+        if (!password.equals(customer.getPassword())) {
+            throw new RuntimeException("Incorrect password");
+        }
+
+        return customer;
     }
 
 }

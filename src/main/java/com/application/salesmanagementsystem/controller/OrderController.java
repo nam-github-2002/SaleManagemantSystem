@@ -177,7 +177,9 @@ public class OrderController {
 
 
     @PostMapping("/new")
-    public String saveOrder(@ModelAttribute("newOrder") Order newOrder, Model model, RedirectAttributes redirectAttributes) {
+    public String saveOrder(@ModelAttribute("newOrder") Order newOrder, Model model,
+                            RedirectAttributes redirectAttributes)
+    {
         String customerID = newOrder.getCustomer().getCustomerID();
         String customerName = newOrder.getCustomer().getName();
         String address = newOrder.getCustomer().getAddress();
@@ -197,10 +199,8 @@ public class OrderController {
 
 
         for (OrderDetail detail : newOrder.getOrderDetails()) {
-            System.out.println("===========orderDetail: " + detail.toString());
-
+            System.out.println("========================== productid: " + detail.getProduct().getProductID());
             Product product = productRepository.findByProductID(detail.getProduct().getProductID());
-            System.out.println("===========product: " + product.toString());
             if (product == null) {
                 redirectAttributes.addFlashAttribute("error", "Sản phẩm không tồn tại: " + detail.getProduct().getProductName());
                 return "redirect:/orders/new";
@@ -212,6 +212,10 @@ public class OrderController {
                         "Không đủ hàng cho sản phẩm: " + product.getProductName() + ", còn lại: " + product.getQuantity());
                 return "redirect:/orders/new";
             }
+            if (product.getQuantity() == detail.getQuantity()) {
+                product.setStatus(false);
+            }
+
 
             // Cập nhật tồn kho
             product.setQuantity(product.getQuantity() - detail.getQuantity());
@@ -222,7 +226,6 @@ public class OrderController {
             detail.setOrder(newOrder);
             detail.setTotalPrice(detail.getQuantity() * detail.getUnitPrice());
         }
-        System.out.println("==============total amount: " + newOrder.getTotalAmount());
         // Lưu hóa đơn
         newOrder.setOrderDate(LocalDate.now());
         ordersService.createOrder(newOrder);

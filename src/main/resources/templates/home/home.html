@@ -87,10 +87,30 @@
 
                         <!-- Khách hàng chi tiêu nhiều nhất -->
                         <div style="max-width: 540px;" class="col-md-6 col-sm-12 my-2 statistical-component mx-auto">
-                            <h3 class="mt-2">Khách hàng chi tiêu nhiều nhất</h3>
-                            <ul class="statistical-list" th:each="customer : ${topSpendingCustomers}">
+                            <h3 class="mt-2">Khách Hàng Tiềm Năng</h3>
+
+                            <ul class="statistical-list" th:each="customer, iterStat : ${topSpendingCustomers}">
                                 <li>
                                     <div class="statistical-list-info">
+                                        <!-- Icon với số thứ hạng -->
+                                        <span class="rank-icon" th:switch="${iterStat.index}">
+                                            <span th:case="0" class="diamond">
+                                                <i class="fa-solid fa-crown"></i>
+                                                <span class="rank-number" th:text="${iterStat.index + 1}"></span>
+                                            </span>
+                                            <span th:case="1" class="gold">
+                                                <i class="fa-solid fa-crown"></i>
+                                                <span class="rank-number" th:text="${iterStat.index + 1}"></span>
+                                            </span>
+                                            <span th:case="2" class="silver">
+                                                <i class="fa-solid fa-crown"></i>
+                                                <span class="rank-number" th:text="${iterStat.index + 1}"></span>
+                                            </span>
+                                            <span th:case="*" class="bronze">
+                                                <i class="fa-solid fa-crown"></i>
+                                                <span class="rank-number" th:text="${iterStat.index + 1}"></span>
+                                            </span>
+                                        </span>
                                         <span th:text="${customer.name}">Khách hàng A</span>
                                     </div>
                                     <span class="statistical-list-number" th:text="${customer.totalSpend} + ' VND'">500,000 VNĐ</span>
@@ -104,7 +124,7 @@
 
                         <!-- Sản phẩm mới nhất -->
                         <div style="max-width: 540px;" class="col-md-6 col-sm-12 my-2 statistical-component mx-auto">
-                            <h3 class="mt-2">Sản phẩm mới nhất</h3>
+                            <h3 class="mt-2">Mặt Hàng Mới Thêm</h3>
                             <ul class="statistical-list" th:each="product : ${lastestProducts}">
                                 <li>
                                     <div class="statistical-list-info">
@@ -131,7 +151,7 @@
 
                         <!-- Sản phẩm bán chạy nhất -->
                         <div class="col-md-10 col-sm-12 my-2 mx-auto statistical-component">
-                            <h3 class="mt-2">Sản phẩm bán chạy nhất</h3>
+                            <h3 class="mt-2">Mặt Hàng Bán Chạy Nhất</h3>
 
                             <ul class="statistical-list list-unstyled">
                                 <!-- Tiêu đề các cột căn phải với padding -->
@@ -165,7 +185,7 @@
 
                         <!-- Đơn hàng gần đây -->
                         <div class="col-md-12 col-sm-12 my-2 new-orders">
-                            <h3 class="mt-2">Đơn hàng mới nhất</h3>
+                            <h3 class="mt-2">Đơn Hàng Mới Nhất</h3>
                             <div class="table-responsive new-orders-list">
                                 <table class="table table-hover">
                                     <thead>
@@ -209,6 +229,93 @@
 
                 </section>
 
+                <div id="data-container" th:data-stats=${statisticsJson}></div>
+
+                <script>
+
+                    function initializeComponents() {
+                        console.log('Initializing components...');
+
+                        if ($('#customerRevenueChart').length) {
+                            var stats = JSON.parse(document.getElementById('data-container').getAttribute('data-stats'));
+                            console.log(stats);
+                            const labels = stats.map(stat => new Date(stat.orderDate).toLocaleDateString());
+                            const customerCounts = stats.map(stat => stat.customerCount);
+                            const revenues = stats.map(stat => stat.totalRevenue);
+                            const ctx = document.getElementById('customerRevenueChart').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Số lượng khách hàng',
+                                            data: customerCounts,
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            backgroundColor: 'rgb(75,192,192)',
+                                            borderWidth: 1,
+                                            yAxisID: 'y',
+                                        },
+                                        {
+                                            label: 'Doanh thu (VND)',
+                                            data: revenues,
+                                            borderColor: 'rgba(255, 99, 132, 1)',
+                                            backgroundColor: 'rgb(255,99,132)',
+                                            borderWidth: 1,
+                                            yAxisID: 'y1',
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            position: 'left',
+                                            title: {
+                                                display: true,
+                                                text: 'Số lượng khách hàng',
+                                                color: 'black',
+                                                font: {size: 18}
+                                            },
+                                            ticks: {
+                                                stepSize: 10,
+                                                min: 0,
+                                                max: 50,
+                                                font: {size: 18},
+                                                color: 'black'
+                                            },
+                                        },
+                                        y1: {
+                                            beginAtZero: true,
+                                            position: 'right',
+                                            title: {
+                                                display: true,
+                                                text: 'Doanh thu (VND)',
+                                                color: 'black',
+                                                font: {size: 18}
+                                            },
+                                            ticks: {
+                                                stepSize: 2000000,
+                                                min: 0,
+                                                max: 10000000,
+                                                font: {size: 18},
+                                                color: 'black'
+                                            }
+                                        },
+                                        color: 'black'
+                                    },
+                                    responsive: true
+                                }
+                            });
+                        }
+                    }
+
+                    document.addEventListener("DOMContentLoaded", function() {
+                        initializeComponents();
+                    });
+
+                </script>
+
                 <!-- footer -->
                 <div th:replace="~{fragments/fragment :: footer}"></div>
             </div>
@@ -219,82 +326,6 @@
     <!-- section -->
 
 </div>
-<div id="data-container" th:data-stats=${statisticsJson}></div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var stats = JSON.parse(document.getElementById('data-container').getAttribute('data-stats'));
-        console.log(stats)
-        const labels = stats.map(stat => new Date(stat.orderDate).toLocaleDateString());
-        const customerCounts = stats.map(stat => stat.customerCount);
-        const revenues = stats.map(stat => stat.totalRevenue);
-        const ctx = document.getElementById('customerRevenueChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Số lượng khách hàng',
-                        data: customerCounts,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgb(75,192,192)',
-                        borderWidth: 1,
-                        yAxisID: 'y',
-                    },
-                    {
-                        label: 'Doanh thu (VND)',
-                        data: revenues,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgb(255,99,132)',
-                        borderWidth: 1,
-                        yAxisID: 'y1',
-                    }
-                ]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Số lượng khách hàng',
-                            color: 'black',
-                            font: {size: 18}
-                        },
-                        ticks: {
-                            stepSize: 10,
-                            min: 0,
-                            max: 50,
-                            font: {size: 18},
-                            color: 'black'
-                        },
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Doanh thu (VND)',
-                            color: 'black',
-                            font: {size: 18}
-                        },
-                        ticks: {
-                            stepSize: 2000000,
-                            min: 0,
-                            max: 10000000,
-                            font: {size: 18},
-                            color: 'black'
-                        }
-                    },
-                    color: 'black'
-                },
-                responsive: true
-            }
-        });
-    });
-</script>
 
 </body>
 </html>

@@ -422,6 +422,66 @@ a:hover {
     color: var(--text-color);
 }
 
+
+.rank-icon {
+    position: relative;
+    display: inline-block;
+    width: 35px; /* Đặt kích thước phù hợp cho icon */
+    height: 30px;
+}
+
+/* Top 1: Kim cương */
+.rank-icon .diamond {
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    border: 2px solid #00c6ff;
+}
+
+/* Top 2: Vàng */
+.rank-icon .gold {
+    background: linear-gradient(45deg, #ffd700, #ffa500);
+    border: 2px solid #ffd700;
+}
+
+/* Top 3: Bạc */
+.rank-icon .silver {
+    background: linear-gradient(45deg, #c0c0c0, #dcdcdc);
+    border: 2px solid #c0c0c0;
+}
+
+/* Còn lại: Đồng */
+.rank-icon .bronze {
+    background: linear-gradient(45deg, #cd7f32, #b87333);
+    border: 2px solid #cd7f32;
+}
+
+.rank-icon i {
+    font-size: 25px; /* Kích thước icon */
+    color: inherit;
+    background-color: inherit;
+}
+
+.rank-number {
+    position: absolute;
+    top: 55%; /* Căn chỉnh theo chiều dọc */
+    left: 45%; /* Căn chỉnh theo chiều ngang */
+    transform: translate(-50%, -50%); /* Đưa về trung tâm icon */
+    font-size: 16px; /* Kích thước của số thứ hạng */
+    font-weight: bold;
+}
+.diamond .rank-number {
+    color: #00c6ff;
+}
+.gold .rank-number {
+    color: #ffd700;
+}
+.silver .rank-number {
+    color: #9d9d9d;
+}
+.bronze .rank-number {
+    color: #cd7f32;
+}
+
+
 .statistical-chart {
     padding: 10px 5px;
     color: #333333;

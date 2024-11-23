@@ -36,14 +36,14 @@
       </div>
       <div class="col-md-4 my-1 col"></div>
       <div class="col-md-4 my-1 col-sm-5">
-        <div class="user-info d-flex align-items-center justify-content-center">
+        <div th:if="${loggedInCustomer != null}" class="user-info d-flex align-items-center justify-content-center">
           <!-- User Avatar Dropdown -->
-          <div class="dropdown">
-            <!--                    <img th:src="@{'/employees/display?id=' + ${currentUser.employeeId}}"-->
-            <img
-              th:src="${currentUser.employeeId != null ? '/employees/display?id=' + currentUser.employeeId : '/images/noimage.jpg'}"
-              alt="User Image" class="img-thumbnail" style="width: 50px; height: 50px;" id="user-avatar"
-              data-toggle="dropdown" aria-expanded="false">
+          <div th:if="${loggedInCustomer != null}" class="d-flex">
+            <!-- Nếu đã đăng nhập, hiển thị avatar và menu -->
+            <div class="dropdown">
+              <img th:src="${loggedInCustomer != null ? '/employees/display?id=' + loggedInCustomer.customerID : '/images/noimage.jpg'}"
+                   class="rounded-circle" style="width: 20px; height: 20px;" id="user-avatar"
+                   data-toggle="dropdown" aria-expanded="false">
 
             <ul class="dropdown-menu" aria-labelledby="user-avatar">
               <li><a class="dropdown-item" href="#"><i class="fas fa-user text-primary"></i> Tài khoản của
@@ -65,7 +65,7 @@
           </div>
           <!-- User Info Text -->
           <div class="user-text">
-            <p class="m-0 " th:text="'Xin Chào ' + ${currentUser.name}">
+            <p class="m-0 " th:text="'Xin Chào ' + ${loggedInCustomer.name}">
               Xin chào, Phúc Lâm
             </p>
           </div>
@@ -73,7 +73,7 @@
       </div>
       <!-- Logo và thương hiệu -->
       <div class="col-md-3 col-sm-3 my-1 text-center">
-        <a class="navbar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/shop}">
+        <a class="navbar-brand d-flex align-items-center justify-content-center" href="/">
           <!-- <img src="logoSmartSeller.png" alt="logo" style="width:75px;" class="mr-2"> -->
           <span class="font-weight-bold text-white">SMART SELLER</span>
         </a>
@@ -111,40 +111,18 @@
       </div>
 
       <!-- giỏ hàng -->
-      <div class="col-md-3 col-sm-2 my-1 text-center">
-        <div class="header-top-main-cart p-0">
+      <div class="col-md-3 col-sm-2 my-1 text-center justify-content-center align-items-center">
+        <div class="header-top-main-cart position-relative p-0" style="width: 30px;margin: 10px auto;">
           <!-- Nút giỏ hàng -->
-          <a class="nav-link d-flex align-items-center justify-content-center text-white" href="#">
-            <i class="fas fa-shopping-cart fa-lg"></i>
-            <span class="badge badge-pill badge-danger ml-2" id="cart-count">2</span>
+          <a class="nav-link d-flex align-items-center justify-content-center text-white position-relative"
+             href="/cart" id="cartIcon" style=" width: 30px; height: 20px;">
+            <i class="fas fa-shopping-cart fa-lg" style=" z-index: 10;"></i>
+            <span class="badge-pill badge-danger" id="cartCountBadge" style="z-index: 12;position: absolute;
+                        top: 0;  left: 50%; width: 20px;transform: translate(20%, -60%);height: 20px;padding: 0 0 6px;">0</span>
           </a>
-
-          <!-- Danh sách sản phẩm (dropdown) -->
-          <div class="cart-dropdown p-3">
-            <!-- Nếu có sản phẩm -->
-            <ul class="cart-items">
-              <li class="cart-item d-flex align-items-center">
-                <img src="../img/desktop.jpg" alt="Sản phẩm 1" class="cart-item-img">
-                <div class="cart-item-info">
-                  <p class="cart-item-name">Sản phẩm 1</p>
-                  <p class="cart-item-price">100.000₫</p>
-                </div>
-              </li>
-              <li class="cart-item d-flex align-items-center">
-                <img src="../img/laptop.jpg" alt="Sản phẩm 2" class="cart-item-img">
-                <div class="cart-item-info">
-                  <p class="cart-item-name">Sản phẩm 2</p>
-                  <p class="cart-item-price">200.000₫</p>
-                </div>
-              </li>
-            </ul>
-
-            <!-- Nếu không có sản phẩm -->
-            <p class="cart-empty">Chưa có sản phẩm nào</p>
-            <button class="btn btn-danger">Xem Giỏ Hàng</button>
-          </div>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -157,7 +135,7 @@
     <!-- Hiển thị chi tiết sản phẩm nếu có -->
     <div th:if="${product}" class="row">
       <!-- Nút quay lại -->
-      <a th:href="@{/shop}" class="btn btn-secondary btn-sm">
+      <a th:href="@{/}" class="btn btn-secondary btn-sm">
         <i class="fa-solid fa-arrow-left"></i> Quay lại
       </a>
       <div class="col-12">

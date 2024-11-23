@@ -1,10 +1,13 @@
 :root {
-	--primary-color: #00ffdd;
+	--primary-color: #0efc97;
 	--secondary-color: #9b59b6;
 }
 
 body {
-	background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+	background: url('../image/background.jpg') no-repeat center center fixed;
+	background-size: cover;
+	rgb(137, 95, 187) 62%,
+	rgb(87, 127, 173) 100%);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -13,21 +16,17 @@ body {
 }
 
 .login-card {
-	background-color: white;
-	border-radius: 10px;
+	background-color: rgba(0,0,0,0.2);
+	border-radius: 20px;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	padding: 40px;
+	padding: 20px;
 	width: 100%;
-	max-width: 400px;
+	max-width: 600px;
 }
 
 .login-card h2 {
 	text-align: center;
 	margin-bottom: 30px;
-}
-
-.login-card .form-group {
-	margin-bottom: 20px;
 }
 
 .login-card .form-control {
@@ -39,8 +38,8 @@ body {
 	background-color: var(--primary-color);
 	border-color: var(--primary-color);
 	border-radius: 20px;
-	font-size: 16px;
-	padding: 12px 30px;
+	font-size: 20px;
+	padding: 5px 20px;
 	width: 100%;
 }
 
@@ -53,4 +52,19 @@ body {
 	color: #333;
 	font-size: 24px;
 	margin: 0 10px;
+}
+
+.btn {
+	border-radius: 16px;
+	background-color: var(--primary-color); /* Màu nền khi hover */
+	color: #fff;
+}
+.btn-hover:hover {
+	background-color: #00883f; /* Màu nền khi hover */
+	color: #fff;              /* Màu chữ khi hover */
+	transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt */
+}
+.btn-hover:hover i {
+	transform: translateX(-5px); /* Di chuyển biểu tượng qua trái */
+	transition: all 0.3s ease;
 }

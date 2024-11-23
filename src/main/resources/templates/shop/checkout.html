@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" th:href="@{/image/logoSmartSeller.png}" type="image/x-icon">
-    <link rel="shortcut icon" href="../img/logoSmartSeller.png" type="image/x-icon">
+    <link rel="shortcut icon" href="img/logoSmartSeller.png" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -37,7 +37,7 @@
     <!-- import css, js static-->
     <!-- <link rel="stylesheet" th:href="@{/css/home.css}">
     <script th:src="@{/js/home.js}"></script> -->
-    <link rel="stylesheet" href="../css/shopping.css">
+    <link rel="stylesheet" href="css/shopping.css">
 
     <script>
         $(document).ready(function () {
@@ -108,8 +108,8 @@
                 <div class="user-info d-flex align-items-center justify-content-center">
                     <!-- User Avatar Dropdown -->
                     <div class="dropdown">
-                        <img src="../img/Avata_HoPhucLam.jpg" alt="User Avatar" class="rounded-circle mr-2"
-                            id="user-avatar" data-toggle="dropdown" aria-expanded="false">
+                        <img src="img/Avata_HoPhucLam.jpg" alt="User Avatar" class="rounded-circle mr-2"
+                             id="user-avatar" data-toggle="dropdown" aria-expanded="false">
                         <ul class="dropdown-menu" aria-labelledby="user-avatar">
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user text-primary"></i> Tài khoản của
                                     tôi</a></li>
@@ -130,7 +130,7 @@
                     </div>
                     <!-- User Info Text -->
                     <div class="user-text">
-                        <p class="m-0 " th:text="'Name: ' + ${currentUser.name} + ', ID: ' + ${currentUser.employeeId}">
+                        <p class="m-0 " th:text="'Name: ' + ${customer.name} + ', ID: ' + ${customer.customerID}">
                             Xin chào, Phúc Lâm
                         </p>
                     </div>
@@ -146,119 +146,139 @@
 
         </div>
     </div>
+
     <div class="container mt-5">
-        <!-- Danh sách sản phẩm -->
-        <h3 class="mb-4">Sản phẩm</h3>
-        <table class="table table-striped text-center align-middle">
-            <thead>
-                <tr>
-                    <th>Sản phẩm</th>
-                    <th class="text-secondary">Đơn giá</th>
-                    <th class="text-secondary">Số lượng</th>
-                    <th class="text-secondary">Thành tiền</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="product-img-cart"
-                                style="width: 60px; height: 60px; overflow: hidden; margin-right: 10px;">
-                                <img src="../img/laptop.jpg" alt="Laptop" class="img-fluid rounded">
-                            </div>
-                            <span>Laptop</span>
-                        </div>
-                    </td>
-                    <td>12.000.000đ</td>
-                    <td>
-                        1
-                    </td>
-                    <td class="text-warning font-weight-bold">12.000.000đ</td>
-                </tr>
-            </tbody>
-        </table>
+        <h3 class="mb-4">Thanh Toán</h3>
+        <form th:action="@{/checkout}" th:object="${newOrder}" method="post">
 
-        <!-- Tổng tiền -->
-        <div class="text-right font-weight-bold mb-5">
-            Tổng số tiền (1 sản phẩm): <span class="text-danger">12.000.000đ</span>
-        </div>
-
-        <!-- Thông tin người nhận -->
-        <h3 class="mb-4">Thông tin người nhận</h3>
-        <form>
+            <!-- Thông tin người nhận -->
+            <h4>Thông tin khách hàng</h4>
             <div class="form-group">
                 <label for="fullName">Họ và tên</label>
-                <input type="text" class="form-control" id="fullName" placeholder="Nhập họ và tên">
+                <input type="text" class="form-control" id="fullName" name="customer.name"
+                       th:value="${customer.name}" placeholder="Nhập họ và tên">
             </div>
             <div class="form-group">
                 <label for="phoneNumber">Số điện thoại</label>
-                <input type="tel" class="form-control" id="phoneNumber" placeholder="Nhập số điện thoại">
+                <input type="tel" class="form-control" id="phoneNumber" name="customer.phone"
+                       th:value="${customer.phone}" placeholder="Nhập số điện thoại">
             </div>
             <div class="form-group">
                 <label for="address">Địa chỉ</label>
-                <textarea class="form-control" id="address" rows="3" placeholder="Nhập địa chỉ"></textarea>
-            </div>
-        </form>
+                <textarea class="form-control" id="address" name="customer.address" rows="3"
+                          th:value="${customer.address}" placeholder="Nhập địa chỉ">
 
-        <!-- Phương thức thanh toán -->
-        <h3 class="mb-4">Phương thức thanh toán</h3>
-        <form>
+            </textarea>
+            </div>
+
+            <!-- Danh sách sản phẩm trong giỏ hàng -->
+            <h4 class="mb-4">Giỏ Hàng</h4>
+            <table class="table table-striped text-center align-middle">
+                <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cart}">
+                    <input type="hidden" th:value="${item[0].productID}">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="product-img-cart"
+                                 style="width: 60px; height: 60px; overflow: hidden; margin-right: 10px;">
+                                <!-- Hiển thị hình ảnh sản phẩm -->
+                                <img th:src="@{'/products/display?id=' + ${item[0].productID}}"
+                                     th:alt="${item[0].productName}" class="img-fluid rounded">
+                            </div>
+                            <span th:text="${item[0].productName}"></span>
+                        </div>
+                    </td>
+                    <td th:text="${item[0].price}">12.000.000đ</td>
+                    <td>
+                        <!-- Input cho số lượng -->
+                        <input type="number" name="quantity" min="1" th:value="${item[1]}" class="form-control" />
+                    </td>
+                    <td class="text-warning font-weight-bold" th:text="${item[0].price * item[1]}"></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <!-- Tổng tiền -->
+            <div class="text-right font-weight-bold mb-5">
+                Tổng tiền: <span class="text-danger" th:text="${totalAmount}"></span>
+            </div>
+
+            <!--  Phương thức thanh toán -->
+            <h4 class="mb-4">Phương thức thanh toán</h4>
             <div class="form-group">
                 <label for="paymentMethod">Chọn phương thức thanh toán</label>
-                <select class="form-control" id="paymentMethod">
-                    <option value="cod">COD - Thanh toán khi nhận hàng</option>
-                    <option value="credit_card">Thẻ tín dụng</option>
+                <select id="paymentMethod" class="form-control" name="paymentMethod">
+                    <option value="CASH" th:selected="${newOrder.paymentMethod == 'CASH'}">CASH</option>
+                    <option value="CREDIT_CARD" th:selected="${newOrder.paymentMethod == 'CREDIT_CARD'}">CREDIT CARD</option>
+                    <option value="DEBIT_CARD" th:selected="${newOrder.paymentMethod == 'DEBIT_CARD'}">DEBIT CARD</option>
+                    <option value="BANK_TRANSFER" th:selected="${newOrder.paymentMethod == 'BANK_TRANSFER'}">BANK TRANSFER</option>
+                    <option value="PAYPAL" th:selected="${newOrder.paymentMethod == 'PAYPAL'}">PAYPAL</option>
+                    <option value="COD" th:selected="${newOrder.paymentMethod == 'COD'}">COD</option>
                 </select>
             </div>
+
             <!-- Thông tin thẻ tín dụng (ẩn mặc định) -->
             <div id="creditCardInfo" style="display: none;">
                 <div class="form-group">
                     <label for="cardNumber">Số thẻ tín dụng</label>
-                    <input type="text" class="form-control" id="cardNumber" placeholder="Nhập số thẻ tín dụng"
-                        maxlength="16">
+                    <input type="text" class="form-control" id="cardNumber" name="cardNumber"
+                           maxlength="16" placeholder="Nhập số thẻ tín dụng">
                 </div>
                 <div class="form-group">
                     <label for="cardName">Tên chủ thẻ</label>
-                    <input type="text" class="form-control" id="cardName" placeholder="Nhập tên chủ thẻ">
+                    <input type="text" class="form-control" id="cardName" name="cardName"
+                           placeholder="Nhập tên chủ thẻ">
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="expiryDate">Ngày hết hạn</label>
-                        <input type="month" class="form-control" id="expiryDate">
+                        <input type="month" class="form-control" id="expiryDate" name="expiryDate">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="cvv">Mã CVV</label>
-                        <input type="password" class="form-control" id="cvv" placeholder="3 chữ số bảo mật">
+                        <input type="password" class="form-control" id="cvv" name="cvv"
+                               placeholder="3 chữ số bảo mật">
                     </div>
                 </div>
             </div>
+
             <script>
                 document.getElementById('paymentMethod').addEventListener('change', function () {
                     const creditCardInfo = document.getElementById('creditCardInfo');
-                    if (this.value === 'credit_card') {
+                    if (this.value === 'CREDIT_CARD') {
                         creditCardInfo.style.display = 'block'; // Hiển thị form nhập thông tin thẻ tín dụng
                     } else {
                         creditCardInfo.style.display = 'none'; // Ẩn form khi chọn COD
                     }
                 });
             </script>
+
+            <!-- Tóm tắt đơn hàng -->
+            <div class="border-top pt-4 mt-4 text-right">
+                <p><strong>Tổng tiền hàng:</strong> <span class="text-danger" th:text="${totalAmount}"></span></p>
+                <p><strong>Tổng thanh toán:</strong> <span class="text-danger font-weight-bold" th:text="${totalAmountWithTax}"></span></p>
+            </div>
+
+            <!-- Điều khoản và nút đặt hàng -->
+            <div class="mt-4 d-flex align-items-center justify-content-between">
+                <p class="m-0 text-muted">
+                    Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo
+                    <a href="#" class="text-primary">Điều khoản SmartSeller</a>.<br>
+                </p>
+                <button class="btn btn-danger btn-sm btn-lg">Đặt hàng</button>
+            </div>
         </form>
-
-        <!-- Tóm tắt đơn hàng -->
-        <div class="border-top pt-4 mt-4 text-right">
-            <p><strong>Tổng tiền hàng:</strong> <span class="text-danger">12.000.000đ</span></p>
-            <p><strong>Tổng thanh toán:</strong> <span class="text-danger font-weight-bold">12.016.500đ</span></p>
-        </div>
-
-        <!-- Điều khoản và nút đặt hàng -->
-        <div class="mt-4 d-flex align-items-center justify-content-between">
-            <p class="m-0 text-muted">
-                Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo
-                <a href="#" class="text-primary">Điều khoản SmartSeller</a>.
-            </p>
-            <button class="btn btn-danger btn-sm btn-lg">Đặt hàng</button>
-        </div>
     </div>
+
     <footer class="footer row bg-success text-white font-weight-bold justify-content-center mt-3 ">
         <p class="footer-text m-0 p-3">&copy; 2024 SMART SELLER. All Rights Reserved.</p>
     </footer>

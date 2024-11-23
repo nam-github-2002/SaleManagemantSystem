@@ -26,6 +26,12 @@ public class Customer {
     @Column(name="total_spend")
     private Double totalSpend = 0.0;
 
+    @Column(name="account", unique = true)
+    private String account;
+
+    @Column(name="password")
+    private String password;
+
     public String getCustomerID() {
         return customerID;
     }
@@ -80,6 +86,22 @@ public class Customer {
 
     public void setTotalSpend(Double totalSpend) {
         this.totalSpend = totalSpend;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

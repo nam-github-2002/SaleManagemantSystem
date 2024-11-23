@@ -17,6 +17,7 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, String> {
     Page<Customer> findAll(@Nullable Pageable pageable);
     Optional<Customer> findByEmail(String email);
+    Customer findByAccount(String account);
     Customer findByNameAndPhone(String name, String phone);
     List<Customer> findByNameContainingIgnoreCase(String query);
     Customer findByCustomerID(String customerID);

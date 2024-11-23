@@ -1,4 +1,5 @@
 package com.application.salesmanagementsystem.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class OrderDetail {
     private Double totalPrice;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 

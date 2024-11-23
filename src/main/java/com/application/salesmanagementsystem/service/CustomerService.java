@@ -21,12 +21,17 @@ public interface CustomerService {
 
     String generateCustomerID();
 
-    public Page<Customer> searchCustomers(String keyword,  Pageable pageable);
+    Page<Customer> searchCustomers(String keyword,  Pageable pageable);
 
-    public Optional<Customer> findByEmail(String email);
+    Customer findByEmail(String email);
 
     Integer countTotalCustomers();
 
     List<Customer> getTopSpendingCustomers(int topN);
 
+    Customer findByAccount(String account);
+
+    Customer registerCustomer(Customer customer);
+
+    Customer loginCustomer(String account, String password);
 }

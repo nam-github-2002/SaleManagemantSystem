@@ -43,8 +43,9 @@ public class HomeController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @GetMapping("/")
-    public String body(HttpSession session, HttpServletRequest request, Model model) throws JsonProcessingException {
+
+    @GetMapping("/internal")
+    public String showDashboard(HttpSession session, HttpServletRequest request, Model model) throws JsonProcessingException {
         if (!LoginController.isAuthenticated(session, model)) {
             return "login";
         }
@@ -91,7 +92,6 @@ public class HomeController {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonStats = objectMapper.writeValueAsString(statistics);
 
-        System.out.println("==================================================="+ jsonStats);
         model.addAttribute("statisticsJson", jsonStats);
 
 

@@ -18,6 +18,14 @@
 
     <div id="mainArea">
       <div th:fragment="supplierDetailPage">
+        <section class="content-header">
+          <h1>Quản lý NHÀ CUNG CẤP</h1>
+          <ol class="breadcrumb">
+            <li><a href="/internal" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="/suppliers" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Supplier</a></li>
+            <li class="active"><i class="fas fa-box"></i>Detail</li>
+          </ol>
+        </section>
 
         <div class="app-page-title">
           <div class="page-title-wrapper">

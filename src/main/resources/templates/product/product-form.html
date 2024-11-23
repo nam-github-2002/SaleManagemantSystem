@@ -21,10 +21,8 @@
       <div th:fragment="productDetailPage">
 
         <section class="content-header">
-
-          <h1>Quản lý sản phẩm</h1>
           <ol class="breadcrumb">
-            <li><a href="/" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="/internal" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Home</a></li>
             <li><a href="/products" onclick="getContent(event, this.href)"><i class="fa fa-home"></i>Product</a></li>
             <li class="active"
                 th:text="${editMode ? (exist ? 'Edit Product' : 'Create Product') : 'Product Detail'}">
@@ -32,6 +30,9 @@
             </li>
           </ol>
         </section>
+
+        <h1>Quản lý sản phẩm</h1>
+
 
         <div class="app-page-title">
           <div class="page-title-wrapper">

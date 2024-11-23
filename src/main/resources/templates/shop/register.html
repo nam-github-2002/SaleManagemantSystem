@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sneaker Space | Đăng ký tài khoản</title>
+    
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+     <!-- jQuery đầy đủ -->
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+ 
+     <!-- DataTables CSS -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+ 
+     <!-- Bootstrap JS -->
+     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+     <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body>
+    <div class="login-card">
+
+        <a class="btn btn-hover mr-auto mb-2 d-flex justify-content-start align-items-center" style="width: 125px" href="/">
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+            <span>Quay lại</span>
+        </a>
+
+        <h2>Đăng ký</h2>
+
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/register}"
+              th:object="${customer}"
+              method="post"
+              class="row"
+              id="form-register">
+
+            <input type="hidden" name="customerID" th:value="${customer.customerID}">
+
+            <!-- Cột trái -->
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" th:value="${customer.account != null ? customer.account : ''}" id="username" name="account" class="form-control" required>
+                    <small id="enrrtendn" class="text-danger error">*</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" th:value="${customer.password != null ? customer.password : ''}" id="password" name="password" class="form-control" required>
+                    <small id="enrrmk" class="text-danger error">*</small>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="password2">Nhập lại mật khẩu</label>
+                    <input type="password" id="password2" class="form-control" required>
+                    <small id="enrrnlmk" class="text-danger error">*</small>
+                </div>
+
+            </div>
+
+            <!-- Cột phải -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Họ và tên</label>
+                    <input type="text" th:value="${customer.name != null ? customer.name : ''}" id="name" name="name" class="form-control" required>
+                    <small id="enrrhoten" class="text-danger error">*</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" th:value="${customer.email != null ? customer.email : ''}" id="email" name="email" class="form-control" required>
+                    <small id="enrremail" class="text-danger error">*</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại</label>
+                    <input type="text" id="phone" name="phone" class="form-control" required>
+                    <small id="enrrphone" class="text-danger error">*</small>
+                </div>
+            </div>
+
+            <!-- Nút đăng ký -->
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-login btn-hover">Đăng ký</button>
+            </div>
+        </form>
+
+
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        $("#form-register").submit(function (event) {
+            event.preventDefault(); // Ngừng gửi form khi chưa kiểm tra
+
+            // Lấy các giá trị từ form
+            var tendn = $("#username").val();
+            var matkhau = $("#password").val();
+            var nlmatkhau = $("#password2").val();
+            var email = $("#email").val();
+            var hoten = $("#name").val();
+            var phone = $("#phone").val();
+
+            // Xóa thông báo lỗi cũ
+            $(".error").text("");
+
+            // ========== Kiểm tra thông tin cá nhân ==========
+            // Kiểm tra họ và tên
+            var nameError = $("#enrrhoten");
+            var namePattern = /^[A-ZÀ-Ỹ][a-zà-ỹ]{1,}(\s+[A-ZÀ-Ỹ][a-zà-ỹ]{1,})*$/;
+            if (hoten === "") {
+                nameError.text("Vui lòng nhập họ và tên.");
+                $("#name").focus();
+                return;
+            } else if (!namePattern.test(hoten)) {
+                nameError.text("Họ tên phải có ít nhất 2 từ, mỗi từ bắt đầu bằng chữ cái in hoa!");
+                $("#name").focus();
+                return;
+            }
+
+            // Kiểm tra số điện thoại
+            var phoneError = $("#enrrphone");
+            var phonePattern = /^(0[3|5|7|8|9]\d{8}|(\+84)[3|5|7|8|9]\d{8})$/;
+            phoneError.text("");
+            if (phone === "") {
+                phoneError.text("Vui lòng nhập số điện thoại.");
+                $("#phone").focus();
+                return;
+            } else if (!phonePattern.test(phone)) {
+                phoneError.text("Số điện thoại không hợp lệ! Phải có 10 số, bắt đầu bằng 0 hoặc +84.");
+                $("#phone").focus();
+                return;
+            }
+
+            // ========== Kiểm tra thông tin tài khoản ==========
+            // Kiểm tra tên đăng nhập
+            var usernameError = $("#enrrtendn");
+            if (tendn === "") {
+                usernameError.text("Vui lòng nhập tên đăng nhập.");
+                $("#username").focus();
+                return;
+            }
+
+            // Kiểm tra mật khẩu
+            var passwordError = $("#enrrmk");
+            if (matkhau === "") {
+                passwordError.text("Vui lòng nhập mật khẩu.");
+                $("#password").focus();
+                return;
+            }
+
+            // Kiểm tra mật khẩu và nhập lại mật khẩu phải giống nhau
+            var confirmPasswordError = $("#enrrnlmk");
+            if (nlmatkhau === "") {
+                confirmPasswordError.text("Vui lòng nhập lại mật khẩu.");
+                $("#password2").focus();
+                return;
+            }
+
+            if (matkhau !== nlmatkhau) {
+                confirmPasswordError.text("Mật khẩu và nhập lại mật khẩu phải giống nhau!");
+                $("#password2").focus();
+                return;
+            }
+
+            // Kiểm tra email có đúng định dạng
+            var emailError = $("#enrremail");
+            var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(email)) {
+                emailError.text("Email không hợp lệ!");
+                $("#email").focus();
+                return;
+            }
+
+            // Nếu tất cả hợp lệ, gửi form
+            this.submit();
+        });
+    });
+
+
+</script>
+
+</html>

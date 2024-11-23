@@ -1,6 +1,9 @@
 package com.application.salesmanagementsystem.model;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,7 +30,7 @@ public class Order {
     @Temporal(TemporalType.DATE)
     private LocalDate orderDate;
 
-    private Double totalAmount;
+    private Double totalAmount = 0.0;
     private String formattedTotalAmount;
 
     @Enumerated(EnumType.STRING)
@@ -39,6 +42,7 @@ public class Order {
     private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<OrderDetail> orderDetails;
 
     public Order() {}
@@ -76,9 +80,14 @@ public class Order {
     }
 
     public Double getTotalAmount() {
-        DecimalFormat df = new DecimalFormat("#.00"); // Định dạng 2 chữ số sau dấu phẩy
-        return Double.valueOf(df.format(totalAmount));
+        if (totalAmount == null) {
+            return 0.0; // Giá trị mặc định nếu totalAmount là null
+        }
+        BigDecimal rounded = BigDecimal.valueOf(totalAmount)
+                .setScale(2, RoundingMode.HALF_UP); // Làm tròn 2 chữ số thập phân
+        return rounded.doubleValue();
     }
+
     public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
@@ -122,7 +131,6 @@ public class Order {
                 ", orderStatus=" + orderStatus +
                 ", totalAmount=" + totalAmount +
                 ", orderDate=" + orderDate +
-                ", employee=" + employee.getName() +
                 ", customer=" + customer.getName() +
                 ", orderId=" + orderId +
                 '}';

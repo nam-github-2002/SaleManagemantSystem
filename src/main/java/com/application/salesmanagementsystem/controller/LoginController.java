@@ -1,6 +1,8 @@
 package com.application.salesmanagementsystem.controller;
 
+import com.application.salesmanagementsystem.model.Customer;
 import com.application.salesmanagementsystem.model.Employee;
+import com.application.salesmanagementsystem.service.CustomerService;
 import com.application.salesmanagementsystem.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +19,40 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class LoginController {
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private CustomerService customerService;
 
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password,
+    @PostMapping("/login-customer")
+    public String loginCustomer(@RequestParam String username, @RequestParam String password,
+                                RedirectAttributes redirectAttributes, HttpSession session) {
+        try {
+            Customer customer = customerService.loginCustomer(username, password);
+
+            session.setAttribute("loggedInCustomer", customer);
+
+            return "redirect:/";
+        } catch (RuntimeException ex) {
+
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            return "redirect:/login";
+        }
+    }
+
+
+    @PostMapping("/login-internal")
+    public String loginInternal(@RequestParam String username, @RequestParam String password,
                         RedirectAttributes redirectAttributes, HttpSession session)
     {
-        System.out.println(username);
         Employee employee = employeeService.findByUsername(username);
         if (employee != null && employeeService.checkPassword(employee, password)) {
-            System.out.println(employee);
             session.setAttribute("loggedInUser", employee);
             redirectAttributes.addFlashAttribute("success", true);
-            return "redirect:/";
+            return "redirect:/internal";
         } else {
             redirectAttributes.addFlashAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
             return "redirect:/login";
@@ -48,12 +67,11 @@ public class LoginController {
         return "redirect:/login";
     }
 
-
-
     public static boolean isAuthenticated(HttpSession session, Model model) {
         Employee loggedInUser = (Employee) session.getAttribute("loggedInUser");
-        return loggedInUser != null;
+
+        Customer loggedInCustomer = (Customer) session.getAttribute("loggedInCustomer");
+
+        return loggedInUser != null || loggedInCustomer != null;
     }
-
-
 }
