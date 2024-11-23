@@ -357,3 +357,19 @@
         transform: translateY(0);
     }
 }
+
+.out-of-stock-badge {
+    position: absolute;
+    top: 10px;
+    right: -20px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 15px;
+    text-align: center;
+    transform: rotate(45deg); /* Góc nghiêng 135 độ */
+    transform-origin: right bottom;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

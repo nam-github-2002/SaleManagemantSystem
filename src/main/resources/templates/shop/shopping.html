@@ -33,14 +33,14 @@
     <!--Excel-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-
+    <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/shopping.css}">
     <script th:src="@{/js/shopping.js}"></script>
 
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row header-shop-top bg-success text-white p-2 sticky-top">
+    <div style="background-color: var(--secondary-color)" class="row header-shop-top text-white p-2 sticky-top">
         <div class="col-md-4 col-sm-6 my-1 d-flex align-items-center justify-content-center">
             <i class="fa-solid fa-calendar-days mr-2"> </i>
             <span id="current-date"> 16/11/2024</span>
@@ -96,24 +96,10 @@
         <div class="col-md-6 col-sm-7 my-1">
             <form id="nav-form-search" class="form-inline">
                 <div class="input-group w-100  justify-content-center">
-                    <!-- Danh mục sản phẩm -->
-                    <select name="" id="select-product-category" class="custom-select col-3">
-                        <option value="">Tất cả</option>
-                        <option value="Laptops">Laptops</option>
-                        <option value="Smartphones">Smartphones</option>
-                        <option value="Tablets">Tablets</option>
-                        <option value="Desktops">Desktops</option>
-                        <option value="Giày dép">Giày dép</option>
-                        <option value="Mỹ phẩm">Mỹ phẩm</option>
-                        <option value="Sức khỏe">Sức khỏe</option>
-                        <option value="Gia dụng">Gia dụng</option>
-                        <option value="Nhà cửa">Nhà cửa</option>
-                        <option value="Oto xe máy">Oto xe máy</option>
 
-                    </select>
 
                     <!-- Ô tìm kiếm -->
-                    <input type="text" class="form-control col-7" placeholder="Tìm sản phẩm, thương hiệu,...">
+                    <input type="text" name="keyword" class="form-control col-7" placeholder="Tìm sản phẩm, thương hiệu,...">
 
                     <!-- Nút tìm kiếm -->
                     <div class="input-group-append">
@@ -147,12 +133,18 @@
     <div class="d-flex flex-wrap justify-content-center">
 
         <div class="col-md-2 col-sm-3 col-6" th:each="product : ${products}">
-            <div class="card product-card mb-4">
-            <!-- Hình ảnh sản phẩm -->
-                <img th:src="${#lists.isEmpty(product.images)
-                               ? '/image/noimage.jpg'
-                               : '/products/display?id=' + productImages[product.productID]}"
-                 class="card-img-top" alt="Hình ảnh sản phẩm">
+            <div style="background-color: var(--sub-color); color: var(--text-color)" class="card product-card mb-4 position-relative">
+
+                <!-- Dấu HẾT HÀNG -->
+                <div class="out-of-stock-badge" th:if="${!product.status}">
+                    HẾT HÀNG
+                </div>
+
+                <!-- Hình ảnh sản phẩm -->
+            <img th:src="${#lists.isEmpty(product.images)
+                           ? '/image/noimage.jpg'
+                           : '/products/display?id=' + productImages[product.productID]}"
+             class="card-img-top mt-2" alt="Hình ảnh sản phẩm">
             <div class="card-body">
                 <!-- Tên sản phẩm -->
                 <h5 class="card-title" th:text="${product.productName}">Tên sản phẩm</h5>
@@ -170,7 +162,8 @@
                 <a th:href="@{/productDetail/{id}(id=${product.productID})}"
                    class="btn btn-primary btn-sm">Xem chi tiết</a>
                 <!-- Nút thêm vào giỏ hàng -->
-                <a href="#" th:classappend="${loggedInCustomer != null ? '' : 'd-none'}"
+                <a href="#" th:classappend="${loggedInCustomer != null && product.status
+                                                ? '' : 'd-none'}"
                    class="btn btn-warning btn-sm"
                    th:onclick="|addToCart(${product.productID})|">
                     <i class="fas fa-cart-plus"></i>
@@ -178,6 +171,7 @@
             </div>
         </div>
         </div>
+
     </div>
 
 
@@ -210,7 +204,8 @@
             </li>
         </ul>
     </nav>
-    <footer class="footer row bg-success text-white font-weight-bold justify-content-center ">
+
+    <footer style="background-color: var(--secondary-color)" class="footer row text-white font-weight-bold justify-content-center ">
         <p class="footer-text m-0 p-3">&copy; 2024 SMART SELLER. All Rights Reserved.</p>
     </footer>
 

@@ -22,13 +22,14 @@
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/shopping.css}">
     <script th:src="@{/js/shopping.js}"></script>
 
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row header-shop-top bg-success text-white p-2 sticky-top">
+    <div class="row header-shop-top text-white p-2 sticky-top" style="background-color: var(--secondary-color)">
         <div class="col-md-4 col-sm-6 my-1 d-flex align-items-center justify-content-center">
             <i class="fa-solid fa-calendar-days mr-2"> </i>
             <span id="current-date"> 16/11/2024</span>
@@ -115,13 +116,16 @@
     </div>
 
     <div class="container mt-4">
-        <h2>Giỏ Hàng</h2>
+        <!-- Nút quay lại -->
+        <a th:href="@{/}" class="btn btn-warning btn-hover btn-md mt-4">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại
+        </a>
         <div th:if="${#lists.isEmpty(cart)}">
             <p>Giỏ hàng trống!</p>
         </div>
         <!-- Form giỏ hàng -->
         <form th:if="${loggedInCustomer != null}" action="/cart/process" th:object="${newOrder}" method="post">
-            <div class="container mt-5">
+            <div class="container mt-3">
                 <h3 class="mb-4">Giỏ Hàng & Thanh Toán</h3>
 
                 <!-- Giỏ Hàng -->

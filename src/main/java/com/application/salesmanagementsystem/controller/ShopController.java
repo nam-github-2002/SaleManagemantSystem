@@ -12,6 +12,8 @@ import com.application.salesmanagementsystem.service.ImageService;
 import com.application.salesmanagementsystem.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -83,7 +85,8 @@ public class ShopController {
     }
 
     @GetMapping("/productDetail/{id}")
-    public String showProductDetail(@PathVariable("id") int id, Model model, HttpSession session) {
+    public String showProductDetail(@PathVariable("id") int id, Model model, HttpSession session)
+    {
         System.out.println("================================id:" + id );
         // Lấy thông tin sản phẩm và hình ảnh từ service
         Optional<Product> productOptional = productService.getProductById(id);
@@ -99,7 +102,7 @@ public class ShopController {
         }
 
         // Lấy thông tin người dùng đang đăng nhập từ session
-        Customer loggedInCustomer = (Customer) session.getAttribute("loggedInUser");
+        Customer loggedInCustomer = (Customer) session.getAttribute("loggedInCustomer");
 
         // Nếu người dùng đang đăng nhập, thêm vào model
         if (loggedInCustomer != null) {
@@ -113,7 +116,8 @@ public class ShopController {
     }
 
     @GetMapping("/register")
-    public String showRegisterForm(Model model) {
+    public String showRegisterForm(Model model)
+    {
         Customer customer = new Customer();
         model.addAttribute("customer", customer);
 
@@ -124,7 +128,8 @@ public class ShopController {
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute("customer") Customer customer,
                                    BindingResult bindingResult,
-                                   Model model) {
+                                   Model model)
+    {
         if (bindingResult.hasErrors()) {
             return "redirect:/register";
         }
@@ -141,4 +146,5 @@ public class ShopController {
 
         return "redirect:/login";
     }
+
 }
